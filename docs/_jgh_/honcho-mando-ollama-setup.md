@@ -19,10 +19,27 @@ containers reach Ollama on the host via `host.docker.internal:11434`.
 | Choice | Value |
 | --- | --- |
 | LLMs | Fully local via Ollama (OpenAI-compatible endpoint) |
-| Chat/reasoning model | `qwen2.5:14b` (all text-gen features) |
-| Embeddings | 1024-dim, matching kb-proto-1 (`mxbai-embed-large` / `bge-large-en-v1.5` / `qwen3-embedding:0.6b`) |
+| Chat/reasoning model | `gemma4:12b` — **GGUF, not `-mlx`** (all text-gen features) |
+| Embeddings | `bge-large:latest` (1024-dim) |
 | Auth | Off (`AUTH_USE_AUTH=false`) — trusted home LAN |
 | API binding | `0.0.0.0:8000` (LAN-accessible) |
+
+> ### ⚠️ Critical: use GGUF models, never `-mlx`, for text-gen
+>
+> Honcho's deriver/summarizer/dreamer make **schema-constrained JSON** calls (the
+> "minimal deriver" is a single structured-output LLM call). **Community `-mlx`
+> model builds on Ollama silently ignore JSON-schema / grammar constraints** — they
+> return free-text markdown instead of JSON. Honcho then logs `json_parser: Repair
+> failed: Expecting value: line 1 column 1` and "Deriver generated zero
+> observations", but the queue task still flips to `processed=true` **with no
+> error** — a silent failure that looks like a working install producing no memory.
+>
+> **GGUF (non-`-mlx`) tags honor the schema and work.** Verified: `gemma4:12b` GGUF
+> returns valid JSON; `gemma4:26b-mlx` and `qwen3.6:27b-mlx` returned markdown.
+> Always pull the plain tag (`gemma4:12b`, not `gemma4:12b-mlx`). Embeddings are
+> unaffected by this. `gemma4:12b` is small and conservative (extracts fewer
+> conclusions per message) — for richer extraction pull GGUF `gemma4:26b` and
+> swap the model name; just never the `-mlx` variant.
 
 ---
 
@@ -32,17 +49,17 @@ containers reach Ollama on the host via `host.docker.internal:11434`.
 # Install if needed
 brew install ollama        # or download Ollama.app from ollama.com
 
-# Pull models
-ollama pull qwen2.5:14b               # chat/reasoning (tool-calling capable)
-ollama pull mxbai-embed-large         # embeddings — SWAP to match kb-proto-1
+# Pull models — use the plain GGUF tags, NOT the -mlx builds (see warning above)
+ollama pull gemma4:12b                 # chat/reasoning — GGUF, does structured output
+ollama pull bge-large                  # embeddings — 1024-dim
 ```
 
-**Embedder note:** all three candidates (`mxbai-embed-large`,
-`bge-large-en-v1.5`, `qwen3-embedding:0.6b`) are **1024-dim**, so Honcho's locked
-dimension is 1024 either way — pull the exact tag kb-proto-1 uses.
-`mxbai`/`bge-large` cap input at **512 tokens** (longer messages truncated when
-embedded); **`qwen3-embedding:0.6b` handles ~32k tokens** and is the stronger
-choice for Honcho if kb-proto-1 also uses it.
+**Embedder note:** `bge-large` is **1024-dim** and caps input at **512 tokens**
+(longer messages are silently truncated when embedded — we set
+`EMBEDDING_MAX_INPUT_TOKENS=512` below so the limit is explicit). Other 1024-dim
+options if you'd rather match a different store: `mxbai-embed-large` (also 512-token
+cap) or `qwen3-embedding:0.6b` (~32k token input — stronger for long messages).
+Whatever you pick, Honcho's dimension is locked at 1024 on first boot.
 
 **Critical: make Ollama listen on all interfaces.** By default it binds
 `127.0.0.1`, which Docker containers cannot reach via `host.docker.internal`:
@@ -74,8 +91,7 @@ cd honcho
 cp docker-compose.yml.example docker-compose.yml
 ```
 
-Create `.env` (full file — **find/replace `mxbai-embed-large` with your
-kb-proto-1 embedder**):
+Create `.env` (full file — this is the verified-working config):
 
 ```bash
 LOG_LEVEL=INFO
@@ -86,52 +102,66 @@ LLM_OPENAI_API_KEY=ollama          # dummy; Ollama ignores it, but the client ne
 
 # Deriver
 DERIVER_MODEL_CONFIG__TRANSPORT=openai
-DERIVER_MODEL_CONFIG__MODEL=qwen2.5:14b
+DERIVER_MODEL_CONFIG__MODEL=gemma4:12b
 DERIVER_MODEL_CONFIG__OVERRIDES__BASE_URL=http://host.docker.internal:11434/v1
 
 # Summary
 SUMMARY_MODEL_CONFIG__TRANSPORT=openai
-SUMMARY_MODEL_CONFIG__MODEL=qwen2.5:14b
+SUMMARY_MODEL_CONFIG__MODEL=gemma4:12b
 SUMMARY_MODEL_CONFIG__OVERRIDES__BASE_URL=http://host.docker.internal:11434/v1
 
 # Dream (two specialists)
 DREAM_DEDUCTION_MODEL_CONFIG__TRANSPORT=openai
-DREAM_DEDUCTION_MODEL_CONFIG__MODEL=qwen2.5:14b
+DREAM_DEDUCTION_MODEL_CONFIG__MODEL=gemma4:12b
 DREAM_DEDUCTION_MODEL_CONFIG__OVERRIDES__BASE_URL=http://host.docker.internal:11434/v1
 DREAM_INDUCTION_MODEL_CONFIG__TRANSPORT=openai
-DREAM_INDUCTION_MODEL_CONFIG__MODEL=qwen2.5:14b
+DREAM_INDUCTION_MODEL_CONFIG__MODEL=gemma4:12b
 DREAM_INDUCTION_MODEL_CONFIG__OVERRIDES__BASE_URL=http://host.docker.internal:11434/v1
 
 # Dialectic — must set ALL 5 reasoning levels
 DIALECTIC_LEVELS__minimal__MODEL_CONFIG__TRANSPORT=openai
-DIALECTIC_LEVELS__minimal__MODEL_CONFIG__MODEL=qwen2.5:14b
+DIALECTIC_LEVELS__minimal__MODEL_CONFIG__MODEL=gemma4:12b
 DIALECTIC_LEVELS__minimal__MODEL_CONFIG__OVERRIDES__BASE_URL=http://host.docker.internal:11434/v1
 DIALECTIC_LEVELS__low__MODEL_CONFIG__TRANSPORT=openai
-DIALECTIC_LEVELS__low__MODEL_CONFIG__MODEL=qwen2.5:14b
+DIALECTIC_LEVELS__low__MODEL_CONFIG__MODEL=gemma4:12b
 DIALECTIC_LEVELS__low__MODEL_CONFIG__OVERRIDES__BASE_URL=http://host.docker.internal:11434/v1
 DIALECTIC_LEVELS__medium__MODEL_CONFIG__TRANSPORT=openai
-DIALECTIC_LEVELS__medium__MODEL_CONFIG__MODEL=qwen2.5:14b
+DIALECTIC_LEVELS__medium__MODEL_CONFIG__MODEL=gemma4:12b
 DIALECTIC_LEVELS__medium__MODEL_CONFIG__OVERRIDES__BASE_URL=http://host.docker.internal:11434/v1
 DIALECTIC_LEVELS__high__MODEL_CONFIG__TRANSPORT=openai
-DIALECTIC_LEVELS__high__MODEL_CONFIG__MODEL=qwen2.5:14b
+DIALECTIC_LEVELS__high__MODEL_CONFIG__MODEL=gemma4:12b
 DIALECTIC_LEVELS__high__MODEL_CONFIG__OVERRIDES__BASE_URL=http://host.docker.internal:11434/v1
 DIALECTIC_LEVELS__max__MODEL_CONFIG__TRANSPORT=openai
-DIALECTIC_LEVELS__max__MODEL_CONFIG__MODEL=qwen2.5:14b
+DIALECTIC_LEVELS__max__MODEL_CONFIG__MODEL=gemma4:12b
 DIALECTIC_LEVELS__max__MODEL_CONFIG__OVERRIDES__BASE_URL=http://host.docker.internal:11434/v1
 
-# ---- Embeddings (1024-dim, Ollama) ----
+# ---- Embeddings (1024-dim, Ollama / bge-large) ----
 EMBED_MESSAGES=true
 EMBEDDING_VECTOR_DIMENSIONS=1024
 EMBEDDING_MODEL_CONFIG__TRANSPORT=openai
-EMBEDDING_MODEL_CONFIG__MODEL=mxbai-embed-large
+EMBEDDING_MODEL_CONFIG__MODEL=bge-large:latest
 EMBEDDING_MODEL_CONFIG__OVERRIDES__BASE_URL=http://host.docker.internal:11434/v1
 EMBEDDING_MODEL_CONFIG__DIMENSIONS_MODE=never
-# If your embedder caps at 512 tokens (mxbai/bge), uncomment to avoid silent truncation:
-# EMBEDDING_MAX_INPUT_TOKENS=512
+# bge-large caps input at 512 tokens — set explicitly to avoid silent truncation
+EMBEDDING_MAX_INPUT_TOKENS=512
+
+# ---- Processing cadence ----
+# Process each message batch immediately instead of waiting for
+# REPRESENTATION_BATCH_MAX_TOKENS (default 1024) to accumulate. Good for a
+# low-volume single-user setup so memories form promptly. Set to false (or
+# remove) to restore token-batched processing — more efficient at high volume.
+DERIVER__FLUSH_ENABLED=true
 ```
 
 `DIMENSIONS_MODE=never` stops Honcho from sending a `dimensions=` parameter that
 Ollama's embedding endpoint rejects.
+
+> **Heads up on `FLUSH_ENABLED`.** With it unset (the default), the deriver won't
+> form any conclusions until ~1024 tokens of conversation accumulate in a work
+> unit — so a short test message appears to do nothing (queue task sits at
+> `processed=false`). That's expected batching, not a failure. `FLUSH_ENABLED=true`
+> processes every batch immediately, which is what you want for interactive
+> single-user use and for verifying the install with one message.
 
 **Make the API reachable on the LAN.** Edit `docker-compose.yml`, in the `api`
 service change:
@@ -240,16 +270,46 @@ existing `kb_proto_1` tools.
   To lock down: `AUTH_USE_AUTH=true` + `python scripts/generate_jwt_secret.py`,
   then issue scoped keys per client.
 - **Per-feature model tuning:** every feature is independently configurable —
-  e.g. `qwen2.5:32b` for `DIALECTIC_LEVELS__max` (deep recall) while keeping
-  `14b` for the high-volume deriver.
+  e.g. GGUF `gemma4:26b` for `DIALECTIC_LEVELS__max` (deep recall) while keeping
+  `gemma4:12b` for the high-volume deriver. (Always the GGUF tag, never `-mlx`.)
 - **Embedding dimension is immutable after first boot** (enforced by
   `src/startup/embedding_validator.py`). Changing it requires a fresh deployment
-  + re-embed; see `docs/v3/contributing/changing-embeddings.mdx`.
+  and re-embed; see `docs/v3/contributing/changing-embeddings.mdx`.
+
+## Troubleshooting
+
+- **"Deriver generated zero observations" / no memory forms, but no error.**
+  Almost always an `-mlx` text-gen model — it ignores the JSON-schema constraint
+  and returns markdown, so `json_parser` logs `Repair failed: Expecting value:
+  line 1 column 1` and the queue task still marks `processed=true`. Fix: switch to
+  the GGUF tag (`gemma4:12b`, not `gemma4:12b-mlx`) and restart `api` + `deriver`.
+  Confirm the model honors structured output:
+  `curl -s localhost:11434/api/chat -d '{"model":"gemma4:12b","stream":false,"messages":[{"role":"user","content":"Extract facts: John lives in Boston."}],"format":{"type":"object","properties":{"facts":{"type":"array","items":{"type":"string"}}},"required":["facts"]}}'`
+  — it must return JSON, not markdown bullets.
+- **Test message seems ignored (queue task stays `processed=false`).** Expected if
+  `FLUSH_ENABLED` is unset — the deriver waits for ~1024 accumulated tokens. Set
+  `DERIVER__FLUSH_ENABLED=true` (see Part 2) to process immediately.
+- **Message create returns `peer_id` field required.** The messages API expects
+  `peer_id`, not `peer_name`:
+  `curl -X POST .../sessions/s1/messages -d '{"messages":[{"peer_id":"john","content":"..."}]}'`.
+- **Watch the deriver work:** `docker compose logs deriver -f` (look for the
+  `PERFORMANCE` panel with `Observation Count`), and `ollama ps` should show the
+  text-gen model load when a representation task runs.
 
 ## Source references (verified during setup)
 
 - `docker-compose.yml.example`, `Dockerfile`, `docker/entrypoint.sh`
 - `.env.template`, `docs/v3/contributing/{configuration,self-hosting,changing-embeddings,troubleshooting}.mdx`
 - `scripts/{provision_db,configure_embeddings}.py`, `src/startup/embedding_validator.py`
-- `src/config.py` (`EmbeddingDimensionsMode = Literal["auto","always","never"]`)
+- `src/config.py` (`EmbeddingDimensionsMode = Literal["auto","always","never"]`,
+  `DeriverSettings.REPRESENTATION_BATCH_MAX_TOKENS` / `FLUSH_ENABLED`)
+- `src/deriver/queue_manager.py` (`get_and_claim_work_units` — token-batch gating)
+- `src/llm/structured_output.py`, `src/llm/backends/openai.py` (schema repair path)
 - `mcp/README.md`, `mcp/src/{index,config}.ts`, `mcp/package.json`
+
+## Verified-working state (2026-06-10)
+
+Confirmed end-to-end on Mando: all 4 containers healthy, `/health` ok, API on
+`192.168.0.225:8000`, `bge-large` storing 1024-dim vectors, `gemma4:12b` deriver
+producing conclusions, and the dialectic `/chat` endpoint answering from memory.
+Install lives at `~/honcho/honcho`.
