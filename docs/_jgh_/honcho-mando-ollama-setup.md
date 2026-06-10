@@ -232,38 +232,98 @@ From **Bossk**, confirm LAN reach: open `http://<MANDO-IP>:8000/docs` in a brows
 
 ---
 
-## Part 5 — Hook into VSCode / Claude Code (on Bossk)
+## Part 5 — Hook into Claude Code via the MCP worker
 
-Honcho ships an MCP server (`mcp/`, a Cloudflare Worker). Cleanest setup: run it
-on Mando alongside Honcho; Bossk connects over the LAN.
+Honcho ships an MCP server (`mcp/`, a Cloudflare Worker run with `wrangler dev`).
+Run it on Mando alongside Honcho; both local Claude Code (on Mando) and Bossk
+connect to it. The worker runs **natively** (not in Docker), so it reaches Honcho
+at `localhost:8000` — not `host.docker.internal`. (The `mcp/README.md` example
+uses port `28000`; ignore that — our API is on `8000`.)
 
-**On Mando:**
+**On Mando — start the worker:**
 
 ```bash
-cd honcho/mcp
+brew install bun                                          # worker enforces bun over npm
+cd ~/honcho/honcho/mcp
 bun install
 echo 'HONCHO_API_URL=http://localhost:8000' > .dev.vars   # worker talks to local Honcho
-bun run dev --ip 0.0.0.0 --port 8787                       # expose MCP to the LAN
+bun run dev --ip 0.0.0.0 --port 8787                       # localhost + LAN (192.168.0.225:8787)
 ```
 
-**On Bossk**, register with Claude Code:
+`wrangler dev` runs in **local mode** — no Cloudflare login needed. Look for
+`Ready on http://0.0.0.0:8787`.
+
+**Register with Claude Code on Mando** (user scope → available in every project):
+
+```bash
+claude mcp add honcho -s user -- npx -y mcp-remote http://localhost:8787 \
+  --header "Authorization:Bearer local" --header "X-Honcho-User-Name:john"
+claude mcp list            # honcho: ... ✔ Connected
+```
+
+**From Bossk** (Windows), point at Mando's LAN IP instead:
 
 ```powershell
-claude mcp add honcho -- npx -y mcp-remote http://<MANDO-IP>:8787 --header "Authorization:Bearer local" --header "X-Honcho-User-Name:john"
+claude mcp add honcho -- npx -y mcp-remote http://192.168.0.225:8787 --header "Authorization:Bearer local" --header "X-Honcho-User-Name:john"
 ```
 
-- `Authorization: Bearer local` — the worker requires *some* bearer token, but
-  with `AUTH_USE_AUTH=false` Honcho ignores the value. (Becomes a real scoped JWT
-  when auth is turned on.)
-- `X-Honcho-User-Name:john` — the peer identity VSCode sessions read/write as.
+- `Authorization: Bearer local` — the worker requires *some* bearer token, but with
+  `AUTH_USE_AUTH=false` Honcho ignores the value. (Becomes a real scoped JWT when
+  auth is on.) mcp-remote first probes `/.well-known/oauth-authorization-server`
+  and gets a `401` — that's expected; it then falls back to the bearer header.
+- `X-Honcho-User-Name:john` — the peer identity this client reads/writes as. Give
+  Bossk a different name if it should be a distinct peer.
 - Optional: `--header "X-Honcho-Workspace-ID:default"` to pin a workspace.
 
-Restart Claude Code in VSCode → Honcho tools (`chat`, `search`,
-`add_messages_to_session`, `get_representation`, …) appear alongside the
-existing `kb_proto_1` tools.
+**Restart Claude Code** so it loads the server → Honcho tools (`mcp__honcho__chat`,
+`search`, `add_messages_to_session`, `get_representation`, `query_conclusions`, …)
+appear. Verify end-to-end headlessly:
 
-> `bun run dev` is a dev server — fine to start with. For always-on, run under a
-> process manager (`pm2`/`launchd`) or `bun run deploy` to Cloudflare.
+```bash
+claude -p "Call the honcho MCP tool list_workspaces and report what it returns." \
+  --allowedTools "mcp__honcho__list_workspaces"
+# → {"workspaces":[...],"total":N,...}  proves Claude → mcp-remote → worker → Honcho
+```
+
+### Always-on (launchd)
+
+`bun run dev` is a dev server — it dies on reboot. For always-on, install a
+LaunchAgent at `~/Library/LaunchAgents/dev.honcho.mcp.plist`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key><string>dev.honcho.mcp</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/homebrew/bin/bun</string>
+        <string>run</string><string>dev</string>
+        <string>--ip</string><string>0.0.0.0</string>
+        <string>--port</string><string>8787</string>
+    </array>
+    <key>WorkingDirectory</key><string>/Users/johnhendricks/honcho/honcho/mcp</string>
+    <key>EnvironmentVariables</key>
+    <dict><key>PATH</key><string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string></dict>
+    <key>RunAtLoad</key><true/>
+    <key>KeepAlive</key><true/>
+    <key>StandardOutPath</key><string>/Users/johnhendricks/Library/Logs/honcho-mcp.log</string>
+    <key>StandardErrorPath</key><string>/Users/johnhendricks/Library/Logs/honcho-mcp.log</string>
+</dict>
+</plist>
+```
+
+```bash
+# stop any manual `bun run dev` first so the port is free, then:
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/dev.honcho.mcp.plist
+launchctl print gui/$(id -u)/dev.honcho.mcp | grep -E "state|pid"   # should show running
+# to stop/remove:
+launchctl bootout gui/$(id -u)/dev.honcho.mcp
+```
+
+(Alternative: `bun run deploy` to a real Cloudflare Worker and point clients at the
+deployed URL instead of `localhost:8787`.)
 
 ---
 
