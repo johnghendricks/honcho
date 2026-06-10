@@ -193,3 +193,6 @@ metrics.jsonl
 AGENTS.md
 lancedb_data/
 grafana-data/
+
+# Obsidian vault config (local app/UI state, not docs)
+.obsidian/
