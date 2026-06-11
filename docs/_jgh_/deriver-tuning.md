@@ -127,8 +127,10 @@ model = "gemma4:12b"          # was gemma4:26b
 frequency_penalty = 0.3       # keep — anti-repetition (deriver-repetition doc)
 ```
 
-Restart the **deriver worker** to reload (deriver config reloads on the deriver
-process restart — it is *not* the API process).
+Apply with `docker compose up -d deriver` — this **recreates** the container so
+the new `.env` is read (it's the **deriver** process, not the API). `docker
+compose restart` reuses the old container env and silently keeps the old model.
+See the ⚠️ box in §4.
 
 > ⚠️ **Don't use a `-mlx` / reasoning build for the deriver.** They break
 > structured-output JSON — see the pitfall in `honcho-mando-ollama-setup.md`.
@@ -147,7 +149,7 @@ OLLAMA_KEEP_ALIVE=-1     # Ollama-side, on Mando
 If you split models (deriver `12b`, dialectic `26b`), both stay resident
 (≈12 + 18 GB + bge) — fine on 64 GB.
 
-## 4. Restart the worker & clear stale claims
+## 4. Recreate the worker (apply config) & clear stale claims
 
 Run 3's stall was a worker hung mid-call with stale `ActiveQueueSession` claims
 (3 tasks pinned in-progress, backlog never re-claimed). After applying #1–#3:
@@ -156,12 +158,24 @@ Run 3's stall was a worker hung mid-call with stale `ActiveQueueSession` claims
 # On Mando:
 docker compose ps                          # is `deriver` up?
 docker compose logs deriver --tail 100     # errors, or hung mid-gemma call?
-docker compose restart deriver             # clears stale claims; reloads config
+docker compose up -d deriver               # recreate: applies .env + clears stale claims
 docker compose logs deriver --tail 30 -f   # watch it claim + process
 ```
 
+> ⚠️ **`restart` vs `up -d` — the trap that wastes a whole run.**
+> `docker compose restart deriver` reuses the existing container and does **NOT**
+> re-read `.env`, so every config change in #2–#5 (model swap, `frequency_penalty`,
+> batch tokens) is silently ignored — the worker keeps its old settings while you
+> think the new ones are live. Use **`docker compose up -d deriver`** to recreate
+> the container with the new env (it also clears stale claims). Only use `restart`
+> to bounce the worker with *no* config change. **Always verify it landed:**
+> `docker exec honcho-deriver-1 printenv | grep DERIVER_MODEL_CONFIG`.
+> (This silently ate a benchmark round on 2026-06-11: `frequency_penalty` looked
+> applied but never reached the container — see `deriver-repetition-and-sampling.md`.)
+
 `DERIVER.STALE_SESSION_TIMEOUT_MINUTES = 5` means an abandoned claim is
-reclaimable after 5 min, but a restart is immediate.
+reclaimable after 5 min, but a recreate is immediate. (`up -d` is a no-op when
+nothing changed — to force a bounce with no config change, use `restart`.)
 
 ## 5. Bulk-import lever — pack more messages per call
 
@@ -199,8 +213,9 @@ curl -s http://192.168.0.225:11434/api/ps         # ctx == 32768 ?
 #    DERIVER__FLUSH_ENABLED=false
 #    DERIVER__REPRESENTATION_BATCH_MAX_TOKENS=8192
 
-# 3. restart the worker (reloads config, clears stale claims)
-docker compose restart deriver
+# 3. recreate the worker to APPLY the .env changes (+ clears stale claims)
+#    NOT `docker compose restart` — that reuses the old container env (see §4)
+docker compose up -d deriver
 
 # 4. re-benchmark the real per-call number (needs a healthy worker)
 python ~/.claude/honcho-import/bench_deriver.py <session_stem> <N>
@@ -236,18 +251,22 @@ Stacked, the goal is to pull the observed ~27 s/task floor down enough that the
   `ctx=32768` (was 262144), 16.4 GB, pinned resident. Deriver health restored;
   queue drains fully. Per-task ~17 s, full kb-proto-1 projected ~30 h (down from
   ~48 h). See `honcho-import-benchmarks.md` Run 4.
-- **⛔ NEW BLOCKER — repetition loops.** Speed is fixed but ~15–20% of conclusions
-  degenerate into repetition garbage on dense source. **Next step:** apply Option A
-  (`repeat_penalty 1.15`) — fold it into the deriver Modelfile variant alongside
-  `num_ctx` (see §1's advanced box and `deriver-repetition-and-sampling.md`),
-  restart the deriver, re-run `bench_deriver.py`, confirm `list_conclusions` is
-  clean, then run the kb-proto-1 import. **Do not import until this is done.**
+- **⛔ BLOCKER — repetition loops; fix now live, awaiting re-test.** Speed is fixed,
+  but Run 4 showed ~15–20% of conclusions degenerating into repetition garbage on
+  dense source — **measured with no anti-repetition penalty applied** (the penalty
+  was never actually deployed; see the `restart` vs `up -d` trap in §4). The fix,
+  `frequency_penalty=0.3` (Option B), is **now genuinely applied and verified in
+  the deriver container** as of 2026-06-11. **Next step:** re-run `bench_deriver.py`
+  (Run 5) and confirm `list_conclusions` is clean. If `0.3` still leaks, bump to
+  `0.5`, then fall back to Option A (`repeat_penalty 1.15` Modelfile variant) — see
+  `deriver-repetition-and-sampling.md`. **Do not import until a penalty-live
+  benchmark comes back clean.**
 
 ## Open / next
 
-- **(done)** Real per-call number — got it in Run 4 (~17 s steady). Re-measure
-  after `repeat_penalty` lands; killing loops should drop it further (degenerate
-  calls run to the max-output-token cap).
+- **(done)** Real per-call number — got it in Run 4 (~17 s steady). Re-measure in
+  Run 5 now that `frequency_penalty=0.3` is live; killing loops should drop it
+  further (degenerate calls run to the max-output-token cap).
 - **`WORKERS > 1`?** Serial `WORKERS=1` is the other multiplier. More workers =
   more concurrent `gemma` calls competing for the single Ollama instance on Mando
   — likely contention-bound, not a clear win. Test before assuming it helps.
