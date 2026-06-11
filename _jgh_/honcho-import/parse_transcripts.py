@@ -15,42 +15,96 @@ import re
 import sys
 from pathlib import Path
 
-# User strings that are harness noise, not real prompts.
+# ---------------------------------------------------------------------------
+# Harness / injection noise.
+#
+# Claude Code transcripts splice three kinds of content into "user" turns that
+# John did NOT author. Keeping them was the cause of the john-cc over-attribution
+# (audit: ~half of conclusions not grounded in John; skill-injection ~60% of it):
+#   1. Slash-command SKILL EXPANSIONS — a "user" turn whose body is the skill's
+#      own definition (begins "Base directory for this skill:"). Dropped here;
+#      John's real intent is recovered from the paired <command-name>/
+#      <command-args> turn via parse_command().
+#   2. <system-reminder> / <task-notification> blocks — harness + background-job
+#      injections. Stripped (spans removed, any surrounding prose kept).
+#   3. local-command caveats/stdout, bash wrappers, tool results — dropped.
+
 NOISE_PREFIXES = (
-    "<command-name>",
     "<local-command-stdout>",
+    "<local-command-caveat>",
     "Caveat:",
     "[Request interrupted",
     "<bash-",
 )
-NOISE_RE = re.compile(r"</?(command-name|command-message|command-args|local-command)")
+
+# A "user" turn whose body is an injected skill definition, not John's words.
+SKILL_BODY_PREFIX = "Base directory for this skill:"
+
+# Recover a slash-command invocation as a compact "/cmd args" line.
+_CMD_NAME_RE = re.compile(r"<command-name>\s*(.*?)\s*</command-name>", re.S | re.I)
+_CMD_ARGS_RE = re.compile(r"<command-args>\s*(.*?)\s*</command-args>", re.S | re.I)
+
+# Injected spans removed in place (genuine prose around them is preserved).
+_INJECTED_SPAN_RE = re.compile(
+    r"<(system-reminder|task-notification)>.*?</\1>", re.S | re.I
+)
 
 
 def clean_text(s: str) -> str:
     return s.strip()
 
 
+def parse_command(s: str) -> str | None:
+    """Render a slash-command turn as a compact "/cmd args" line.
+
+    The args carry John's actual intent (path, instruction). A command with no
+    args (bare /clear, /compact, ...) is session-management noise -> drop.
+    Returns None if `s` is not a command invocation.
+    """
+    name = _CMD_NAME_RE.search(s)
+    if not name:
+        return None
+    cmd = name.group(1).strip()
+    args_m = _CMD_ARGS_RE.search(s)
+    args = args_m.group(1).strip() if args_m else ""
+    return f"{cmd} {args}".strip() if args else None
+
+
 def is_noise(s: str) -> bool:
     st = s.strip()
     if not st:
         return True
-    if st.startswith(NOISE_PREFIXES):
-        return True
-    # Pure command/system-reminder wrappers with no prose.
-    if NOISE_RE.search(st) and len(st) < 400:
-        return True
-    return False
+    return st.startswith(NOISE_PREFIXES)
 
 
 def extract_user(content) -> str | None:
     if isinstance(content, str):
-        return None if is_noise(content) else clean_text(content)
-    # list form -> almost always tool_result; not a real user turn
-    texts = [b["text"] for b in content if isinstance(b, dict) and b.get("type") == "text"]
-    if not texts:
+        s = content
+    else:
+        # list form -> tool_result or injected blocks; keep only text parts
+        texts = [
+            b["text"]
+            for b in content
+            if isinstance(b, dict) and b.get("type") == "text"
+        ]
+        if not texts:
+            return None
+        s = "\n".join(texts)
+
+    st = s.strip()
+    if not st:
         return None
-    joined = "\n".join(texts)
-    return None if is_noise(joined) else clean_text(joined)
+    # 1) Injected skill-definition body posing as a user turn -> drop entirely.
+    if st.startswith(SKILL_BODY_PREFIX):
+        return None
+    # 2) Slash-command invocation -> recover John's intent as "/cmd args".
+    if "<command-name>" in st:
+        return parse_command(st)
+    # 3) Strip injected <system-reminder>/<task-notification> spans, keep prose.
+    st = _INJECTED_SPAN_RE.sub("", st).strip()
+    if not st or is_noise(st):
+        return None
+    return clean_text(st)
 
 
 def extract_assistant(content) -> str | None:
