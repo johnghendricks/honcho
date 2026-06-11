@@ -54,9 +54,9 @@ uv tool install --force --editable --from ./honcho-cli --with click honcho-cli
 
 > ⚠️ **`--with click` is required.** The editable build of typer 0.26.7 does not
 > pull in `click`, so a plain install fails at runtime with
-> `ModuleNotFoundError: No module named 'click'`. This is a genuine packaging gap
-> in `honcho-cli/pyproject.toml` (it should declare `click` directly); `--with click`
-> injects it into the tool environment as a workaround.
+> `ModuleNotFoundError: No module named 'click'`. `--with click` injects it into
+> the tool environment and the CLI runs fine. (We don't patch Honcho's source in
+> this project — this is purely the install incantation that works.)
 
 Then write the config (auth off → no `init` prompt needed):
 
