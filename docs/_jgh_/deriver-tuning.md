@@ -230,11 +230,24 @@ Stacked, the goal is to pull the observed ~27 s/task floor down enough that the
 `bench_deriver.py` for the real, post-fix per-call number and append it to
 `honcho-import-benchmarks.md`.
 
+## Status (2026-06-11)
+
+- **#1 `num_ctx` cap — ✅ APPLIED & CONFIRMED.** `/api/ps` shows `gemma4:26b` at
+  `ctx=32768` (was 262144), 16.4 GB, pinned resident. Deriver health restored;
+  queue drains fully. Per-task ~17 s, full kb-proto-1 projected ~30 h (down from
+  ~48 h). See `honcho-import-benchmarks.md` Run 4.
+- **⛔ NEW BLOCKER — repetition loops.** Speed is fixed but ~15–20% of conclusions
+  degenerate into repetition garbage on dense source. **Next step:** apply Option A
+  (`repeat_penalty 1.15`) — fold it into the deriver Modelfile variant alongside
+  `num_ctx` (see §1's advanced box and `deriver-repetition-and-sampling.md`),
+  restart the deriver, re-run `bench_deriver.py`, confirm `list_conclusions` is
+  clean, then run the kb-proto-1 import. **Do not import until this is done.**
+
 ## Open / next
 
-- **Get the real per-call number after the fix** — Run 3 never got a clean one
-  (worker wasn't draining). This unblocks the kb-proto-1 derivation-cost
-  projection (currently theoretical ~18–53 h).
+- **(done)** Real per-call number — got it in Run 4 (~17 s steady). Re-measure
+  after `repeat_penalty` lands; killing loops should drop it further (degenerate
+  calls run to the max-output-token cap).
 - **`WORKERS > 1`?** Serial `WORKERS=1` is the other multiplier. More workers =
   more concurrent `gemma` calls competing for the single Ollama instance on Mando
   — likely contention-bound, not a clear win. Test before assuming it helps.

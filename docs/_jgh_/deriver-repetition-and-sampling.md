@@ -109,13 +109,61 @@ Restart the deriver worker to reload config.
 | `0.3` | **Recommended start** — kills runaway loops, minimal extraction distortion |
 | `0.5` | Stronger — use if repetition persists at 0.3 |
 
-## Decision
+## Decision — superseded (see update below)
 
-Went with **Option B (`frequency_penalty = 0.3`)** — no Ollama Modelfile to
-maintain, fully version-controllable in Honcho config, deriver-scoped. Revisit
-toward Option A only if additive penalty proves insufficient against loops.
+Originally went with **Option B (`frequency_penalty = 0.3`)** — no Ollama
+Modelfile to maintain, fully version-controllable in Honcho config,
+deriver-scoped. The caveat was explicit: *revisit toward Option A only if
+additive penalty proves insufficient against loops.*
+
+## Update 2026-06-11 — Option B proved insufficient; move to Option A ⛔→✅
+
+**Loops persist with Option B.** A 12-message deriver benchmark on
+`gemma4:26b` (after the `num_ctx` 256K→32K cap, queue healthy) produced 84
+conclusions on peer `dbench`, of which **~15–20% degenerated into the classic
+repetition loop** — e.g. `//note: //note: //note: …` ×hundreds then
+`moderator/moderator/…`; `…mass of the scope of the mass of the scope…`;
+`(is)s (is)s (is)s…`; `part number ascending within that stem,` ×hundreds. The
+clean conclusions were accurate; the garbage clustered on **dense, structured
+source messages** (skill/build-plan documentation — exactly what kb-proto-1 is
+full of). See `honcho-import-benchmarks.md` Run 4.
+
+So either `frequency_penalty=0.3` never reached the deployed Mando config, or
+0.3 (additive) is simply too weak against hard degeneration loops. **First
+verify it's actually applied** (no config endpoint — check Mando's `.env` /
+`config.toml` directly), then move to the stronger multiplicative penalty.
+
+**This blocks the kb-proto-1 import** — at ~15–20%, a full 6,386-message run
+would write 1,000+ garbage conclusions into representations, silently
+(`processed=true`, no error).
+
+### → Next step (Option A, run on Mando)
+
+Fold the multiplicative `repeat_penalty` into the **same deriver-only Modelfile
+variant** that `deriver-tuning.md` uses for the `num_ctx` cap — one model carries
+both fixes:
+
+```dockerfile
+# Modelfile.deriver
+FROM gemma4:26b
+PARAMETER num_ctx 8192          # deriver batches are tiny — small KV cache
+PARAMETER repeat_penalty 1.15   # multiplicative; kills degeneration loops
+```
+```bash
+ollama create gemma4-26b-deriver -f Modelfile.deriver
+DERIVER_MODEL_CONFIG__MODEL=gemma4-26b-deriver   # deriver .env, then restart deriver
+```
+
+If `1.15` still leaks loops on the densest content, step to `1.2`. Then re-run
+`bench_deriver.py` and confirm `list_conclusions` is clean **and** check whether
+per-task time dropped (degenerate calls run to the max-output-token cap, so
+killing loops should also speed the deriver up). Append the result to
+`honcho-import-benchmarks.md`.
 
 ## Related
 
+- `deriver-tuning.md` — the `num_ctx` cap + smaller-model levers (the Modelfile
+  variant above is shared with that doc).
+- `honcho-import-benchmarks.md` — Run 4 has the benchmark + garbage-rate evidence.
 - `honcho-mando-ollama-setup.md` — the broader Mando/Ollama runbook (model
   choice, the `-mlx`/reasoning-model JSON-failure pitfall, embeddings).

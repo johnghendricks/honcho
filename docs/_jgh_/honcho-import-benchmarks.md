@@ -227,6 +227,60 @@ the deriver model; then re-run `bench_deriver.py` to get the real per-call numbe
 
 ---
 
+## Run 4 — Deriver UNBLOCKED (num_ctx capped), 2026-06-11
+
+The fix from `deriver-tuning.md` was applied on Mando and confirmed via
+`/api/ps`: `gemma4:26b` now loads at **`ctx=32768`** (was 262144 / 256K), 16.4 GB,
+`expires_at` year 2318 (`OLLAMA_KEEP_ALIVE=-1` in effect). The Run-3 stall is
+gone — the global queue was **69/69 drained** before the test, and the worker
+claimed the full 12-task bench batch immediately. Deriver health: **resolved.**
+
+Clean 12-message benchmark (source session `e021ba3d…`, peer `dbench`):
+
+| Metric | Value |
+| --- | ---: |
+| Work units | 12 in **242.8 s** |
+| First claim | t=37.5 s (deriver idle-poll backoff — not per-task) |
+| First completion | 57.7 s |
+| **Per-task, steady** | **~16.8 s/unit** |
+| Per-task, overall | ~20.2 s/unit |
+| **Projection, 6,386 msgs** | **~29.8 h steady / ~35.9 h overall** |
+
+**vs Run 3:** ~27 s/task floor → ~17 s/task. The `num_ctx` cap bought **~1.6×**
+per-task and pulled the full-import envelope from the theoretical ~48 h to
+**~30 h** serial. The 26B decode is now the floor.
+
+**Findings**
+
+1. **Trust the aggregate, not per-task granularity.** The `completed` counter is
+   **bursty** — it sat at 2 from t=57→142 s, then jumped 4→11 in one 4 s poll.
+   Seven 17 s tasks can't finish in 4 s, so completions commit in *groups*. Only
+   total-wall-time ÷ tasks is reliable; per-poll deltas are an artifact.
+2. **The 37.5 s first-claim latency won't recur under sustained load** — it's the
+   deriver's adaptive idle-poll backoff (queue was empty; sleep had grown toward
+   30 s). During a continuous import the loop stays at the base interval. The
+   steady-state projection already excludes it.
+3. **🔴 Conclusion QUALITY is the new blocker — repetition loops persist.** Of the
+   84 conclusions formed, **~15–20% degenerated** into the loop from
+   `deriver-repetition-and-sampling.md` (`//note: //note:…`, `(is)s (is)s…`,
+   `part number ascending within that stem,` ×hundreds). Clean ones were
+   accurate; garbage clustered on **dense, structured source** (build-plan skill
+   docs) — pervasive in kb-proto-1. `frequency_penalty=0.3` (Option B) is either
+   not deployed or too weak. **Move to Option A (`repeat_penalty 1.15`) before the
+   import.** This likely also speeds the deriver up — degenerate calls run to the
+   max-output-token cap, inflating the ~17 s number above.
+4. **Tooling bug fixed:** `bench_deriver.py` read camelCase
+   (`completedWorkUnits`) off the REST `/queue/status`, which returns snake_case
+   (`completed_work_units`) → false `total=0` "no work units" abort (the first
+   attempt died at 62 s despite 12 live units). Same Run-3 casing bug that was
+   fixed in the pollers but missed here; now patched.
+
+> **Import readiness:** speed ✅ (≈30 h, acceptable for a one-time serial job),
+> health ✅, **quality ⛔ until `repeat_penalty` lands.** Do not run the full
+> 6,386-message import until Run 5 confirms clean conclusions.
+
+---
+
 ## Open questions / next benchmarks
 
 1. **True DB space** — projections exclude HNSW index overhead. Ground-truth on
@@ -236,9 +290,11 @@ the deriver model; then re-run `bench_deriver.py` to get the real per-call numbe
      "select pg_size_pretty(pg_total_relation_size('documents')) as docs,
              pg_size_pretty(pg_total_relation_size('message_embeddings')) as msg_emb;"
    ```
-2. **Deriver health (BLOCKING)** — the worker isn't processing (Run 3). Fix on
-   Mando first (diagnostic above), *then* re-run `bench_deriver.py` for the real
-   per-call gemma4:26b time. Until then the ~18–53 h envelope is theoretical.
+2. **Deriver health** — ✅ RESOLVED in Run 4 (num_ctx cap; ~17 s/task, ~30 h
+   projected). **New blocker → conclusion quality:** ~15–20% repetition-loop
+   garbage. Apply Option A (`repeat_penalty 1.15`, see
+   `deriver-repetition-and-sampling.md`), then a **Run 5** to confirm clean
+   conclusions *and* re-measure per-task time (loops inflate it).
 3. **Faster embed path?** — at 0.237 s/msg the full import is ~25 min; a smaller
    embedder or larger embed batches could cut it, worth testing if we scale to all
    projects.
