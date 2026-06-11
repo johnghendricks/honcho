@@ -1,0 +1,259 @@
+# Honcho History-Import Benchmarks — Time & Space to Ingest Claude Code History
+
+> Personal log for John (jgh). Measured cost of importing Claude Code
+> transcripts + memory files into the self-hosted Mando/Ollama Honcho stack, used
+> to project what it takes to ingest the big **kb-proto-1** project. Companion to
+> `honcho-mando-ollama-setup.md`. Living doc — append each run.
+>
+> Tooling lives outside the repo at `~/.claude/honcho-import/`
+> (`parse_transcripts.py`, `load_to_honcho.py`, `bench_memory_import.py`,
+> `scan_project.py`). Target: `http://192.168.0.225:8000` (Mando), ws `default`,
+> import peers `john-cc` / `claude-cc` (`observe_me=false`, derivation deferred).
+
+## TL;DR
+
+- **Embedding is synchronous on POST for both paths** in this deployment
+  (pgvector + `EMBED_MESSAGES=true`): conclusions via `crud/document.py:800`,
+  messages via `crud/message.py:282` (`batch_embed`, which chunks >512-tok
+  content into multiple `MessageEmbedding` rows). So a load's wall-time *is* the
+  Ollama bge-large embedding cost — there is **no async background phase**. (The
+  Reconciler only re-embeds for *external* vector stores; in pgvector mode it just
+  cleans soft-deletes — `reconciler/sync_vectors.py:596`.)
+- **The memory/conclusion side is cheap** (~1 MB, seconds for kb-proto-1). **The
+  transcript side dominates: ~25 min and ~74 MB of vectors** for kb-proto-1
+  (measured-then-projected, Run 2).
+- **Messages cost ~4.5× a conclusion each** (0.237 s/msg vs 0.053 s/concl) — they
+  average ~1,200 tok and fan out into **~3 embed rows each**.
+- **Always batch** (≤100/request): batched conclusion throughput is ~22–24/s vs
+  ~10/s one-at-a-time. Memory files *and* messages routinely exceed bge's
+  **512-token cap** → chunking is mandatory.
+- **Derivation is barely processing on Mando** (Run 3): tasks sit pending, backlog
+  not claimed, only 2 tasks done ~27 s apart, 0 conclusions formed. Observed floor
+  **~27 s/task → ~48 h** for kb-proto-1 (1 gemma4:26b call/msg) — fix the deriver
+  (cap `num_ctx`, smaller model) before importing.
+
+## Method
+
+`bench_memory_import.py` walks the memory-only projects, parses each `.md`
+(strips frontmatter, chunks the body under the embedding cap), and POSTs the
+chunks as conclusions on `john-cc` (self-conclusions), timing each project with
+`time.perf_counter()`. Because embedding is inline, the timing is end-to-end real
+cost. `scan_project.py` does a parse-only (no-API) volume scan of any project.
+
+bge-large was already resident during the run (no `keep_alive` cold-load spike
+observed); a cold first call would add a one-time model-load stall — see
+`dialectic-latency-tuning.md`.
+
+---
+
+## Run 1 — Memory-only projects (set "b"), 2026-06-11
+
+9 projects, 35 memory files → **50 conclusions in 2.67 s** (0.053 s/conclusion,
+18.7/s aggregate).
+
+| Project | files | concl | load (s) | s/concl | concl/s | split files | types | est space |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: |
+| kb-prototype-2 | 10 | 18 | 0.83 | 0.046 | 21.6 | 8 | feedback, project, user | 72 KB vec + 18.8 KB |
+| VPIT-Core-2026 | 13 | 16 | 0.67 | 0.042 | 23.7 | 3 | feedback, project, reference, user | 64 KB vec + 15.7 KB |
+| Personal-Second-Brain | 3 | 5 | 0.32 | 0.063 | 15.9 | 2 | project, user | 20 KB vec + 4.2 KB |
+| Personal-Knowledgebase-Source | 3 | 4 | 0.20 | 0.051 | 19.7 | 1 | feedback, project | 16 KB vec + 3.5 KB |
+| Desktop-Obsidian-Vaults | 1 | 2 | 0.20 | 0.100 | 10.0 | 1 | feedback | 8 KB vec + 2.3 KB |
+| Claude-Code-Tooling | 2 | 2 | 0.14 | 0.071 | 14.1 | 0 | project | 8 KB vec + 1.4 KB |
+| vpit-scenario-editor | 1 | 1 | 0.11 | 0.106 | 9.5 | 0 | project | 4 KB vec + 0.6 KB |
+| John-Hendricks-Vault | 1 | 1 | 0.10 | 0.095 | 10.5 | 0 | feedback | 4 KB vec + 0.5 KB |
+| Desktop-Obsidian (john-vault) | 1 | 1 | 0.10 | 0.102 | 9.8 | 0 | feedback | 4 KB vec + 0.5 KB |
+| **Total** | **35** | **50** | **2.67** | **0.053** | **18.7** | **15** | — | **200 KB vec + 47.6 KB** |
+
+**Findings**
+
+1. **Batch amortization is real and large.** The four single-conclusion projects
+   land at ~10/s (per-request overhead dominates); the 16- and 18-chunk batches
+   hit 21.6–23.7/s. Throughput roughly doubles once a batch fills. Load big
+   projects in full 100-conclusion batches.
+2. **~43% of memory files needed splitting** (15/35). Curated `feedback_*` /
+   `project_*` files are frequently 1.5–2.5 KB (~450–720 tok) — over the 512-tok
+   embedding cap. Chunking is mandatory, not optional.
+3. **Storage per conclusion is dominated by the vector**: 1024-dim float32 =
+   4,096 B fixed, vs ~950 B avg content. So conclusion count, not text length,
+   drives vector space.
+4. **Per-conclusion embed cost is tiny** (~45–50 ms in-batch) — the memory side
+   of any project is a rounding error on time.
+
+---
+
+## kb-proto-1 volume scan (parse-only, no API), 2026-06-11
+
+| Metric | Value |
+| --- | ---: |
+| Transcript files on disk | 649 (14 empty after parse) |
+| Sessions with content | 635 |
+| Messages (merged turns) | **6,058** (user 3,033 / asst 3,025) |
+| Message content | **27.35 M chars (~8.04 M tok)** |
+| Avg msgs/session | 9.5 |
+| Avg chars/msg | **4,515 (~1,330 tok)** |
+| Biggest session | 96 msgs |
+| Parse wall-time | **2.2 s** (290 files/s) |
+| Memory files | 73 → **225 conclusions** (3.08 chunks/file) |
+| Memory body | 223 K chars |
+
+The memory files here are **denser** than the Run-1 average (3.08 chunks/file vs
+1.43), so extrapolating chunk counts from file counts alone undershoots — scan,
+don't guess.
+
+---
+
+## Run 2 — kb-proto-1 25-session slice (message path), 2026-06-11
+
+No real-world project sits between honcho (3.2 MB) and kb-proto-1 (554 MB) — the
+corpus is bimodal — so the only representative rehearsal is a slice of kb-proto-1
+itself. `bench_transcript_slice.py` takes a **stratified-by-size** sample (even
+strides across sessions sorted by message count) so the per-message rate reflects
+the real size mix, loads it under `full-<sessionId>` (peers `john-cc`/`claude-cc`,
+derivation deferred), and times every `/messages` POST.
+
+| Metric | Value |
+| --- | ---: |
+| Sample | 25 sessions / **320 messages** / 1.30 M chars |
+| Avg message | ~1,197 tok (project-wide ~1,330) |
+| POST wall-time | **76.0 s** over 26 batches |
+| Throughput | **4.21 msgs/s · 0.237 s/msg · 17.1 K chars/s** |
+| Embed fan-out | **~2.98 `MessageEmbedding` rows/msg** (avg msg > 512-tok cap) |
+
+**Findings**
+
+1. **A message costs ~4.5× a conclusion** (0.237 vs 0.053 s) — driven by size
+   (~1,200 tok) and the ~3× embed fan-out, all paid synchronously on the POST.
+2. **Fan-out confirmed by code + data**: `batch_embed` splits >512-tok content,
+   and the Reconciler keys multi-chunk vectors as `{message_id}_{chunk_position}`
+   (`sync_vectors.py:371`) — so one long message = **N vector rows**, ~2.98 here.
+3. **Throughput is embedding-bound and serial** — one Ollama/bge-large instance on
+   Mando. Parallelizing the *client* (multiple POSTers) won't help much; the
+   embedder is the bottleneck. (Could be sped up by a smaller/faster embedder or
+   batching more aggressively, not by client concurrency.)
+4. Two parser hardenings were forced by real data and now matter for the full
+   import: **split messages >24 K chars** (Honcho rejects >25 K — skill-doc
+   injections hit this) and the existing **<512-tok conclusion chunking**.
+
+> Note: the >24 K split raised kb-proto-1's parsed message count from 6,058
+> (pre-split scan) to **6,386**. Projections below use 6,386.
+
+## kb-proto-1 full ingest projection (derivation deferred) — updated
+
+Message path is now **measured** (Run 2), not guessed.
+
+| Phase | Quantity | Rate basis | Projected | Confidence |
+| --- | ---: | --- | ---: | --- |
+| Parse (local) | 649 files | measured 290 files/s | **~2 s** | High |
+| Memory → conclusions | 225 concl | Run-1 ~22/s | **~10 s** + ~1.1 MB | High |
+| **Message POST + embed** | **6,386 msgs** | **Run-2 0.237 s/msg** | **~25 min** | **High** |
+| Message vector storage | ~19 K rows | 4 KB/row | **~74 MB vectors** | High |
+| Message content storage | 27.4 M chars | raw | **~27 MB** | High |
+| Derivation (if later enabled) | 6,386 msgs | gemma4:26b deriver | **hours of LLM compute** | Deferred |
+
+**Bottom line:** importing all of kb-proto-1 *with derivation deferred* is a
+**~25-minute, ~100 MB** job (74 MB vectors + 27 MB content; HNSW index overhead
+on top, not yet measured). It's serial and embedding-bound, so it just runs on
+Mando for ~25 min — no need to babysit. The **real** cost remains the **deriver**
+(turning 6 K messages into representations), still intentionally out of scope
+until separately benchmarked.
+
+This slice also **partially completed the real import**: 25 kb-proto-1 sessions
+(320 msgs) are now live under `full-<sessionId>`. The remaining ~610 sessions can
+be loaded with `load_to_honcho.py` over a full parse.
+
+---
+
+## Run 3 — Derivation (BLOCKED: deriver barely processing), 2026-06-11
+
+Attempted to cost the Deriver by enqueuing a representative 12-message kb-proto-1
+session for an observing peer (`dbench`, `observe_me=true`) and timing the
+representation tasks. **Could not get a clean per-message number — the deriver is
+alive but pathologically slow and not draining its backlog.**
+
+Evidence (authoritative via `mcp__honcho__get_queue_status` + a corrected poller):
+
+| Signal | Observation |
+| --- | --- |
+| My 12 tasks | **pending the entire ~13 min**, never claimed |
+| Backlog | global **pending pinned at 14** throughout — not being claimed |
+| Throughput | in-progress went **3→2→1**: just **2 tasks completed, ~27 s apart**, then stalled at 1 |
+| Conclusions produced | **0** for the observed peer |
+
+Interpretation: a worker cleared 2 of its already-claimed tasks (~27 s each) then
+**stopped claiming new work** — the 14 pending (incl. my 12) just sit there. So
+it's not stone-dead, but it is **not processing the queue**. Probable cause: the
+gemma4:26b **256K loaded context** flagged in `dialectic-latency-tuning.md` makes
+each deriver call extremely slow and may be hanging the claim loop. **Operational
+consequence: new representations are effectively not being formed** — nothing
+imported (slice, `/clear` captures) becomes conclusions in this state.
+
+Best-case per-task floor from the only two completions observed: **~27 s/task**
+(and that's while *not* keeping the pipeline full).
+
+> Tooling bug found & fixed in passing: the REST `/queue/status` returns
+> `snake_case` fields (`pending_work_units`); the MCP tool returns `camelCase`.
+> The pollers were reading camelCase off REST → false "empty queue" 0-readings.
+
+### Structural cost model (what derivation *would* cost when healthy)
+
+From code, not measurement (so: order-of-magnitude only):
+
+- The minimal deriver makes **one gemma4:26b structured-output call per batch**.
+- Batch cap `REPRESENTATION_BATCH_MAX_TOKENS = 1024` (default); kb-proto-1 averages
+  ~1,200 tok/msg **> 1024**, so most batches = **1 message → ~6,400 LLM calls** for
+  the full project. (`WORKERS=1` default → serial.)
+- Per-call gemma4:26b time: the only two completions observed in Run 3 were
+  **~27 s/task** — consistent with the dialectic doc's "tens of seconds/call" on
+  this model.
+- Envelope at the observed floor: 6,400 calls × ~27 s ≈ **~48 hours** serial — and
+  that's optimistic, since the worker isn't even keeping itself fed. Capping
+  `num_ctx` (the 256K pathology) and/or a smaller deriver model could cut the
+  per-call time substantially. **Config-dominated.**
+
+So derivation plausibly dwarfs the ~25-min import by **~100×**. This is why
+deferral was the right call — and why it needs a healthy, tuned deriver (capped
+`num_ctx`, possibly a smaller deriver model) before ever running on 6 K messages.
+
+### Mando diagnostic (needs host access — can't reach from Bossk)
+
+```bash
+docker compose ps                      # is the `deriver` service up?
+docker compose logs deriver --tail 100 # errors, or hung mid gemma call?
+```
+The 3 stuck in-progress imply a worker crashed/hung mid-task (stale
+`ActiveQueueSession` claims). Restart the deriver; apply the
+`OLLAMA_CONTEXT_LENGTH` cap + `keep_alive` from `dialectic-latency-tuning.md` to
+the deriver model; then re-run `bench_deriver.py` to get the real per-call number.
+
+---
+
+## Open questions / next benchmarks
+
+1. **True DB space** — projections exclude HNSW index overhead. Ground-truth on
+   Mando:
+   ```bash
+   docker compose exec database psql -U postgres -d honcho -c \
+     "select pg_size_pretty(pg_total_relation_size('documents')) as docs,
+             pg_size_pretty(pg_total_relation_size('message_embeddings')) as msg_emb;"
+   ```
+2. **Deriver health (BLOCKING)** — the worker isn't processing (Run 3). Fix on
+   Mando first (diagnostic above), *then* re-run `bench_deriver.py` for the real
+   per-call gemma4:26b time. Until then the ~18–53 h envelope is theoretical.
+3. **Faster embed path?** — at 0.237 s/msg the full import is ~25 min; a smaller
+   embedder or larger embed batches could cut it, worth testing if we scale to all
+   projects.
+
+## Tooling reference (`~/.claude/honcho-import/`)
+
+| Script | Purpose |
+| --- | --- |
+| `parse_transcripts.py <proj_dir> <out.json>` | transcripts→messages + memory→chunked conclusions (splits >24 K-char msgs) |
+| `load_to_honcho.py <payload.json> [--dry-run\|--conclusions-only]` | POST a parsed payload to Honcho |
+| `bench_memory_import.py [--dry-run]` | timed memory-only import → `bench_results.json` |
+| `scan_project.py <proj_dir>` | parse-only volume scan (no API) |
+| `bench_transcript_slice.py <proj_dir> [N] [--reset] [--load]` | timed stratified N-session slice → `bench_slice_results.json` |
+| `bench_deriver.py [session_stem] [N]` | enqueue an observed batch to time derivation (needs healthy worker) |
+| `poll_deriver.py <internal_session_id> <N>` | track a session's representation tasks draining (frozen-aware) |
+
+Raw data: `bench_results.json` (Run 1), `bench_slice_results.json` (Run 2),
+`bench_deriver_results.json` (Run 3).
