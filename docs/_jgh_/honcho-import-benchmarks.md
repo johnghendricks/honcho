@@ -416,9 +416,17 @@ its run.
    `qwen2.5:32b` can be **evicted to reclaim VRAM**.
 
 > **Decision: standardize on `qwen2.5:14b` across all agents** (deriver, dialectic
-> ×5 tiers, summary, dream); embeddings stay `bge-large`. Caveat: only the `high`
-> tier was measured — if `max` (10 tool iterations) gets real use, re-check a 14b
-> there, but since 32b was *worse* here, don't pre-optimize for it.
+> ×5 tiers, summary, dream); embeddings stay `bge-large`. Since 32b was *worse*
+> here, bigger is not the answer for this workload.
+
+**`max`-tier follow-up (10 tool iterations).** Re-ran the same 6 probes on
+`qwen2.5:14b` at `max`: **steady mean 20.5 s/query** (vs 21.5 s at `high`),
+avg 1231 ch, still well-grounded, **no wandering or degeneration** with the deeper
+cap available. `MAX_TOOL_ITERATIONS` is a *cap*, not a quota — the 14b converges in
+a few tool calls and answers, so `max` costs ~the same as `high` here. (Caveat:
+these probes converge quickly and don't *force* deep loops; a genuinely hard
+multi-hop query could still stress a 14b further — but the "small model wanders at
+max" worry didn't show.)
 
 ---
 
@@ -457,5 +465,5 @@ its run.
 
 Raw data: `bench_results.json` (Run 1), `bench_slice_results.json` (Run 2),
 `bench_deriver_results.json` (latest deriver run — overwritten each run; Run 6 =
-qwen2.5:14b on peer `dbench-qwen`), `bench_dialectic_{gemma4-26b,qwen2.5-32b,qwen2.5-14b}.json`
-(the Dialectic A/B, one file per model).
+qwen2.5:14b on peer `dbench-qwen`), `bench_dialectic_{gemma4-26b,qwen2.5-32b,qwen2.5-14b,qwen2.5-14b-max}.json`
+(the Dialectic A/B, one file per model; `-max` = the max-tier follow-up).
