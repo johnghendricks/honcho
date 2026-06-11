@@ -146,8 +146,51 @@ between tasks:
 OLLAMA_KEEP_ALIVE=-1     # Ollama-side, on Mando
 ```
 
-If you split models (deriver `12b`, dialectic `26b`), both stay resident
-(≈12 + 18 GB + bge) — fine on 64 GB.
+If you split models (deriver `qwen2.5:14b`, dialectic `gemma4:26b`), both stay
+resident (≈15 + 18 GB + bge) — fine on 64 GB, **but only if Ollama is allowed to
+keep ≥2 models loaded** (see next section).
+
+## 3a. Ollama concurrency — leave `NUM_PARALLEL=1`, pin `MAX_LOADED_MODELS`
+
+Both are **Ollama-side** env vars (set via launchctl / LaunchAgent on Mando,
+same as `OLLAMA_CONTEXT_LENGTH` and `OLLAMA_KEEP_ALIVE`; they take effect on the
+next Ollama restart).
+
+**`OLLAMA_NUM_PARALLEL` — leave at `1` (the auto default). Do NOT raise it.**
+Ollama sizes each model's KV cache as **`-c = OLLAMA_CONTEXT_LENGTH ×
+OLLAMA_NUM_PARALLEL`**. So `num_ctx 32768 × parallel 1 = -c 32768` (confirmed in
+the `llama-server` launch flags via `ps`/`/api/ps`). Setting `NUM_PARALLEL=4`
+relaunches every model at `-c 131072` — a **4× bigger KV cache**, which directly
+undoes the §1 `num_ctx` cap, eats ~4× the VRAM, and slows prefill. And it buys
+**zero** throughput here, because this workload has no same-model concurrency:
+
+- Deriver is `WORKERS=1` → strictly serial, one request at a time.
+- Dialectic is synchronous per chat (single user; its tool loop is sequential).
+- Summary/dream run on `gemma4:26b` — a **different** model on a **different**
+  `llama-server` process, so they already overlap the deriver without parallel
+  slots. Cross-model concurrency comes from keeping both models *loaded*, not
+  from `NUM_PARALLEL`.
+
+`NUM_PARALLEL>1` only pays off with **multiple concurrent requests to the same
+model** — i.e. `DERIVER_WORKERS>1` — which is likely contention-bound on a single
+Ollama instance anyway (see Open/next), and would re-bloat the KV cache. Skip it.
+
+**`OLLAMA_MAX_LOADED_MODELS` — pin to `6` for headroom.** This is what keeps the
+deriver model *and* the dialectic model hot at the same time (the real
+multi-model win — no evict-and-reload between tasks). The Metal default is **3**,
+and the current setup already uses exactly 3 distinct models (`qwen2.5:14b`
+deriver + `gemma4:26b` dialectic/summary/dream + `bge-large` embeddings) — right
+at the limit. Pinning `6` gives room to add a 4th/5th model later without silent
+reload thrash:
+
+```bash
+OLLAMA_MAX_LOADED_MODELS=6   # Ollama-side, on Mando (LaunchAgent: com.user.ollama.maxmodels)
+OLLAMA_NUM_PARALLEL=1        # leave unset/1 — raising it multiplies the KV cache
+```
+
+Verify after an Ollama restart: `ollama ps` should show all resident models at
+`CONTEXT 32768` (gen models) and `Forever`, with the `llama-server` procs still
+on `-np 1`.
 
 ## 4. Recreate the worker (apply config) & clear stale claims
 
@@ -261,6 +304,18 @@ Stacked, the goal is to pull the observed ~27 s/task floor down enough that the
   `0.5`, then fall back to Option A (`repeat_penalty 1.15` Modelfile variant) — see
   `deriver-repetition-and-sampling.md`. **Do not import until a penalty-live
   benchmark comes back clean.**
+- **#2 deriver model swap — ✅ `gemma4:26b → qwen2.5:14b` (deriver only).** Pulled
+  and wired in 2026-06-11 (`gemma4:9b` doesn't exist in the registry — smallest
+  `gemma4` is `12b`). The bet is the **family switch**, not just size: qwen2.5 is a
+  different architecture that may not share gemma's degeneration-on-dense-content
+  pathology (going *smaller-same-family* would risk *more* looping). Structured-
+  output JSON confirmed working; resident at `ctx=32768` (15.3 GB); `gemma4:26b`
+  still hot for dialectic/summary/dream; `frequency_penalty=0.3` retained. **Run 5
+  measures whether the swap clears the loops + the per-task time on qwen.**
+- **Ollama concurrency pinned (§3a).** `OLLAMA_MAX_LOADED_MODELS=6` (was Metal
+  default 3; armed via LaunchAgent, active on next Ollama restart) so the deriver
+  and dialectic models stay hot together with headroom. `OLLAMA_NUM_PARALLEL` left
+  at `1` — raising it multiplies the KV cache and undoes #1.
 
 ## Open / next
 
@@ -268,5 +323,7 @@ Stacked, the goal is to pull the observed ~27 s/task floor down enough that the
   Run 5 now that `frequency_penalty=0.3` is live; killing loops should drop it
   further (degenerate calls run to the max-output-token cap).
 - **`WORKERS > 1`?** Serial `WORKERS=1` is the other multiplier. More workers =
-  more concurrent `gemma` calls competing for the single Ollama instance on Mando
-  — likely contention-bound, not a clear win. Test before assuming it helps.
+  more concurrent deriver-model (`qwen2.5:14b`) calls competing for the single
+  Ollama instance on Mando — likely contention-bound, not a clear win. And to get
+  real concurrency you'd also need `OLLAMA_NUM_PARALLEL>1`, which re-bloats the KV
+  cache (§3a). Test before assuming it helps.
