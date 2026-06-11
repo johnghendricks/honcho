@@ -27,10 +27,12 @@
 - **Always batch** (≤100/request): batched conclusion throughput is ~22–24/s vs
   ~10/s one-at-a-time. Memory files *and* messages routinely exceed bge's
   **512-token cap** → chunking is mandatory.
-- **Derivation is barely processing on Mando** (Run 3): tasks sit pending, backlog
-  not claimed, only 2 tasks done ~27 s apart, 0 conclusions formed. Observed floor
-  **~27 s/task → ~48 h** for kb-proto-1 (1 gemma4:26b call/msg) — fix the deriver
-  (cap `num_ctx`, smaller model) before importing.
+- **Derivation: blocked → fixed.** Run 3 found the deriver barely processing
+  (~27 s/task floor, ~48 h, 0 conclusions). Capping `num_ctx` unblocked it (Run 4,
+  ~17 s/task) but gemma4:26b produced ~15–25 % degenerate conclusions on dense
+  content (Runs 4–5). **Swapping the deriver model to qwen2.5:14b
+  (+`frequency_penalty=0.3`) cleared all garbage (0 %) and ran 2.6× faster
+  (~7.7 s/task → ~14–16 h)** — Run 6, the green light for the full import.
 
 ## Method
 
@@ -281,6 +283,145 @@ per-task and pulled the full-import envelope from the theoretical ~48 h to
 
 ---
 
+## Run 5 — Option B genuinely live (gemma4:26b + `frequency_penalty=0.3`), 2026-06-11
+
+Run 4 was a **no-penalty baseline** — `frequency_penalty` had never reached the
+deployed config (the `docker compose restart` ≠ `up -d` trap;
+see `deriver-repetition-and-sampling.md`). For Run 5 the penalty was recreated
+into the container via `docker compose up -d deriver` and **verified live**:
+`docker exec honcho-deriver-1 printenv` showed
+`DERIVER_MODEL_CONFIG__FREQUENCY_PENALTY=0.3`, container freshly created, model
+resident at `ctx=32768`. Fresh peer `dbench-fp2` to isolate from baseline data.
+
+| Metric | Value |
+| --- | ---: |
+| Work units | 12 in **251.0 s** |
+| First completion (cold) | 33.5 s |
+| **Per-task, steady** | **~19.8 s/unit** |
+| **Projection, 6,386 msgs** | **~35.1 h steady / ~37.1 h overall** |
+| Conclusions formed | 8 |
+| Degenerate / garbage | **~25 % (2/8)** |
+
+**Findings**
+
+1. **Speed unchanged** vs Run 4 (~20 → ~19.8 s/unit). The theory that killing
+   runaway-to-token-cap loops would also speed the deriver up did **not** show at
+   the aggregate.
+2. **✅ The classic single-token repetition loop is gone.** Zero
+   `much/ much/…` or `//note: //note:…` in the set — `frequency_penalty` does
+   what it targets.
+3. **❌ But two _new_ degradation modes appeared (~25 %):** (a) **chain-of-thought
+   bleed** — the stored conclusion literally contained the model reasoning to
+   itself (*"Wait, checking messages… let me re-read"*); (b) **grammar breakdown +
+   mid-sentence truncation** on the dense build-plan doc, run to the max-token cap
+   and cut off. Plus peer-name typos (`dbess-fp2`, `dberch-fp2`).
+4. **Verdict:** the penalty fixed the symptom it can fix, but the **root problem —
+   the 26B model degrading on dense, structured source** — persisted in a new
+   shape. `0.3` is not clean enough to import; bumping to `0.5` wouldn't help
+   (these failures aren't repetition). Points at **model capability**, not
+   sampling → swap the model (Run 6).
+
+---
+
+## Run 6 — Deriver model swapped to qwen2.5:14b (+ `frequency_penalty=0.3`), 2026-06-11 ✅ GREEN LIGHT
+
+Swapped the deriver model `gemma4:26b → qwen2.5:14b` on Mando (older but more
+proven for clean structured output), `frequency_penalty=0.3` retained. Verified
+resident over the LAN (`GET 192.168.0.225:11434/api/ps`): `qwen2.5:14b`,
+`ctx=32768`, 15.3 GB VRAM, `keep_alive=-1`. Fresh peer `dbench-qwen`, same
+12-message source session as every prior run (directly comparable).
+
+| Metric | Value |
+| --- | ---: |
+| Work units | 12 in **106.6 s** |
+| First completion (cold) | 22.1 s |
+| **Per-task, steady** | **~7.7 s/unit** |
+| **Projection, 6,386 msgs** | **~13.7 h steady / ~15.8 h overall** |
+| Conclusions formed | **24** |
+| Degenerate / garbage | **0 %** |
+
+**Scorecard — same 12 messages, both with `frequency_penalty=0.3`:**
+
+| | gemma4:26b (Run 5) | **qwen2.5:14b (Run 6)** |
+| --- | ---: | ---: |
+| Steady speed | 19.8 s/unit | **7.7 s/unit** |
+| Full-import projection | ~35 h | **~14–16 h** |
+| Conclusions (12 msgs) | 8 | **24** |
+| Degenerate / garbage | ~25 % | **0 %** |
+| VRAM | 17.7 GB | **15.3 GB** |
+
+**Findings**
+
+1. **2.6× faster and leaner.** 7.7 vs 19.8 s/unit, 15.3 vs 17.7 GB — the
+   full-import envelope drops from ~35 h to **~14–16 h** serial.
+2. **✅ Zero degeneration across 24 conclusions** — no repetition loops, no
+   CoT bleed, no truncation, no grammar breakdown, no peer-name typos. The exact
+   dense build-plan message that broke gemma (CoT bleed in Run 5, run-on
+   truncation in Run 4) produced **clean, specific facts** here (e.g. *"widening
+   the inspector's dual-site display… expanding `_CHUNK_METADATA_SURFACE_KEYS`…
+   chat.py, post_stream_loop.py, test_inspector_surface.py"*).
+3. **More facts _and_ cleaner** — 24 well-formed conclusions vs gemma's 8 (2 of
+   them garbage). Only nitpick: one low-value/vague extraction (*"has a tool or
+   resource related to skills"*), not garbage.
+4. **Root cause confirmed.** The failures were model capability on dense content,
+   not sampling — swapping the model fixed both the loops (already handled) and the
+   new degradation modes at once. `frequency_penalty=0.3` is retained as cheap
+   insurance.
+
+> **Import readiness: ✅ GREEN LIGHT.** Speed ✅ (~14–16 h, fine for a one-time
+> serial job), health ✅, **quality ✅ (0 % garbage on the content type that
+> blocked every prior run).** qwen2.5:14b + `frequency_penalty=0.3` clears the bar
+> for the full 6,386-message kb-proto-1 import.
+
+---
+
+## Dialectic model A/B — picking the model for the *non-deriver* agents, 2026-06-11
+
+Separate question from the deriver runs above: with the **deriver** settled on
+`qwen2.5:14b` (Run 6), what should the **other** agents — Dialectic (chat),
+Summarizer, Dreamer — run on? They were all on `gemma4:26b`. This benchmarks the
+**Dialectic** specifically (the user-facing, tool-using recall path) because it's
+the one that's latency-sensitive and exercises the tool loop.
+
+`bench_dialectic.py` fires 6 fixed recall probes at peer `dbench-qwen` (which has
+24 real conclusions from Run 6) at `high` reasoning (4 tool iterations), timing
+each `/chat` end-to-end and capturing the full response for quality comparison.
+Each model was swapped in on Mando (`up -d api`, verified via `printenv`) before
+its run.
+
+| Metric | gemma4:26b | qwen2.5:32b | **qwen2.5:14b** |
+| --- | ---: | ---: | ---: |
+| **Steady mean / query** | 26.7 s | 42.7 s | **21.5 s** |
+| Steady range | 21–31 s | 33–50 s | 12–30 s |
+| Cold-load (probe 1) | 34.1 s | 73.1 s | 28.9 s |
+| Avg response | 1113 ch | 919 ch | **1331 ch** |
+| Grounding quality | well-grounded | well-grounded | well-grounded |
+
+**Findings**
+
+1. **Bigger was worse.** `qwen2.5:32b` was **~60 % slower** than gemma (42.7 vs
+   26.7 s) for the same grounding and *shorter* answers — and slightly less
+   nuanced (asserted "Phase 7" flatly where gemma flagged the Phase 6 in-progress
+   /completed contradiction in the representation). No payoff for the extra params.
+2. **`qwen2.5:14b` won outright** — fastest (**21.5 s, ~20 % under gemma**) *and*
+   the most detailed (1331 ch), well-grounded, no degeneration. Probe 1 cleanly
+   reconciled the phase data (*"resumed Phase 7 following the completion of Phase
+   6"*).
+3. **The Dialectic was never broken on gemma.** Every quality failure we chased
+   was deriver-specific (structured extraction). Gemma answered chat well; this
+   A/B is an *optimization*, and the win is mostly **ops consolidation**, not a fix.
+4. **One model for the whole stack.** `qwen2.5:14b` is already the deriver model
+   and already resident, so using it everywhere means **a single resident model**
+   for deriver + dialectic + summary + dream — and `gemma4:26b` (17.7 GB) and
+   `qwen2.5:32b` can be **evicted to reclaim VRAM**.
+
+> **Decision: standardize on `qwen2.5:14b` across all agents** (deriver, dialectic
+> ×5 tiers, summary, dream); embeddings stay `bge-large`. Caveat: only the `high`
+> tier was measured — if `max` (10 tool iterations) gets real use, re-check a 14b
+> there, but since 32b was *worse* here, don't pre-optimize for it.
+
+---
+
 ## Open questions / next benchmarks
 
 1. **True DB space** — projections exclude HNSW index overhead. Ground-truth on
@@ -290,11 +431,13 @@ per-task and pulled the full-import envelope from the theoretical ~48 h to
      "select pg_size_pretty(pg_total_relation_size('documents')) as docs,
              pg_size_pretty(pg_total_relation_size('message_embeddings')) as msg_emb;"
    ```
-2. **Deriver health** — ✅ RESOLVED in Run 4 (num_ctx cap; ~17 s/task, ~30 h
-   projected). **New blocker → conclusion quality:** ~15–20% repetition-loop
-   garbage. Apply Option A (`repeat_penalty 1.15`, see
-   `deriver-repetition-and-sampling.md`), then a **Run 5** to confirm clean
-   conclusions *and* re-measure per-task time (loops inflate it).
+2. **Deriver health** — ✅ RESOLVED (Run 4, num_ctx cap). **Conclusion quality** —
+   ✅ RESOLVED (Run 6): `frequency_penalty=0.3` killed the repetition loops but
+   exposed CoT-bleed/truncation on dense content (Run 5, gemma); **swapping the
+   deriver model to qwen2.5:14b** cleared all degeneration (0 % garbage) *and* ran
+   2.6× faster (~14–16 h projected). Neither Option A (`repeat_penalty`) nor a
+   stronger `frequency_penalty` was needed — root cause was model capability, not
+   sampling. **Import is unblocked.**
 3. **Faster embed path?** — at 0.237 s/msg the full import is ~25 min; a smaller
    embedder or larger embed batches could cut it, worth testing if we scale to all
    projects.
@@ -309,7 +452,10 @@ per-task and pulled the full-import envelope from the theoretical ~48 h to
 | `scan_project.py <proj_dir>` | parse-only volume scan (no API) |
 | `bench_transcript_slice.py <proj_dir> [N] [--reset] [--load]` | timed stratified N-session slice → `bench_slice_results.json` |
 | `bench_deriver.py [session_stem] [N]` | enqueue an observed batch to time derivation (needs healthy worker) |
+| `bench_dialectic.py <model_tag> [level] [peer]` | time the /chat (Dialectic) path + capture responses → `bench_dialectic_<tag>.json` |
 | `poll_deriver.py <internal_session_id> <N>` | track a session's representation tasks draining (frozen-aware) |
 
 Raw data: `bench_results.json` (Run 1), `bench_slice_results.json` (Run 2),
-`bench_deriver_results.json` (Run 3).
+`bench_deriver_results.json` (latest deriver run — overwritten each run; Run 6 =
+qwen2.5:14b on peer `dbench-qwen`), `bench_dialectic_{gemma4-26b,qwen2.5-32b,qwen2.5-14b}.json`
+(the Dialectic A/B, one file per model).
