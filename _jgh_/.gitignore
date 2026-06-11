@@ -1,0 +1,8 @@
+# Large / regenerable import artifacts — produced by honcho-import/parse_transcripts.py.
+# Keep them out of git; regenerate with the parser. Small bench-result JSONs ARE tracked.
+honcho-import/full_kb.json
+honcho-import/honcho_payload.json
+
+# Python bytecode
+__pycache__/
+*.py[cod]

@@ -1,0 +1,21 @@
+{
+  "project": "D--Git-Be-Sentient-kb-proto-1",
+  "total_sessions": 635,
+  "total_msgs": 6386,
+  "sample_sessions": 25,
+  "sample_msgs": 320,
+  "sample_chars": 1302776,
+  "sample_est_embed_rows": 953,
+  "post_secs": 75.977,
+  "n_batches": 26,
+  "msgs_per_sec": 4.21,
+  "secs_per_msg": 0.2374,
+  "chars_per_sec": 17147,
+  "rows_per_msg": 2.98,
+  "PROJECTION": {
+    "full_post_secs": 1516.0,
+    "full_post_min": 25.3,
+    "full_embed_rows": 19018,
+    "full_vector_mb": 74.3
+  }
+}

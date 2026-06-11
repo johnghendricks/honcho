@@ -1,0 +1,50 @@
+{
+  "model": "gemma4-26b",
+  "level": "high",
+  "peer": "dbench-qwen",
+  "n_probes": 6,
+  "total_secs": 167.8,
+  "first_secs": 34.12,
+  "steady_mean_secs": 26.73,
+  "steady_min_secs": 21.04,
+  "steady_max_secs": 30.82,
+  "mean_chars": 1113,
+  "rows": [
+    {
+      "q": "What project and phase is this person currently working on?",
+      "secs": 34.12,
+      "chars": 501,
+      "content": "As of June 11, 2026, the person is working on project **F0.23**.\n\nThere is some contradictory information regarding the current phase:\n*   One observation states that they are **resuming Phase 6** of the `/build-plan` in the F0.23 build environment.\n*   However, other records (specifically a handoff document moved on the same date) suggest that **Phase 6 was completed on June 5, 2026**, and indicated that the next step is to **resume Phase 7** (which involves live acceptance testing using BOSSK)."
+    },
+    {
+      "q": "What testing and code-quality practices does this person follow? Be specific.",
+      "secs": 21.04,
+      "chars": 1504,
+      "content": "Based on the project history, `dbench-qwen` follows several specific testing and code-quality practices:\n\n### **Code Quality & Linting**\n*   **Pre-commit Hooks:** Uses pre-commit hooks to automate checks; these were successfully passed during recent work.\n*   **Linting/Formatting:** Applies `ruff clean` as part of the phase completion process to ensure code cleanliness.\n\n### **Testing Practices**\n*   **Regression Testing:** Performs regression testing to ensure new changes do not break existing functionality (e.g., confirming that all 18 new tests in Phase 6 were \"green\" without regressions).\n*   **Live Acceptance Testing:** Utilizes live acceptance testing on BOSSK, which involves rebuilding the CLI binary and following a specific runbook (including `kb up`, file ingestion, and metadata inspection) for operator-run validation.\n*   **Acceptance Criteria Validation:** Work is implemented and verified against specific acceptance criteria defined for each phase (e.g., ensuring certain keys are exposed in both human and JSON outputs).\n\n### **Environment & Workflow Management**\n*   **Testing Environment Maintenance:** Actively manages the testing environment, including using tools like Bash, Glob, Read, and Grep to navigate the codebase and fixing `venv` issues encountered during test runs.\n*   **Structured Phase Implementation:** Uses a phase-by-phase implementation approach where each phase is guided by detailed specifications and halts for explicit user instruction upon completion."
+    },
+    {
+      "q": "Describe this person's git workflow \u2014 branches, worktrees, commit habits.",
+      "secs": 30.82,
+      "chars": 1929,
+      "content": "Based on the available observations, dbench-qwen\u2019s git workflow is highly structured, utilizing advanced Git features to isolate different project phases and maintain a clean working environment.\n\n### **Branches and Worktrees**\n*   **Worktree-Based Isolation**: The core of the workflow involves using `git worktree` to manage different project phases within a specific folder structure. This allows for running specific build environments (such as **F0.23**) in isolation without affecting other ongoing work.\n*   **Separation of Concerns**: Use of worktrees enables dbench-qwen to leave unrelated work (e.g., **F0.22** in the main repository) untouched and in its original state while actively developing on a different branch or phase.\n*   **Branch Usage**: Specific branches are used for particular tasks or experimental runs, such as the `dryrun-0.2.5` branch, which was utilized for committing handoff documentation.\n\n### **Commit Habits**\n*   **Documentation-Centric Commits**: There is a clear pattern of making commits specifically for session management and documentation. For example, dbench-qwen has committed handoff files (containing phase transitions and instructions) that consist purely of document-related changes (e.g., 84 insertions with no code modifications).\n*   **Pre-commit Hooks**: The workflow incorporates **pre-commit hooks**, which are used to validate changes before they are finalized; these have been observed to pass successfully in recent operations.\n*   **Handoff Management**: Commits often coincide with \"handoffs\"\u2014structured documents saved in specific subfolders (like `handoffs/`)\u2014to facilitate session breaks and subsequent idea/task resumption.\n*   **Standardized Documentation Structure**: Handoff documents are organized into a dedicated directory structure, ensuring that project documentation accumulates at the main repository root following established organizational conventions."
+    },
+    {
+      "q": "What is the 'build-plan' skill, and how does it differ from their other skills?",
+      "secs": 26.85,
+      "chars": 1615,
+      "content": "The **`build-plan`** skill is used by dbench-qwen to implement individual phases of a detailed, structured plan. It operates by following phase-by-phase implementation instructions guided strictly by specific files mentioned in the acceptance criteria for each phase.\n\n### Key Characteristics of `build-plan`:\n*   **Requirement for Detail:** The skill is configured **not** to work directly from a \"skeleton\" pre-plan; it requires associated detail plans to be present. If they aren't immediately obvious, the skill performs a \"sibling discovery\" or an \"audit lookup\" relative to the plan's input path to find them.\n*   **Structured Workflow:** It is designed for structured planning and task delegation within a team environment, even suggesting skills for subsequent phases based on the project's established workflow.\n*   **Controlled Execution:** The process is not fully autonomous; it pauses at every phase boundary to await explicit user instruction before proceeding to the next phase.\n\n### How it differs from other skills:\nWhile `build-plan` focuses on the **execution and implementation of project phases**, other identified skills like the **`handoff`** skill serve a different purpose:\n*   **`build-plan` (Implementation):** Focuses on the active work, code modifications, and testing of specific project phases (e.g., implementing Phase 6 or preparing for Phase 7).\n*   **`handoff` (Documentation):** Focuses on managing session transitions by creating documents that summarize progress and prepare for resumption (e.g., saving a handoff document in the `\\handoffs\\` directory during a session break)."
+    },
+    {
+      "q": "What is coming up next in their work, and what does it involve?",
+      "secs": 25.66,
+      "chars": 641,
+      "content": "The next step in the F0.23 project is **Phase 7**, which follows the completion of Phase 6 (which involved widening the inspector's dual-site display).\n\n**Phase 7 involves:**\n*   **Live Acceptance Testing:** Conducting a live acceptance test using **BOSSK** with an updated CLI binary.\n*   **CLI Rebuilding:** Following a specific runbook that includes rebuilding the CLI binary, running `kb up`, ingesting files, and inspecting metadata.\n*   **Validation:** This is an operator-run step intended for live validation of the system.\n\nFollowing Phase 7, the project is slated to move into **Phase 8**, which will involve a \"sweep\" of the work."
+    },
+    {
+      "q": "Summarize who this person is and what they're building, in 3 sentences.",
+      "secs": 29.27,
+      "chars": 488,
+      "content": "dbench-qwen is a developer or agent managing structured software development phases within an F0.23 build environment using a worktree structure. They are building specialized features for the `kb-proto-1` project, such as expanded metadata visibility in an inspector and automated \"build-plan\" skills. Their process is characterized by rigorous, phase-by-phase implementation involving extensive testing, live acceptance on BOSSK, and detailed handoff documentation to ensure continuity."
+    }
+  ]
+}

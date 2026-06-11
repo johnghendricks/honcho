@@ -1,0 +1,203 @@
+{
+  "session": "deriv-bench-1781150283",
+  "n_msgs": 12,
+  "total_chars": 29213,
+  "model": "gemma4:26b (Mando)",
+  "source_session": "e021ba3d-2799-47a1-b918-93172436e405",
+  "enqueue_secs": 1.98,
+  "timeline": [
+    {
+      "t": 6.0,
+      "total": 12,
+      "completed": 0,
+      "in_progress": 0,
+      "pending": 12
+    },
+    {
+      "t": 10.1,
+      "total": 12,
+      "completed": 0,
+      "in_progress": 0,
+      "pending": 12
+    },
+    {
+      "t": 14.1,
+      "total": 12,
+      "completed": 0,
+      "in_progress": 12,
+      "pending": 0
+    },
+    {
+      "t": 18.1,
+      "total": 12,
+      "completed": 0,
+      "in_progress": 12,
+      "pending": 0
+    },
+    {
+      "t": 22.1,
+      "total": 12,
+      "completed": 2,
+      "in_progress": 10,
+      "pending": 0
+    },
+    {
+      "t": 26.1,
+      "total": 12,
+      "completed": 2,
+      "in_progress": 10,
+      "pending": 0
+    },
+    {
+      "t": 30.2,
+      "total": 12,
+      "completed": 2,
+      "in_progress": 10,
+      "pending": 0
+    },
+    {
+      "t": 34.2,
+      "total": 12,
+      "completed": 2,
+      "in_progress": 10,
+      "pending": 0
+    },
+    {
+      "t": 38.2,
+      "total": 12,
+      "completed": 2,
+      "in_progress": 10,
+      "pending": 0
+    },
+    {
+      "t": 42.3,
+      "total": 12,
+      "completed": 2,
+      "in_progress": 10,
+      "pending": 0
+    },
+    {
+      "t": 46.3,
+      "total": 12,
+      "completed": 2,
+      "in_progress": 10,
+      "pending": 0
+    },
+    {
+      "t": 50.3,
+      "total": 12,
+      "completed": 3,
+      "in_progress": 9,
+      "pending": 0
+    },
+    {
+      "t": 54.3,
+      "total": 12,
+      "completed": 3,
+      "in_progress": 9,
+      "pending": 0
+    },
+    {
+      "t": 58.4,
+      "total": 12,
+      "completed": 3,
+      "in_progress": 9,
+      "pending": 0
+    },
+    {
+      "t": 62.4,
+      "total": 12,
+      "completed": 3,
+      "in_progress": 9,
+      "pending": 0
+    },
+    {
+      "t": 66.4,
+      "total": 12,
+      "completed": 3,
+      "in_progress": 9,
+      "pending": 0
+    },
+    {
+      "t": 70.5,
+      "total": 12,
+      "completed": 3,
+      "in_progress": 9,
+      "pending": 0
+    },
+    {
+      "t": 74.5,
+      "total": 12,
+      "completed": 4,
+      "in_progress": 8,
+      "pending": 0
+    },
+    {
+      "t": 78.5,
+      "total": 12,
+      "completed": 4,
+      "in_progress": 8,
+      "pending": 0
+    },
+    {
+      "t": 82.5,
+      "total": 12,
+      "completed": 4,
+      "in_progress": 8,
+      "pending": 0
+    },
+    {
+      "t": 86.5,
+      "total": 12,
+      "completed": 4,
+      "in_progress": 8,
+      "pending": 0
+    },
+    {
+      "t": 90.6,
+      "total": 12,
+      "completed": 4,
+      "in_progress": 8,
+      "pending": 0
+    },
+    {
+      "t": 94.6,
+      "total": 12,
+      "completed": 4,
+      "in_progress": 8,
+      "pending": 0
+    },
+    {
+      "t": 98.6,
+      "total": 12,
+      "completed": 11,
+      "in_progress": 1,
+      "pending": 0
+    },
+    {
+      "t": 102.6,
+      "total": 12,
+      "completed": 11,
+      "in_progress": 1,
+      "pending": 0
+    },
+    {
+      "t": 106.6,
+      "total": 12,
+      "completed": 12,
+      "in_progress": 0,
+      "pending": 0
+    }
+  ],
+  "first_completion_secs": 22.1,
+  "work_units_total": 12,
+  "total_secs": 106.6,
+  "work_units_done": 12,
+  "secs_per_work_unit_overall": 8.9,
+  "secs_per_work_unit_steady": 7.7,
+  "PROJECTION_full_kb_proto_1": {
+    "msgs": 6386,
+    "hours_overall": 15.8,
+    "hours_steady": 13.7
+  }
+}

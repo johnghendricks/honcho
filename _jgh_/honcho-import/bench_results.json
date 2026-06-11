@@ -1,0 +1,539 @@
+{
+  "base": "http://192.168.0.225:8000",
+  "ws": "default",
+  "observer": "john-cc",
+  "chars_per_token": 3.4,
+  "totals": {
+    "n_projects": 9,
+    "n_files": 35,
+    "n_conclusions": 50,
+    "body_chars": 46519,
+    "load_secs": 2.671,
+    "est_vector_bytes": 204800,
+    "est_content_bytes": 47630,
+    "secs_per_conclusion": 0.0534,
+    "conclusions_per_sec": 18.72
+  },
+  "projects": [
+    {
+      "project": "C--Users-John-Hendricks-Desktop-Obsidian-Vaults",
+      "n_files": 1,
+      "n_conclusions": 2,
+      "body_chars": 2222,
+      "est_body_tokens": 654,
+      "chunk_chars_min": 907,
+      "chunk_chars_max": 1363,
+      "chunk_chars_avg": 1135,
+      "n_files_split": 1,
+      "load_secs": 0.2,
+      "secs_per_conclusion": 0.0999,
+      "conclusions_per_sec": 10.01,
+      "chars_per_sec": 11120,
+      "est_vector_bytes": 8192,
+      "est_content_bytes": 2296,
+      "types": [
+        "feedback"
+      ],
+      "files": [
+        {
+          "file": "frontmatter_convention.md",
+          "name": "Obsidian vault frontmatter convention",
+          "type": "feedback",
+          "raw_chars": 2539,
+          "body_chars": 2222,
+          "est_tokens": 654,
+          "n_chunks": 2
+        }
+      ]
+    },
+    {
+      "project": "C--Users-John-Hendricks-John-Hendricks-Vault",
+      "n_files": 1,
+      "n_conclusions": 1,
+      "body_chars": 505,
+      "est_body_tokens": 149,
+      "chunk_chars_min": 505,
+      "chunk_chars_max": 505,
+      "chunk_chars_avg": 505,
+      "n_files_split": 0,
+      "load_secs": 0.095,
+      "secs_per_conclusion": 0.0948,
+      "conclusions_per_sec": 10.54,
+      "chars_per_sec": 5325,
+      "est_vector_bytes": 4096,
+      "est_content_bytes": 507,
+      "types": [
+        "feedback"
+      ],
+      "files": [
+        {
+          "file": "feedback_permissions.md",
+          "name": "permission-preferences",
+          "type": "feedback",
+          "raw_chars": 665,
+          "body_chars": 505,
+          "est_tokens": 149,
+          "n_chunks": 1
+        }
+      ]
+    },
+    {
+      "project": "D--Git-Be-Sentient-kb-prototype-2-source-kb-prototype-2",
+      "n_files": 10,
+      "n_conclusions": 18,
+      "body_chars": 18258,
+      "est_body_tokens": 5370,
+      "chunk_chars_min": 383,
+      "chunk_chars_max": 1436,
+      "chunk_chars_avg": 1041,
+      "n_files_split": 8,
+      "load_secs": 0.834,
+      "secs_per_conclusion": 0.0463,
+      "conclusions_per_sec": 21.58,
+      "chars_per_sec": 21893,
+      "est_vector_bytes": 73728,
+      "est_content_bytes": 18831,
+      "types": [
+        "feedback",
+        "project",
+        "user"
+      ],
+      "files": [
+        {
+          "file": "feedback_check_locked_decisions_before_leaning.md",
+          "name": "Check \u00a7O3 / Part V locked decisions before proposing alternatives",
+          "type": "feedback",
+          "raw_chars": 1862,
+          "body_chars": 1567,
+          "est_tokens": 461,
+          "n_chunks": 2
+        },
+        {
+          "file": "feedback_decision_posture.md",
+          "name": "User defers to Claude on most schema decisions while learning",
+          "type": "feedback",
+          "raw_chars": 1638,
+          "body_chars": 1370,
+          "est_tokens": 403,
+          "n_chunks": 1
+        },
+        {
+          "file": "feedback_ratification_gate.md",
+          "name": "Never ratify a design D on your own lean without explicit user approval",
+          "type": "feedback",
+          "raw_chars": 2770,
+          "body_chars": 2349,
+          "est_tokens": 691,
+          "n_chunks": 2
+        },
+        {
+          "file": "feedback_spec_doc_size_policy.md",
+          "name": "Spec doc size policy \u2014 ideal 2000-2500 words, split at >4000 words",
+          "type": "feedback",
+          "raw_chars": 2196,
+          "body_chars": 1860,
+          "est_tokens": 547,
+          "n_chunks": 2
+        },
+        {
+          "file": "feedback_stay_in_spec_mode.md",
+          "name": "Stay in spec mode until explicitly told to build",
+          "type": "feedback",
+          "raw_chars": 2375,
+          "body_chars": 2099,
+          "est_tokens": 617,
+          "n_chunks": 2
+        },
+        {
+          "file": "feedback_update_spec_incrementally.md",
+          "name": "Update spec doc after every ratified decision, not at session end",
+          "type": "feedback",
+          "raw_chars": 2780,
+          "body_chars": 2452,
+          "est_tokens": 721,
+          "n_chunks": 2
+        },
+        {
+          "file": "project_dialog_pattern.md",
+          "name": "Dialog + handoff + audit document pattern",
+          "type": "project",
+          "raw_chars": 2189,
+          "body_chars": 1974,
+          "est_tokens": 581,
+          "n_chunks": 2
+        },
+        {
+          "file": "project_kb_overview.md",
+          "name": "KB factory-pattern schema design",
+          "type": "project",
+          "raw_chars": 2010,
+          "body_chars": 1777,
+          "est_tokens": 523,
+          "n_chunks": 2
+        },
+        {
+          "file": "project_spec_document.md",
+          "name": "Authoritative KB spec document",
+          "type": "project",
+          "raw_chars": 2302,
+          "body_chars": 2017,
+          "est_tokens": 593,
+          "n_chunks": 2
+        },
+        {
+          "file": "user_role.md",
+          "name": "User profile \u2014 thoughtful schema design collaborator",
+          "type": "user",
+          "raw_chars": 989,
+          "body_chars": 793,
+          "est_tokens": 233,
+          "n_chunks": 1
+        }
+      ]
+    },
+    {
+      "project": "D--Git-Claude-Code-Tooling",
+      "n_files": 2,
+      "n_conclusions": 2,
+      "body_chars": 1407,
+      "est_body_tokens": 414,
+      "chunk_chars_min": 492,
+      "chunk_chars_max": 915,
+      "chunk_chars_avg": 704,
+      "n_files_split": 0,
+      "load_secs": 0.142,
+      "secs_per_conclusion": 0.0708,
+      "conclusions_per_sec": 14.13,
+      "chars_per_sec": 9941,
+      "est_vector_bytes": 8192,
+      "est_content_bytes": 1415,
+      "types": [
+        "project"
+      ],
+      "files": [
+        {
+          "file": "project_purpose.md",
+          "name": "Project Purpose",
+          "type": "project",
+          "raw_chars": 707,
+          "body_chars": 492,
+          "est_tokens": 145,
+          "n_chunks": 1
+        },
+        {
+          "file": "project_status.md",
+          "name": "project_status",
+          "type": "project",
+          "raw_chars": 1070,
+          "body_chars": 915,
+          "est_tokens": 269,
+          "n_chunks": 1
+        }
+      ]
+    },
+    {
+      "project": "D--Git-Obsidian-Professional",
+      "n_files": 1,
+      "n_conclusions": 1,
+      "body_chars": 669,
+      "est_body_tokens": 197,
+      "chunk_chars_min": 669,
+      "chunk_chars_max": 669,
+      "chunk_chars_avg": 669,
+      "n_files_split": 0,
+      "load_secs": 0.102,
+      "secs_per_conclusion": 0.1017,
+      "conclusions_per_sec": 9.83,
+      "chars_per_sec": 6579,
+      "est_vector_bytes": 4096,
+      "est_content_bytes": 675,
+      "types": [
+        "project"
+      ],
+      "files": [
+        {
+          "file": "project_obsidian_vault.md",
+          "name": "Professional Obsidian vault",
+          "type": "project",
+          "raw_chars": 835,
+          "body_chars": 669,
+          "est_tokens": 197,
+          "n_chunks": 1
+        }
+      ]
+    },
+    {
+      "project": "D--Git-Personal-Knowledgebase-Source",
+      "n_files": 3,
+      "n_conclusions": 4,
+      "body_chars": 3392,
+      "est_body_tokens": 998,
+      "chunk_chars_min": 579,
+      "chunk_chars_max": 1075,
+      "chunk_chars_avg": 860,
+      "n_files_split": 1,
+      "load_secs": 0.203,
+      "secs_per_conclusion": 0.0508,
+      "conclusions_per_sec": 19.67,
+      "chars_per_sec": 16682,
+      "est_vector_bytes": 16384,
+      "est_content_bytes": 3452,
+      "types": [
+        "feedback",
+        "project"
+      ],
+      "files": [
+        {
+          "file": "feedback_discussion_mode.md",
+          "name": "Discussion-first collaboration style",
+          "type": "feedback",
+          "raw_chars": 1081,
+          "body_chars": 846,
+          "est_tokens": 249,
+          "n_chunks": 1
+        },
+        {
+          "file": "feedback_no_overengineering.md",
+          "name": "Don't invent complexity the user hasn't asked for",
+          "type": "feedback",
+          "raw_chars": 1349,
+          "body_chars": 1075,
+          "est_tokens": 316,
+          "n_chunks": 1
+        },
+        {
+          "file": "project_factory_pattern.md",
+          "name": "KB project is a distributable factory pattern",
+          "type": "project",
+          "raw_chars": 1801,
+          "body_chars": 1471,
+          "est_tokens": 433,
+          "n_chunks": 2
+        }
+      ]
+    },
+    {
+      "project": "D--Git-Personal-Second-Brain",
+      "n_files": 3,
+      "n_conclusions": 5,
+      "body_chars": 4100,
+      "est_body_tokens": 1206,
+      "chunk_chars_min": 350,
+      "chunk_chars_max": 1452,
+      "chunk_chars_avg": 836,
+      "n_files_split": 2,
+      "load_secs": 0.315,
+      "secs_per_conclusion": 0.063,
+      "conclusions_per_sec": 15.87,
+      "chars_per_sec": 13010,
+      "est_vector_bytes": 20480,
+      "est_content_bytes": 4212,
+      "types": [
+        "project",
+        "user"
+      ],
+      "files": [
+        {
+          "file": "project_architecture.md",
+          "name": "System Architecture",
+          "type": "project",
+          "raw_chars": 2031,
+          "body_chars": 1761,
+          "est_tokens": 518,
+          "n_chunks": 2
+        },
+        {
+          "file": "project_overview.md",
+          "name": "Project Overview",
+          "type": "project",
+          "raw_chars": 2016,
+          "body_chars": 1766,
+          "est_tokens": 519,
+          "n_chunks": 2
+        },
+        {
+          "file": "user_profile.md",
+          "name": "User Profile",
+          "type": "user",
+          "raw_chars": 786,
+          "body_chars": 573,
+          "est_tokens": 169,
+          "n_chunks": 1
+        }
+      ]
+    },
+    {
+      "project": "D--Git-Unveil-VPIT-Core-2026",
+      "n_files": 13,
+      "n_conclusions": 16,
+      "body_chars": 15377,
+      "est_body_tokens": 4523,
+      "chunk_chars_min": 250,
+      "chunk_chars_max": 1457,
+      "chunk_chars_avg": 972,
+      "n_files_split": 3,
+      "load_secs": 0.674,
+      "secs_per_conclusion": 0.0421,
+      "conclusions_per_sec": 23.73,
+      "chars_per_sec": 22811,
+      "est_vector_bytes": 65536,
+      "est_content_bytes": 15651,
+      "types": [
+        "feedback",
+        "project",
+        "reference",
+        "user"
+      ],
+      "files": [
+        {
+          "file": "feedback_fix_at_source.md",
+          "name": "Fix shared state bugs at the data source",
+          "type": "feedback",
+          "raw_chars": 1116,
+          "body_chars": 934,
+          "est_tokens": 275,
+          "n_chunks": 1
+        },
+        {
+          "file": "feedback_implementation_review_cycles.md",
+          "name": "Implementation review cycles required",
+          "type": "feedback",
+          "raw_chars": 798,
+          "body_chars": 581,
+          "est_tokens": 171,
+          "n_chunks": 1
+        },
+        {
+          "file": "feedback_plan_folder_structure.md",
+          "name": "Plan folder structure conventions",
+          "type": "feedback",
+          "raw_chars": 1110,
+          "body_chars": 889,
+          "est_tokens": 261,
+          "n_chunks": 1
+        },
+        {
+          "file": "feedback_planning_completeness.md",
+          "name": "Planning completeness checklist",
+          "type": "feedback",
+          "raw_chars": 1935,
+          "body_chars": 1673,
+          "est_tokens": 492,
+          "n_chunks": 2
+        },
+        {
+          "file": "feedback_playmode_testing_advice.md",
+          "name": "Play mode testing advice on refactors",
+          "type": "feedback",
+          "raw_chars": 897,
+          "body_chars": 690,
+          "est_tokens": 203,
+          "n_chunks": 1
+        },
+        {
+          "file": "feedback_refactoring_approach.md",
+          "name": "Refactoring approach for sensitive hot-path code",
+          "type": "feedback",
+          "raw_chars": 2693,
+          "body_chars": 2435,
+          "est_tokens": 716,
+          "n_chunks": 2
+        },
+        {
+          "file": "feedback_todo_backlog_convention.md",
+          "name": "To-Dos and Backlog convention",
+          "type": "feedback",
+          "raw_chars": 913,
+          "body_chars": 679,
+          "est_tokens": 200,
+          "n_chunks": 1
+        },
+        {
+          "file": "project_discussion_skill.md",
+          "name": "Discussion skill design decisions",
+          "type": "project",
+          "raw_chars": 1629,
+          "body_chars": 1418,
+          "est_tokens": 417,
+          "n_chunks": 1
+        },
+        {
+          "file": "project_next_steps.md",
+          "name": "Next steps after 2026-03-23 session",
+          "type": "project",
+          "raw_chars": 1562,
+          "body_chars": 1392,
+          "est_tokens": 409,
+          "n_chunks": 1
+        },
+        {
+          "file": "project_phase2_web_app.md",
+          "name": "Phase 2 \u2014 Web app for SME scenario authoring",
+          "type": "project",
+          "raw_chars": 2107,
+          "body_chars": 1837,
+          "est_tokens": 540,
+          "n_chunks": 2
+        },
+        {
+          "file": "project_planning_tools.md",
+          "name": "Planning tools backlog",
+          "type": "project",
+          "raw_chars": 1456,
+          "body_chars": 1286,
+          "est_tokens": 378,
+          "n_chunks": 1
+        },
+        {
+          "file": "project_scenario_editor_plan.md",
+          "name": "Scenario Editor Phase 1 plan location and key context",
+          "type": "reference",
+          "raw_chars": 1510,
+          "body_chars": 1313,
+          "est_tokens": 386,
+          "n_chunks": 1
+        },
+        {
+          "file": "user_web_experience.md",
+          "name": "User web development experience level",
+          "type": "user",
+          "raw_chars": 423,
+          "body_chars": 250,
+          "est_tokens": 74,
+          "n_chunks": 1
+        }
+      ]
+    },
+    {
+      "project": "D--Git-Unveil-vpit-scenario-editor",
+      "n_files": 1,
+      "n_conclusions": 1,
+      "body_chars": 589,
+      "est_body_tokens": 173,
+      "chunk_chars_min": 589,
+      "chunk_chars_max": 589,
+      "chunk_chars_avg": 589,
+      "n_files_split": 0,
+      "load_secs": 0.106,
+      "secs_per_conclusion": 0.1056,
+      "conclusions_per_sec": 9.47,
+      "chars_per_sec": 5575,
+      "est_vector_bytes": 4096,
+      "est_content_bytes": 591,
+      "types": [
+        "project"
+      ],
+      "files": [
+        {
+          "file": "project_setup.md",
+          "name": "Project setup",
+          "type": "project",
+          "raw_chars": 768,
+          "body_chars": 589,
+          "est_tokens": 173,
+          "n_chunks": 1
+        }
+      ]
+    }
+  ]
+}

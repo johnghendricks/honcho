@@ -119,7 +119,7 @@ A convenience wrapper so you can type `mando docker ps` instead of
 - `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` (PowerShell 7 / pwsh)
 
 ```powershell
-# Bossk -> Mando SSH helper (see honcho repo docs/_jgh_/ssh-mando-from-bossk.md).
+# Bossk -> Mando SSH helper (see honcho repo _jgh_/docs/ssh-mando-from-bossk.md).
 #   mando                                   # interactive shell on Mando
 #   mando docker ps                         # run a command on Mando
 #   mando "docker ps --format '{{.Names}}'" # quote complex commands as one arg

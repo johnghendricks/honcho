@@ -152,6 +152,6 @@ uv tool install --force --editable --from ./honcho-cli --with click honcho-cli
 
 ## Related
 
-- `docs/_jgh_/ssh-mando-from-bossk.md` — SSH into Mando (driving the server side).
-- `docs/_jgh_/honcho-mando-ollama-setup.md` — the Mando Honcho + Ollama deployment.
+- `_jgh_/docs/ssh-mando-from-bossk.md` — SSH into Mando (driving the server side).
+- `_jgh_/docs/honcho-mando-ollama-setup.md` — the Mando Honcho + Ollama deployment.
 - Mando facts: `192.168.0.225`, Honcho API `:8000`, MCP `:8787`, Ollama `:11434`.
