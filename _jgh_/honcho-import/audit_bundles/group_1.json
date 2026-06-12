@@ -1,0 +1,90 @@
+{
+  "bundle_06_a": {
+    "items": [
+      {"id": "eIomMzfJBCvSPm8aI7xo6", "grade": "GROUNDED", "why": "User explicitly said resume build-plan at Phase 5 from that file."},
+      {"id": "QEwhioJLvUov4XgiZ5xBs", "grade": "OVER", "why": "Drawn from injected build-plan skill boilerplate, not user's own words."},
+      {"id": "4Z9RhJrSuWvqzgcBSebXY", "grade": "OVER", "why": "No user turn shows user integrating a run_tests tool; fabricated detail."},
+      {"id": "yTvctkULZZDPmlYUufNAQ", "grade": "OVER", "why": "Fragment from injected SDK boilerplate, not a user statement."},
+      {"id": "f5M3YQHrX286hTIA_sl_p", "grade": "OVER", "why": "Fragment from injected SDK boilerplate, not a user statement."},
+      {"id": "c9l6CYWSaq895ZCr1wHeM", "grade": "OVER", "why": "Drawn from injected build-plan skill boilerplate, not user's own words."},
+      {"id": "rYj4_oPFITYzrdXiAuUgf", "grade": "OVER", "why": "Drawn from injected build-plan skill boilerplate, not user's own words."},
+      {"id": "PFBD_vSZ-M0PM6039aXW5", "grade": "OVER", "why": "Path is from injected skill boilerplate header, not user's statement."},
+      {"id": "MJpGo5ZFmccOeHmfmNnqW", "grade": "OVER", "why": "Drawn from injected claude-api skill boilerplate, not user's own words."},
+      {"id": "PB3OWnfiPs5Y3v0KJLMXB", "grade": "OVER", "why": "Drawn from injected SDK documentation boilerplate, not user's own words."},
+      {"id": "v9FJP1q_OQ7EwuPIKcaiX", "grade": "OVER", "why": "Drawn from injected SDK documentation boilerplate, not user's own words."},
+      {"id": "voW66Q9RXev7qwChv60Ja", "grade": "OVER", "why": "Drawn from injected SDK/CLI documentation boilerplate, not user's own words."},
+      {"id": "-l0gZEICUaEPRm13spWhP", "grade": "OVER", "why": "Drawn from injected onboarding documentation boilerplate, not user's own words."},
+      {"id": "qRsZWurKXlSa1D1Be3rOE", "grade": "OVER", "why": "Drawn from injected managed-agents SDK boilerplate, not user's own words."},
+      {"id": "qxAjO6VejK762QRe-d2TG", "grade": "OVER", "why": "Drawn from injected anthropic library boilerplate, not user's own words."},
+      {"id": "FOMNJpt7zs2BGNxic6es5", "grade": "OVER", "why": "Drawn from injected batch API code sample boilerplate, not user action."},
+      {"id": "iNlZV-3fvE0H8lDS7o7-e", "grade": "OVER", "why": "Drawn from injected batch API boilerplate code sample, not user action."},
+      {"id": "bDBBNBlYyLcYypvFaWsuY", "grade": "OVER", "why": "Drawn from injected batch API boilerplate code sample, not user action."},
+      {"id": "A7Qa7ui-WYWvifvmFveTm", "grade": "OVER", "why": "Drawn from injected batch API end-to-end example boilerplate, not user action."},
+      {"id": "Vo5w_ja_cRYWgbg457wbA", "grade": "OVER", "why": "Drawn from injected managed-agents SDK boilerplate, not user's own words."},
+      {"id": "oyIDYS-_cm_wcgqaWIxyw", "grade": "OVER", "why": "Drawn from injected managed-agents SDK boilerplate, not user's own words."},
+      {"id": "3uV8LAO00gkaNLYWXSGED", "grade": "OVER", "why": "Drawn from injected SDK documentation boilerplate, not user's own words."},
+      {"id": "LQ7yHcJZuRUOQKRGYsmf2", "grade": "OVER", "why": "Drawn from injected SDK documentation boilerplate, not user's own words."},
+      {"id": "6Jvc0Ye5UL0Z4_vyrkuhx", "grade": "OVER", "why": "Drawn from injected live-sources SDK documentation, not user's own words."},
+      {"id": "RTg7wkl0jH_wfcG1t6nkG", "grade": "OVER", "why": "Drawn from injected managed-agents API reference boilerplate, not user's own words."},
+      {"id": "B4yXNJXS1bHSV1meMPMZb", "grade": "OVER", "why": "Drawn from injected vaults/OAuth SDK documentation boilerplate, not user action."},
+      {"id": "-3lZaXoDoLN_DEALRMfln", "grade": "OVER", "why": "Drawn from injected managed-agents SDK documentation boilerplate, not user's own words."},
+      {"id": "sloTycGvJoM9YU_A_dBnK", "grade": "OVER", "why": "Drawn from injected managed-agents SDK documentation boilerplate, not user's own words."},
+      {"id": "lggowvzbQTcLrT8K1dIfh", "grade": "OVER", "why": "Drawn from injected managed-agents SDK documentation boilerplate, not user's own words."},
+      {"id": "YFL6Hxyd85dk68yuCLU9t", "grade": "OVER", "why": "Drawn from injected onboarding documentation boilerplate, not user's own words."},
+      {"id": "NwKIbIm-ct9n0ZH3VYU2T", "grade": "OVER", "why": "Drawn from injected managed-agents multiagent boilerplate, not user's own words."},
+      {"id": "Yz-kaBjN75LNWoS-jV19D", "grade": "OVER", "why": "Drawn from injected Skills/Files API documentation boilerplate, not user's own words."},
+      {"id": "r88rLJHTSwPiAbScDsO8_", "grade": "OVER", "why": "Drawn from injected managed-agents pitfalls boilerplate, not user's own words."},
+      {"id": "fT3bvzmEN9IPf-4vEHt1X", "grade": "OVER", "why": "Fragment from injected SDK environment config boilerplate, not user statement."},
+      {"id": "PV1b1G0xY0Ul-FxXcQYEK", "grade": "OVER", "why": "Drawn from injected agents SDK documentation boilerplate, not user action."},
+      {"id": "vTUx7rJ2uI3v4jVcQqJtx", "grade": "OVER", "why": "Drawn from injected Skills section SDK boilerplate, not user's own words."},
+      {"id": "dMiPNgqReroUM6hcO32Qy", "grade": "OVER", "why": "Drawn from injected model-migration documentation boilerplate, not user's own words."},
+      {"id": "C8_pminfsuep84fA1c_lj", "grade": "OVER", "why": "Drawn from injected model-migration legacy table boilerplate, not user statement."},
+      {"id": "nARtdhETaDQcO6b3cqUyK", "grade": "OVER", "why": "Drawn from injected model-migration documentation boilerplate, not user statement."},
+      {"id": "T5BnEdSHXiW3m23VlpsJD", "grade": "OVER", "why": "Drawn from injected Opus 4.7 migration guide boilerplate, not user's own words."},
+      {"id": "tw14TiFpm05WsAItib8ds", "grade": "OVER", "why": "Drawn from injected Opus 4.7 migration checklist boilerplate, not user action."},
+      {"id": "CdS8COJsw_v1zbrIodFwL", "grade": "OVER", "why": "Inferred from injected migration documentation context, not user's own words."},
+      {"id": "-aYNzkH_a6yomwTU9Cb-E", "grade": "OVER", "why": "Drawn from injected model-migration documentation boilerplate, not user statement."},
+      {"id": "jk7hJcNYYtnJXjLJgwUkp", "grade": "OVER", "why": "Character generalization from injected SDK docs, not genuine user statement."},
+      {"id": "gMCvcN1LYDWvsdK1GDBUS", "grade": "OVER", "why": "Drawn from injected models table boilerplate, not user action."},
+      {"id": "zKgsvcMjFORSIE7VcHUcl", "grade": "OVER", "why": "Drawn from injected model descriptions boilerplate, not user's own words."},
+      {"id": "bcYqjHsV2jb5R9yydo15_", "grade": "OVER", "why": "Drawn from injected models table boilerplate, not user's own words."},
+      {"id": "QGWdRZ95WBZK69xpUyDwG", "grade": "OVER", "why": "Fragment from injected tool_choice boilerplate, not user statement."},
+      {"id": "l6P3rH1uTdPGpCTAM1WK7", "grade": "OVER", "why": "Fragment from injected tool_choice boilerplate, not user statement."},
+      {"id": "W01P9rRDZjNEw50YClByV", "grade": "OVER", "why": "Fragment from injected tool_choice boilerplate, not user statement."},
+      {"id": "rs5TgLL6_6U-AJqZxVX0-", "grade": "OVER", "why": "Fragment from injected tool_choice boilerplate, not user statement."},
+      {"id": "MJYawyFzOTDygokWaoyyr", "grade": "OVER", "why": "Fragment from injected managed-agents boilerplate, not user statement."},
+      {"id": "SqYdrxCaUxXPUg7dce_8V", "grade": "OVER", "why": "Fragment from injected managed-agents tool boilerplate, not user statement."},
+      {"id": "WkU5y7yajEg29LQJ5-rtj", "grade": "OVER", "why": "Drawn from injected server-side tools SDK documentation boilerplate, not user's own words."},
+      {"id": "hZwIP30Z9V727scpzVU28", "grade": "OVER", "why": "Drawn from injected tool definitions SDK documentation boilerplate, not user's own words."},
+      {"id": "2E8J17p0pTCIKxZhRwnKr", "grade": "OVER", "why": "Drawn from injected tool best-practices boilerplate, not user's own words."},
+      {"id": "f_jK2v3Kz9Mcf_nmRqqGW", "grade": "OVER", "why": "Fragment from injected tool_choice boilerplate, not user statement."},
+      {"id": "mFTY9UILjuWvfjQDLi8D0", "grade": "OVER", "why": "Fragment from injected tool_choice boilerplate, not user statement."},
+      {"id": "E89GLjQfDtSCecG6y9QDI", "grade": "OVER", "why": "Drawn from injected Memory tool security boilerplate, not user's own words."},
+      {"id": "Fprc64xh1JFHvFdOTsZYv", "grade": "OVER", "why": "Drawn from injected structured outputs SDK documentation boilerplate, not user's own words."}
+    ]
+  },
+  "bundle_03_a": {
+    "items": [
+      {"id": "xMifq6VD3BJuwVhmgAMhZ", "grade": "GROUNDED", "why": "User genuinely asked about kb commands through MCPServer three times."}
+    ]
+  },
+  "bundle_07_a": {
+    "items": [
+      {"id": "2XOtIowNcYa2Qan0cPFgO", "grade": "GROUNDED", "why": "User explicitly said resume build-plan for that file path."},
+      {"id": "ld0YyfECqEPriGqWl9PFD", "grade": "GROUNDED", "why": "User explicitly instructed to read HANDOFF.md first before M2.1 parts."},
+      {"id": "UF2ZDdxUl6ea9pPBWHc9U", "grade": "OVER", "why": "Base directory and skill explanation are injected boilerplate, not user's own words."},
+      {"id": "c-1htYkFPZgDBFSHIPMe_", "grade": "OVER", "why": "Drawn from injected build-plan skill boilerplate, not user's own words."},
+      {"id": "PPB7A5mYnozCiQC2VbjWF", "grade": "OVER", "why": "Skill firing conditions are injected boilerplate, not user's genuine statement."},
+      {"id": "rTTGdLgUPgYzgkfDur2vC", "grade": "OVER", "why": "Drawn from injected build-plan skill boilerplate, not user's own words."},
+      {"id": "Zm1849Qq366K3e8Gnj_9i", "grade": "OVER", "why": "Broad character generalization from injected boilerplate, not user's genuine words."},
+      {"id": "mB2zse5aQ2s6jOtmzSLWy", "grade": "GROUNDED", "why": "User genuinely referenced that file path in their own turn."},
+      {"id": "EB9YB-VMy9XXWV7FLyt7W", "grade": "PARTIAL", "why": "User said 'update handoff before I /clear'; conclusion reverses the order stated."}
+    ]
+  },
+  "bundle_19_c": {
+    "items": [
+      {"id": "j9RVF8dKrbRB5ipaTTD_z", "grade": "GROUNDED", "why": "User genuinely asked about kb commands through MCPServer multiple times."},
+      {"id": "w745ZrFNJ9Il9909bCeus", "grade": "OVER", "why": "API errors were server responses to the assistant, not user actions or experiences."}
+    ]
+  }
+}

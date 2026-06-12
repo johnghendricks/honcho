@@ -1,0 +1,34 @@
+{
+  "transcript": [
+    {
+      "speaker": "USER",
+      "text": "What are the kb commands available through the MCPServer>"
+    },
+    {
+      "speaker": "ASSISTANT",
+      "text": "API Error: 529 Overloaded. This is a server-side issue, usually temporary \u2014 try again in a moment. If it persists, check https://status.claude.com."
+    },
+    {
+      "speaker": "USER",
+      "text": "What are the kb commands available through the MCPServer>\nWhat are the kb commands available through the MCPServer?"
+    },
+    {
+      "speaker": "ASSISTANT",
+      "text": "API Error: 529 Overloaded. This is a server-side issue, usually temporary \u2014 try again in a moment. If it persists, check https://status.claude.com."
+    },
+    {
+      "speaker": "USER",
+      "text": "What are the kb commands available through an mcp server based on the codebase?"
+    },
+    {
+      "speaker": "ASSISTANT",
+      "text": "I'll look at the codebase to answer accurately rather than from memory. Let me search for the MCP server definition.\n[tools: Grep]\n[tools: Glob]\n[tools: Glob]\nThe MCP server is its own subproject under `mcp-server/`. Let me read the tool definitions directly.\n[tools: Read]\n[tools: Read]\n[tools: Read]\nLet me read the actual tool inventory in `_schemas.py` and the app advertisement.\n[tools: Read]\n[tools: Read]\nBased on the `mcp-server/` subproject (the `kb-mcp` executable, server name `kb_proto_1`), here's the full MCP surface. The authoritative inventory lives in `mcp-server/src/kb/mcp_server/tools/_schemas.py:199` and `app.py`.\n\n## 7 Tools\n\n| Tool | What it does | Orchestrator endpoint |\n|---|---|---|\n| **`kb_search`** | Hybrid retrieval \u2014 returns raw grounding (chunks + files + relevance scores + previews) for the agent to synthesize over, no second LLM. Supports the bi-temporal window (`valid_period_lower/upper`, `as_of_transaction_time`). | `POST /api/v1/search` |\n| **`kb_files_list`** | List source files, paginated; optional `as_of` transaction-time snapshot. | `GET /api/v1/knowledgebase/files` |\n| **`kb_files_show`** | Show one source file's metadata by UUID. | `GET /api/v1/knowledgebase/files/{id}` |\n| **`kb_history_show`** | Version history of a file by name, optionally as-of a past transaction time. | `GET .../history/{file_name}?as_of=` |\n| **`kb_reinstate`** | Re-ingest a prior version of a file by UUID to make it current again (period-close semantics; original retained). | shared reinstate-composition helper |\n| **`kb_ingest_text`** | Ingest a markdown or plain-text document (1 MB cap; `text/markdown` or `text/plain` only \u2014 other 21 MIMEs reserved for a future `kb_ingest_file`). | the widened `IngestRequest` |\n| **`kb_provenance_show`** | Show the KB's embedding provenance lock (provider, model, dim) recorded at first ingest. | `GET /api/v1/system/health` |\n\n## 3 Resource templates (`kb://` URIs)\n\n- `kb://files/{uuid}` \u2014 a source file by UUID\n- `kb://chunks/{uuid}` \u2014 a document chunk by UUID (the full chunk text; `kb_search` previews are truncated, so the search tool's own description tells agents to read the full chunk here before grounding)\n- `kb://history/{file_name}{?as_of}` \u2014 version history by name, optional `as_of` snapshot\n\n## 3 Prompts (slash-prompts)\n\n- `/kb-search <query>` \u2014 search and ground the answer\n- `/kb-ingest-this` \u2014 ingest the current document\n- `/kb-remember <note>` \u2014 **reserved/disabled**; advertised with `disabled: true` and returns an `unavailable` envelope when invoked\n\n**Note:** these are not `kb` *CLI* commands \u2014 they're the MCP tool/resource/prompt surface the `kb-mcp` server advertises to an agent host. (The CLI's own MCP management verbs \u2014 `kb mcp install/uninstall/start/stop/status` \u2014 live separately under `cli/src/kb/cli/verbs/mcp/`.) Per the `project_m2b_mcp_server_milestone` memory, this is the M2.B \"7 tools / 3 resources / 3 prompts\" surface; Phases 2+3 are slated post-M5."
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "xMifq6VD3BJuwVhmgAMhZ",
+      "text": "abl-john-a is inquiring about kb commands available through the MCPServer and an MCP server based on the codebase. This indicates that abl-john-a is interested in or needs to use such commands within a specific server environment."
+    }
+  ]
+}

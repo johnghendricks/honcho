@@ -11,6 +11,21 @@
 > **public API**. All tooling we add lives in `_jgh_/honcho-import/`. Whatever
 > `custom_instructions` can't steer, we accept — we don't patch Honcho.
 
+## Status (2026-06-12)
+
+- **Phase 1 — DONE.** Clean wipe + reinstall executed on Mando: `down -v`, fresh
+  `.env` (qwen2.5:14b everywhere, 1024-dim bge-large, `FREQUENCY_PENALTY=0.3`,
+  ctx 32768), all migrations + `configure_embeddings.py`, `default` workspace with
+  `reasoning.enabled=true` + the 703-char anti-over-attribution `custom_instructions`.
+  Queue empty, 0 `full-*` sessions. (old `.env` backed up to `.env.bak.preinstall-2026-06-12`.)
+- **Corpus — regenerated.** `full_kb.json` rebuilt with the patched parser:
+  **618 sessions, 0 skill-injection leakage** (was 640/491). Stale copy kept at
+  `full_kb.stale.bak.json`.
+- **Ingest tool — built (`ingest_batch.py`).** Single resumable/pausable/batched
+  tool serving both Phase 2 and Phase 3 (see those sections). Supersedes the old
+  `run_eval.py` + `ingest_batch.py` split and `load_to_honcho.py`/`import_groups.py`.
+- **Next:** Phase 2 / batch 0 (200-file indicative test) → grounding audit.
+
 ## Why we're resetting
 
 The kb-proto-1 transcript import contaminated the `john-cc` representation:
@@ -32,6 +47,49 @@ contaminated store, we start clean with all fixes in place.
 | Stack model (all agents) | **`qwen2.5:14b` everywhere** (deriver, dialectic ×5, summary, dream). Supersedes the stale `[[lan-topology]]` note that still says `gemma4:26b`. Basis: `honcho-import-benchmarks.md` Run 6 (0% garbage, 2.6× faster) + the Dialectic A/B. |
 | Phase-2 test set | **200 files, stratified by size** (even strides across sessions sorted by msg count) |
 | Phase-2 batching | **`FLUSH_ENABLED=true`** (per-message) to match the Run-6 quality baseline; bulk-batching deferred to Phase 3 |
+
+## Ablation result — assistant context is NOT the contamination driver (2026-06-12)
+
+Before committing to a structural import change, ran the 3-arm assistant-context
+ablation (`_jgh_/honcho-import/ablation_assistant_context.py`): 50 matched
+stratified sessions loaded into 3 arms in ws `ablation`, model +
+custom_instructions held constant, **only session composition varied**. Drained
+on Mando's current deriver; source-verified grounding audit on **8 matched
+sessions/arm (376 john explicit conclusions)** via blind Claude-sonnet judges
+(`build_audit_payload.py` → `audit_bundles/group_*.json` → `aggregate_audit.py`).
+
+| Arm | composition | n | GROUNDED | OVER+HALL |
+| --- | --- | --- | --- | --- |
+| A | john + claude verbatim (incl `[tools:]`) | 132 | 22.0% | 65.9% |
+| B | john solo (no claude peer) | 124 | 12.1% | 72.6% |
+| C | john + claude, `[tools:]` stripped | 120 | 21.7% | 65.0% |
+
+- **A ≈ C (over-rate z=0.15):** the `[tools:]` markers contribute nothing — stripping them is pointless.
+- **A vs B over-interpretation z=−1.15 (n.s.):** removing claude context does NOT reduce over-attribution (slightly worse).
+- **A vs B grounded rate z=2.09 (p≈0.04):** paired sessions are *significantly more grounded* than solo. Claude's turns anchor what john's terse commands ("yes, proceed", "commit and push") refer to; without them the deriver fills gaps with speculation.
+
+**Decision (refutes this runbook's earlier premise):** over-interpretation is NOT
+caused by assistant/tool context bleeding into john's self-rep. **Do NOT isolate
+john from claude** in the Phase-3 import (arm-B shape) — it would *hurt* grounding.
+Keep paired sessions (current import shape).
+
+**The real contamination lives in john's OWN user turns** (common to all arms →
+flat 65–73% floor):
+1. **Skill-injection in user turns — was 14.9% (502/3375) of `full_kb.json` user
+   turns** (raw skill bodies, `Base directory for this skill: …`). The committed
+   `parse_transcripts.py` fix strips these. ✅ **DONE 2026-06-12:** `full_kb.json`
+   regenerated with the patched parser → **0 leakage**, 640→618 sessions (22
+   all-noise sessions dropped). Single biggest, now-applied lever.
+2. **Over-generalization from terse commands / incidental data** (file paths,
+   pasted output). custom_instructions (held constant here) did NOT prevent it
+   (65%+ over) → per the decision rule the lever is **custom_instructions tuning
+   and/or a stronger deriver model**, not import-shape surgery.
+
+Caveats: derived on Mando's current pre-reinstall deriver (exact model unverified
+this session); strict rubric (skill-injection and any non-USER-turn support both
+graded OVER) inflates absolute rates — the **relative** arm comparison is the
+result. n≈125/arm. Artifacts: `ablation_setup.json`, `audit_payload.json`,
+`audit_bundles/`, `audit_final.json`.
 
 ## Mando state at reset time (captured 2026-06-11 via SSH)
 
@@ -57,7 +115,9 @@ from this doc, don't echo the live one.)
 
 ---
 
-## Phase 1 — Clean install, configured correctly up front
+## Phase 1 — Clean install, configured correctly up front  ✅ DONE 2026-06-12
+
+> Executed exactly as below. Recorded here as the install spec / rebuild recipe.
 
 ### 1a. The fresh `.env` (full)
 
@@ -157,7 +217,9 @@ from assistant replies, system notifications, task notifications, tool output, o
 injected skill/command definitions to the peer. Do not infer the peer's
 preferences, ownership, habits, or identity from incidental data such as file
 paths, directory listings, process lists, or pasted command output — only from
-what the peer explicitly says or does.
+what the peer explicitly says or does. When you do form a conclusion, stay close
+to what the message supports: prefer specific, source-traceable facts over broad
+generalizations about the peer's character, expertise, or intentions.
 ```
 
 > ⚠️ `docker compose up -d <svc>` (recreate), **never** `restart`, to apply `.env`
@@ -167,15 +229,21 @@ what the peer explicitly says or does.
 
 ## Phase 2 — Robust 200-file test ("water through the pipe")
 
-New tool **`_jgh_/honcho-import/run_eval.py`** orchestrating end-to-end, repeatable:
+Phase 2 is **batch 0 of the final ingest** — same tool, same shape (per John's
+"the test mirrors the final ingestion queue"). Tool:
+**`_jgh_/honcho-import/ingest_batch.py`** (see §"The ingest tool" below).
 
-1. Select 200 sessions, **stratified by size** (even strides across sessions sorted
-   by message count — reuse `bench_transcript_slice.py`'s sampling).
-2. Parse with the **patched** `parse_transcripts.py` (skill-injection stripped).
-3. Import with **reasoning ON** + `custom_instructions` set (peers `john-cc`
-   `observe_me=true` / `claude-cc` `observe_me=false`).
-4. Poll the queue to full drain (`poll_deriver.py` / `get_queue_status`).
-5. Evaluate and append a row to `honcho-import-benchmarks.md`.
+1. `python ingest_batch.py --source full_kb.json --dry-run` — preview the plan.
+   Batch 0 = 200 sessions, **size-stratified** across the corpus (the indicative
+   set); the patched parser already stripped skill-injection.
+2. `python ingest_batch.py --source full_kb.json --batches 1` — load batch 0.
+   Peers ensured `john-cc` `observe_me=true` / `claude-cc` `observe_me=false`;
+   workspace `reasoning.enabled` verified True. Per-file timings → SQLite ledger.
+3. Watch the deriver drain: `python ingest_batch.py --source full_kb.json --status`
+   (or `get_queue_status`). Add `--drain-between-batches` to the load to block
+   until drained.
+4. Evaluate: source-verified grounding audit (method below) and append a row to
+   `honcho-import-benchmarks.md`.
 
 **Metrics (the benchmark / pass-criteria):**
 
@@ -196,19 +264,65 @@ OVER-INTERPRETED / HALLUCINATED with attribution scrutiny. This validates the
 
 ## Phase 3 — John-controlled batched ingestion
 
-New tool **`_jgh_/honcho-import/ingest_batch.py`**:
+Same tool as Phase 2 — just keep running batches:
+`python ingest_batch.py --source full_kb.json` (all remaining), or `--batches N`
+for N at a time, optionally `--drain-between-batches` so Mando idles at each
+boundary.
 
-- Loads the next ~200 **not-yet-loaded** sessions (reasoning ON), against a **real
-  loaded-ledger** (fixes the old bug where `import_groups.py` read but never wrote
-  `loaded_sessions.json` → re-runs would duplicate). Use Honcho's actual loaded
-  `full-*` sessions as ground truth, not a stale local file.
-- Reports drain + a quick per-batch quality gate (degeneration + small grounding
-  spot-check); then **stops**.
-- **Control model:** John runs one batch when Mando is free; derivation drains in a
-  bounded window; next batch on John's go. Mando never tied up ~9 h straight.
+- **Control model:** John runs one (or N) batch(es) when Mando is free; derivation
+  drains in a bounded window; next batch on John's go. Mando never tied up ~9 h
+  straight. Pause anytime: drop a `PAUSE` file or Ctrl-C → finishes the current
+  file, flushes the ledger, exits clean. Re-run (even after a Bossk reboot) to
+  resume — the SQLite ledger drives the skip; partial/crashed files are
+  delete-then-reloaded so messages never duplicate.
+- **Ground truth = SQLite ledger** (`ingest_ledger.db`, `status='done'`),
+  reconciled against Honcho's live `full-*` sessions — fixes the old bug where
+  `import_groups.py` read but never wrote `loaded_sessions.json`.
 - Optional Phase-3 speed: flip to bulk batching (`FLUSH_ENABLED=false`,
   `REPRESENTATION_BATCH_MAX_TOKENS=8192`) once Phase-2 quality is confirmed; revert
   to `FLUSH_ENABLED=true` afterward for live `/clear`-hook responsiveness.
+
+---
+
+## The ingest tool — `_jgh_/honcho-import/ingest_batch.py`
+
+One resumable/pausable/batched tool for both phases. Supersedes `run_eval.py`,
+`load_to_honcho.py`, `import_groups.py`, and the `loaded_sessions.json` ledger.
+
+**Flags:**
+
+| Flag | Default | Meaning |
+| --- | --- | --- |
+| `--source` | `~/.claude/projects` | A single `.jsonl`, a folder of transcripts, or a pre-parsed `.json` corpus (e.g. `full_kb.json`). |
+| `--batch-size` | `200` | Files per batch. Drives **stable** global batch numbers (same source + size ⇒ same batches across runs). |
+| `--batches` | `0` (all) | Max batches to process this run. `--batches 1` = batch 0 only (Phase 2). |
+| `--drain-between-batches` | off | Block until the queue empties at each batch boundary. |
+| `--dry-run` | off | Print the plan; no writes. |
+| `--status` | off | Print the tally + timing stats; no writes. |
+| `--reset` | off | **DANGER:** delete all `full-*` sessions and drop the ledger. |
+
+**Behavior:**
+
+- **Unit** = one session = one top-level `.jsonl`. Folder globbing is
+  **non-recursive** — `subagents/` and `tool-results/` subdirs are excluded (they
+  are not the peer's words; ingesting them re-contaminates john-cc).
+- **Stratified order:** sessions sorted by size; **batch 0 is an even-stride
+  representative sample** of the whole source; remaining batches cover the rest in
+  size order.
+- **Idempotent:** a file is marked `done` only after all its message-POSTs
+  succeed; orphan/partial sessions are delete-then-reloaded on resume.
+- **observe_me:** `john-cc=true`, `claude-cc=false`.
+
+**SQLite ledger (`ingest_ledger.db`)** — the tally + troubleshooting record:
+
+| Table | Columns of note |
+| --- | --- |
+| `files` | per session: `status` (`done`/`error`), `n_msgs`, `n_chars`, `parse_secs`, `transfer_secs` (POST wall-time), `started_at`/`completed_at`, `error`. |
+| `batches` | per loaded batch: `transfer_secs` **vs** `drain_secs` (derivation wall-time) — tells a slow POST from a slow deriver. |
+| `runs` | per invocation: source, batch_size, files/msgs loaded, status. |
+
+`--status` reports done/pending/error totals, per-batch progress, transfer vs
+drain timings, and recent errors.
 
 ---
 
@@ -219,13 +333,14 @@ New tool **`_jgh_/honcho-import/ingest_batch.py`**:
 | Model/embedding/penalty/cadence config | `.env` (operator config) | No |
 | Reasoning on/off + `custom_instructions` | Public API (`PUT /v3/workspaces/…`) | No |
 | Wipe / reinstall | `docker compose` + bootstrap scripts | No |
-| Parse / import / eval / batch tooling | `_jgh_/honcho-import/*.py` (HTTP API only) | No |
+| Parse / import / eval / batch tooling | `_jgh_/honcho-import/*.py` (`ingest_batch.py`, HTTP API only) | No |
+| Ingestion ledger / tally | local `ingest_ledger.db` (SQLite, on Bossk) — not Honcho data | No |
 | Clear data / cancel pending work | API: delete conclusions / delete sessions (**not** DB row surgery) | No |
 
-## Open confirms before executing Phase 1
+## Resolved confirms (pre-Phase-1)
 
-- Keep batching at the Run-6 baseline (`FLUSH_ENABLED=true`) for the test? (current plan: yes)
-- `custom_instructions` wording good, or tighten?
+- Batching at the Run-6 baseline (`FLUSH_ENABLED=true`) for the test — **yes** (in `.env`).
+- `custom_instructions` wording — **kept as written** (703 chars, set on `default`).
 
 ## Related
 

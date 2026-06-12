@@ -1,0 +1,90 @@
+{
+  "transcript": [
+    {
+      "speaker": "USER",
+      "text": "let's discuss m5: d:\\Git\\Be-Sentient\\kb-proto-1\\documents\\planning\\Roadmap-Pre-Plan.md"
+    },
+    {
+      "speaker": "ASSISTANT",
+      "text": "I've read the M5 section (\u00a75) and the surrounding context. Let me grab the rest of the file to catch any M5 references in the later sections.\nI've read the whole roadmap with focus on \u00a75. Before we dive in, here's my honest read of where M5 actually stands \u2014 because the section has a provenance problem that changes the conversation.\n\n## The core issue: \u00a75 is stale by design, and the drift is now large\n\n\u00a75 says its sub-bodies \"carry forward **verbatim** from the superseded Post-M1 \u00a7M3 outline.\" That outline was written before basically the entire retrieval cohort that's since shipped. So M5 is scoped to measure a system that no longer exists. Concretely, since this roadmap was drafted (2026-05-28):\n\n- **CR (M3) shipped** \u2014 `:dryrun-0.2.2`, enabled-default as of 2026-06-01. The roadmap still describes it as the *next* milestone.\n- **The cross-encoder reranker (F0.16) shipped and is enabled-default** (`6b55464`, acceptance passed 2026-05-31). But \u00a73.3 lists it as an *explicit M3 non-goal* and \u00a711 says \"revisit at M5-retro after CR residuals are measured.\" It got built anyway, ahead of the plan.\n- **Deterministic temporal ordering (F0.17/F0.18) shipped** \u2014 a whole non-RRF retrieval path with cap-immune extremum + roster sort + subject scoping.\n- **Enumeration set-completion path (F0.13), high-cardinality intent detector (F0.14)** \u2014 also live.\n\nNone of these have golden-set coverage in the M5 plan as written. M5 was scoped for \"chunker, embedding model, RRF fusion, CR templater.\" The real surface it now has to guard is at least twice that.\n\n## Two consequences worth deciding on\n\n**1. M5's mission has shifted from \"justify a reranker\" to \"audit a stack that already grew past its design.\"** The original framing (\u00a72) was: ship CR first so eval doesn't encode a broken baseline. But many retrieval interventions then shipped *semi-empirically* \u2014 each hand-tuned on BOSSK's six-transcript corpus, no metric guarding the knob. That's accumulated tuning debt. M5 is now a retrofit-measurement job: does the CR+reranker stack actually earn its cost, or is something cheapenable/disableable? Different, arguably more valuable, mission than the plan describes.\n\n**2. The metric suite (nDCG/recall@k/MRR) doesn't cover the shapes that shipped.** Those are ranking metrics. But the live system now has *deterministic, non-ranked* paths:\n   - Enumeration catalog \u2192 return the **complete set** (\"list every pet\"). Right metric is set completeness/exactness, not nDCG.\n   - Deterministic temporal ordering \u2192 return in **date order**, cap-immune. Right metric is ordering correctness.\n   \n  \n\u2026[truncated]\u2026\nconcrete self-failing obligations queued against this milestone.\n\n## The long pole nobody's costed\n\nM5.0 needs hand-curated `(query, expected_chunks)` pairs across every format **and** bi-temporal scenarios. That's expensive human labor (largely yours), the rig is worthless if the set is thin or wrong, and per your own `feedback_test_fixtures_must_match_real_data_shapes` it has to mirror real shapes. The plan hand-waves this entirely. It's the actual critical path, not the metric code.\n\n---\n\nSo \u2014 where do you want to take this? A few directions I can go deep on:\n\n- **Re-scope \u00a75** to account for the shipped cohort (reranker/temporal/enumeration) and rewrite the sub-milestone list \u2014 effectively a pre-plan refresh.\n- **The metrics design** \u2014 what shape-aware scoring actually looks like for set/ordering/refusal shapes vs. ranking shapes.\n- **Golden-set strategy** \u2014 how to make curation tractable (and whether to bootstrap from the existing test corpora + xfails rather than from scratch).\n- **Sequencing** \u2014 M5 is marked \"parallelizable with M3/M4,\" but M3 has landed and M4 hasn't; you could partially activate M5 *now* against the live CR+reranker stack.\n\nWhat's the angle you care about?"
+    },
+    {
+      "speaker": "USER",
+      "text": "Let's create a new M5 from scratch, grounding it in the actual codebase and current development trajectory (F0.2x building). Take into consideration any existing discussions, research, follow-ups, or planning docs to define a comprehensive and robust vision for M5. Replace the current M5 content in its entirity with the new M5 content in the Roadmap-Pre-Plan document."
+    },
+    {
+      "speaker": "ASSISTANT",
+      "text": "This is a substantial task \u2014 I'll build the new M5 from ground truth, not from the stale sketch. Let me gather the actual state in parallel: the eval infrastructure that already exists, the full retrieval surface that needs measuring, and every relevant discussion/research/follow-up doc.\nCritical finding: a substantial retrieval eval harness **already exists** (`tools/eval_retrieval.py`, `tests/fixtures/eval/retrieval/`, banked BOSSK baseline). M5.0 isn't greenfield. Let me read the two xfail memories M5 must subsume, then fan out to map the full surface.\nI now have a comprehensive ground-truth picture. The key reframe is confirmed: **a real eval harness already exists** (`tools/eval_retrieval.py` + driver + banked BOSSK baseline + grounding suite), the system now classifies into **five distinct intent shapes** each with different correct-answer semantics, the **answer-correctness metric is the universally-requested gap**, and an **`xfail(strict=True)` is already parked waiting on the M5 category predicate**. Let me re-read the exact current \u00a75 block to get a byte-precise replacement target.\nThis is the precise block. Now I'll replace \u00a75 with a full-density M5 milestone, grounded in the actual codebase \u2014 preserving the load-bearing cross-reference anchors (M5.3 = telemetry, M5.5 = explain-rank, referenced from M6/M7/M9) while rebuilding the scope around what's really shipped.\nDone. \u00a75 is fully replaced. Let me commit just this file (not the in-flight F0.23 changes in the working tree), per the always-commit-docs convention.\nCommitted as `33eb628` \u2014 only `Roadmap-Pre-Plan.md`; the in-flight F0.23 working-tree changes were left untouched (pre-commit stashed and restored them).\n\n## What the new \u00a75 says\n\nI rebuilt M5 at full pre-plan density (matching M3/M4's structure: \u00a75.1 Why \u2192 \u00a75.6 Effort, with `D-M5.N` / `OQ-M5.N` / `R-M5.N`), grounded entirely in ground truth from the code and the doc tree rather than the Post-M1 sketch. The load-bearing changes:\n\n**The reframe that drives everything:** a real eval harness *already exists* (`tools/eval_retrieval.py` pure-core + driver + banked BOSSK baseline + the F0.22 grounding suite), and its own banked numbers show **recall@40 = 1.0 across every shape** \u2014 the first stage isn't the bottleneck. The failures are downstream: precision (the discriminability ceiling) and *answer rendering*. So M5 shifts from \"build the rig\" to \"extend the rig + add the metric recall is blind to.\"\n\n**Sub-milestones**, preserving the cross-referenced anchors (M5.3 = telemetry, M5.5 = explain-rank, named in M6/M7/M9):\n- **M5.0** \u2014 formalize\n\u2026[truncated]\u2026\n*M5.5** \u2014 explain-rank, now the stated home for the deferred `qualified_name` diagnostic.\n- **M5.6 (new)** \u2014 the category/subject roster predicate that closes the parked `test_local_mixed_corpus_negative` `xfail(strict=True)` \u2014 the one *code fix* M5 owns.\n\nPlus a constrained CI story (pure-core + cloud-embedding leg in CI; full GPU run BOSSK-local pre-close gate), the bi-temporal `(valid_window, as_of)` label hook as the novel axis, and R-M5.2: known-defect cases authored as `xfail` so the rig *drives* fixes instead of banking the hand-tuned baseline.\n\n## Two things worth your call\n\n1. **`OQ-M5.B` \u2014 does M5.6 stay in M5, or get pulled forward?** The category predicate is a code fix, not measurement, and the `2026-06-03-5` path-as-latent-signal track could land it as an F0.2x sooner. I left it in M5 (that's where the xfail names it) but flagged the fork.\n\n2. **Out-of-scope drift I did *not* touch** (you scoped me to \u00a75): \u00a73.3 and \u00a711 still say the cross-encoder reranker is \"an M3 non-goal, revisit at M5-retro\" \u2014 but F0.16 already shipped it enabled-default. That stale framing lives outside \u00a75. Want me to fix those two references too, or leave the rest of the doc for a separate pass?"
+    },
+    {
+      "speaker": "USER",
+      "text": "we'll do separate passes on the doc"
+    },
+    {
+      "speaker": "ASSISTANT",
+      "text": "Sounds good. \u00a75 is rewritten and committed (`33eb628`); the rest of the doc \u2014 including the stale reranker references in \u00a73.3/\u00a711 and the top cross-ref list \u2014 is left for your separate passes."
+    },
+    {
+      "speaker": "USER",
+      "text": "Fix the stale references then commit"
+    },
+    {
+      "speaker": "ASSISTANT",
+      "text": "The stale reranker references are at lines 81 (\u00a73.3), 182 (\u00a74.3), and 459 (\u00a711) \u2014 all three frame the cross-encoder reranker as un-built and \"revisit at M5-retro,\" but F0.16 shipped it enabled-default. Line 182 even claims \"no rerank stage ships,\" which is now false. Fixing all three to reflect what shipped while preserving the genuinely-still-future part (binding it as a per-endpoint role).\nAll three fixed. Committing just the roadmap file.\nCommitted as `7239d8c` (roadmap file only; F0.23 working-tree changes untouched).\n\nFixed all three stale reranker references:\n- **\u00a73.3** (M3 non-goal) \u2014 now notes F0.16 shipped enabled-default; M5 measures whether it earns its cost, with the enumeration carve-out as the open residual.\n- **\u00a74.3** (M4 non-goal) \u2014 corrected the false \"no rerank stage ships\" claim; the stage ships, what M4 omits is binding it as a *per-endpoint role*.\n- **\u00a711** (backlog) \u2014 reframed from \"build-or-not, revisit at M5-retro\" to the two genuinely-open residuals: the enum carve-out / Lever-B precision hole, and per-endpoint LAN binding.\n\nThe broader CR-as-future framing throughout \u00a73 (CR has also shipped) remains for a separate pass, as you noted."
+    },
+    {
+      "speaker": "USER",
+      "text": "fix all the broader CR-as-future framing, and similar issues"
+    },
+    {
+      "speaker": "ASSISTANT",
+      "text": "This is a bigger, doc-wide de-staling. Before rewriting \u00a73 as a retrospective, I need authoritative shipped-state facts (not just memory snapshots, some of which are themselves stale) and a complete inventory of every \"future/in-flight\" framing in the doc that's been overtaken by events. Let me gather both in parallel.\nMemory confirms M3 CR shipped, enabled-default since 2026-06-01 (`6b55464`). The config lives in `shared/`, not `orchestrator/config`. Let me verify the as-built CR surface (config fields, templater path, the `kb config cr` verb) so my \u00a73 retrospective is accurate, and confirm M4 has *not* shipped (so I don't wrongly past-tense it).\nConfirmed the as-built M3 surface: `IngestCRConfig` in `shared/src/kb/shared/config/server.py` (`enabled=True` since the 2026-06-01 flip), templater + augmenter at `orchestrator/src/kb/orchestrator/ingest/cr/`, `/api/generate` path, `kb config cr` verb. And M4's registry has no per-endpoint structure (the file isn't even at that path) \u2014 **M4 has not shipped**, so I'll leave \u00a74 as genuine future. Let me catch any remaining stale-framing stragglers before editing.\nLet me read the exact current text of the edit targets (\u00a71 line 30, \u00a73 top through \u00a73.2, D-M3.7, and the \u00a710 M3 block) to get precise match strings.\nI have all exact strings and verified as-built facts. Now applying the \u00a73 retrospective reframe plus the \"similar issue\" fixes in \u00a72 and \u00a710 \u2014 preserving the decision bodies as the as-built record while removing the misleading future-tense and the now-false \"default ships disabled\" / unmet-acceptance claims.\nNow the D-M3.7 as-built annotation and the \u00a72 / \u00a710 tense fixes.\nAll six edits applied. Let me verify no CR-stale stragglers remain and check the \u00a71 `F0.14 (in flight)` item.\nLine 30 is inside the explicitly-dated **\"Where the build stands today (2026-05-28)\" snapshot scoped to `:dryrun-0.2.1`** \u2014 where F0.14 \"(in flight)\" was accurate. That's an internally-consistent historical snapshot, not living/forward-looking framing, so editing one bullet would actually break its integrity. I'm leaving \u00a71 as honest history (more on that below). Committing the CR de-staling now.\nCommitted as `2632fb7` (roadmap only; F0.23 working-tree changes untouched).\n\n## What changed \u2014 M3/CR de-staled across the living sections\n\n- **\u00a73 banner (new)** \u2014 unambiguous `Status: SHIPPED` with the as-built record: Option C via `/api/generate`, templater+augmenter at `ingest/cr/`, `IngestCRConfig` defaults (num_ctx 12288, oversize `skip`, keep_alive restore), the `kb config cr` verb tree, and the CR inspector fields \u2014 with a note that\n\u2026[truncated]\u2026\nM3's named acceptance gate was never actually closed.** `test_local_mixed_corpus_negative` (the off-topic enumeration leak = CR's \"gate 3\") runs CR-off/rerank-off and is still `xfail(strict=True)`. CR shipped and lifted discriminability as designed, but that specific leak was punted to M5's category predicate (M5.6 / D-M5.13). I documented this caveat in \u00a73.2 rather than letting the doc imply the gate passed.\n\n2. **The planned `project_m3_contextual_retrieval` memory was never created.** `project_rerank_cr_default_on` covers only the default-flip; the Option-C / templater / config narrative has no memory home. I flagged it with a \u26a0\ufe0f in \u00a710. **Want me to create that memory?**\n\n## What I deliberately left\n\n- **\u00a74 (M4)** \u2014 verified it has *not* shipped (registry has no per-endpoint structure), so it stays genuine future. Correct as written.\n- **\u00a71** \u2014 it's an explicitly-dated *2026-05-28 / `:dryrun-0.2.1` snapshot*; \"F0.14 (in flight)\" was accurate then, and editing one bullet would break the snapshot's internal consistency. Refreshing \u00a71 to current state (re-dating, updating the whole shipped inventory through `:dryrun-0.2.4`) is a genuine separate pass \u2014 say the word and I'll do it."
+    },
+    {
+      "speaker": "USER",
+      "text": "commit your document changes"
+    },
+    {
+      "speaker": "ASSISTANT",
+      "text": "All my document changes are already committed \u2014 there's nothing of mine left uncommitted. The Roadmap-Pre-Plan.md edits landed across three commits earlier this session:\n\n- `33eb628` \u2014 rewrite \u00a75 (M5 eval rig)\n- `7239d8c` \u2014 stale reranker references (\u00a73.3/\u00a74.3/\u00a711)\n- `2632fb7` \u2014 de-stale M3/CR framing (\u00a72/\u00a73/\u00a710)\n\n`git status` confirms `Roadmap-Pre-Plan.md` is clean (not in the list). The remaining working-tree changes are **not mine** \u2014 they're the in-flight F0.23 work (orchestrator `pipeline/`, `stores/`, `agents/vector.py`, the `0020_document_chunks_chunk_ordinal` migration, associated tests) plus a pre-existing modification to `F0.22-\u2026-Detail-Plan-Part-2.md` that was already in the tree. I've deliberately left all of those untouched so I don't sweep someone else's uncommitted work into a commit.\n\nIf that F0.22 detail-plan doc modification is actually something you want me to handle, let me know \u2014 but I didn't author it, so I left it alone."
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "An_pKh-53fmh5iGWCTyUI",
+      "text": "abl-john-c is working on or has access to a Git repository at the path d:\\Git\\Be-Sentient\\kb-proto-1\\documents\\planning\\Roadmap-Pre-Plan.md"
+    },
+    {
+      "id": "5UKKvbtuFjQygznjsrzEc",
+      "text": "abl-john-c wants to discuss m5, likely referring to a specific version or section of the mentioned document 'Roadmap-Pre-Plan.md'"
+    },
+    {
+      "id": "UJHn7pVN-7T-RDerR4zyR",
+      "text": "abl-john-c proposes replacing the existing M5 section of the roadmap with a newly created, comprehensive version grounded in current development status and trajectory (F0.2x building). This indicates abl-john-c's involvement or responsibility for planning and updating documentation related to software development milestones specifically concerning M5."
+    },
+    {
+      "id": "HXGTnaTWfAIOVgZxGJ4aA",
+      "text": "abl-john-c suggests considering existing discussions, research, follow-ups, or planning documents when formulating a new vision for M5. This demonstrates abl-john-c\u2019s approach to decision-making in the context of software project management and aligns with their role in overseeing or contributing to roadmap updates."
+    },
+    {
+      "id": "MxYOlgTDaFCwy_QZbmYXl",
+      "text": "abl-john-c and another person are working on a document together. They plan to review it separately before combining their edits."
+    },
+    {
+      "id": "2nA-hD9vraW7yyw6JLJrS",
+      "text": "abl-john-c instructed to commit fixes for stale references after discussions with abl-claude-c on June 5, 2026 at 02:30:48 UTC."
+    },
+    {
+      "id": "WiOAULnYMW-WBHFIyRISR",
+      "text": "On June 5, 2026 at 02:31:10 UTC, abl-john-c directed to fix stale references in the document and commit the changes."
+    },
+    {
+      "id": "dP0B9-_BRsl10GJ0tPASb",
+      "text": "abl-john-c requested fixing not only the specific stale reranker references but also the broader CR-as-future framing and similar issues on June 5, 2026 at 02:33:41 UTC."
+    },
+    {
+      "id": "VlVBDdydNh459nY6Q-YBw",
+      "text": "abl-john-c instructs someone to commit document changes on June 5, 2026 at 02:41:44"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "transcript": [
+    {
+      "speaker": "USER",
+      "text": "What are the kb commands available through the MCPServer>"
+    },
+    {
+      "speaker": "USER",
+      "text": "What are the kb commands available through the MCPServer>\nWhat are the kb commands available through the MCPServer?"
+    },
+    {
+      "speaker": "USER",
+      "text": "What are the kb commands available through an mcp server based on the codebase?"
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "u31-4M1b4mt9OAGWJijUo",
+      "text": "abl-john-b is inquiring about kb commands available through the MCPServer on June 5, 2026 at 15:48:14 UTC"
+    },
+    {
+      "id": "1G0uALSGxwvrkklHzF0LI",
+      "text": "abl-john-b repeated their inquiry about kb commands available through the MCPServer on June 5, 2026 at 16:15:42 UTC"
+    },
+    {
+      "id": "yVtMPC-8cEqQc5skcfvJ7",
+      "text": "abl-john-b is seeking information about kb commands available through an MCP server based on a specific codebase on June 5, 2026 at 16:56:05 UTC"
+    }
+  ]
+}

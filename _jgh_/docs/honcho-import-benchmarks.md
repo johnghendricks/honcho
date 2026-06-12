@@ -5,10 +5,15 @@
 > to project what it takes to ingest the big **kb-proto-1** project. Companion to
 > `honcho-mando-ollama-setup.md`. Living doc — append each run.
 >
-> Tooling lives outside the repo at `~/.claude/honcho-import/`
-> (`parse_transcripts.py`, `load_to_honcho.py`, `bench_memory_import.py`,
-> `scan_project.py`). Target: `http://192.168.0.225:8000` (Mando), ws `default`,
-> import peers `john-cc` / `claude-cc` (`observe_me=false`, derivation deferred).
+> Tooling lives in the repo at `_jgh_/honcho-import/` (`parse_transcripts.py`,
+> `bench_memory_import.py`, `scan_project.py`, and the current ingestion tool
+> **`ingest_batch.py`**). Target: `http://192.168.0.225:8000` (Mando), ws
+> `default`, import peers `john-cc` / `claude-cc`.
+>
+> **Note (2026-06-12):** ingestion is now done by `ingest_batch.py` (resumable,
+> batched, SQLite ledger, `john-cc observe_me=true`). The older one-shot
+> `load_to_honcho.py` / `import_groups.py` referenced in the runs below are
+> superseded; their results stand as historical measurements.
 
 ## TL;DR
 
@@ -430,6 +435,53 @@ max" worry didn't show.)
 
 ---
 
+## Grounding sweep — deriver model 14b vs 32b (fixed 8-session bench), 2026-06-12
+
+After the clean reinstall, a **source-verified grounding audit** replaces the
+degeneration/speed metrics above as the quality bar: a fixed, size-stratified
+**8-session set** (`bench_set.json`, 2→28 msgs/session) is loaded *identically*
+into a per-config workspace (`bench_load.py` — reasoning ON + the same
+anti-over-attribution `custom_instructions`, `john-cc observe_me=true`), derived
+under one deriver model, then every `john-cc` explicit conclusion is blind-graded
+GROUNDED / PARTIAL / OVER / HALLUCINATED against its source transcript
+(`bench_audit_payload.py` → 8 blind judges → `aggregate_bench.py`). Only the
+**deriver model** varies; everything else is held constant. **Pass bar: ≥80%
+grounded, 0 leakage.**
+
+| deriver model | conclusions | **grounded** | partial | over+hall | leakage |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| **qwen2.5:14b** (ws `default`) | 84 | **75.0 %** | 11.9 % | 13.1 % | 4 |
+| **qwen2.5:32b** (ws `bench-qwen32`) | 119 | **73.9 %** | 8.4 % | 17.6 % | **21** |
+
+**Findings**
+
+1. **Bigger did not help — slightly worse.** 32b held the same grounding rate but
+   extracted **40 % more conclusions** (119 vs 84) and **leaked 5× more** in
+   absolute terms (21 vs 4). More output, same signal, more noise. (Consistent with
+   the Dialectic A/B above, where 32b also lost to 14b.)
+2. **The failure is concentrated, not diffuse.** In *both* runs ~19 of 21 OVER and
+   ~20 of 21 leakage came from the **same two sessions** (`40c12239`, `f1a03124`) —
+   the ones where John pasted CC **continuation-summary / handoff / plan blocks**
+   into a user turn. The deriver reads the *assistant-narrative prose inside those
+   pasted blocks* ("verified both routing legs", commits, bug fixes) as John's own
+   actions. The other six sessions grade ~95 %+ grounded under both models.
+3. **`custom_instructions` already forbids this and neither model honors it.** The
+   instruction explicitly excludes "tool output… task notifications… pasted command
+   output" — but the bleed survives at both sizes. Model selection is not the lever.
+
+> **Decision:** model size is a dead end for this workload — **revert the deriver to
+> `qwen2.5:14b`** (done 2026-06-12; `.env` line 7, `up -d --force-recreate deriver
+> api`, verified via `printenv`; `.env.bak.qwen32-revert` kept). The real remaining
+> lever is a **parser-side strip of pasted handoff/continuation-summary blocks** in
+> user turns — the same class of fix as the committed skill-injection strip, and it
+> targets exactly the two sessions driving the miss. That's the next change.
+
+Artifacts: `bench_set.json`, `bench_load.py`, `bench_audit_payload.py`,
+`aggregate_bench.py`, `audit_payload_{default,bench-qwen32}.json`,
+`grades_{default,bench-qwen32}_*.json`, `bench_score_{default,bench-qwen32}.json`.
+
+---
+
 ## Open questions / next benchmarks
 
 1. **True DB space** — projections exclude HNSW index overhead. Ground-truth on
@@ -450,12 +502,13 @@ max" worry didn't show.)
    embedder or larger embed batches could cut it, worth testing if we scale to all
    projects.
 
-## Tooling reference (`~/.claude/honcho-import/`)
+## Tooling reference (`_jgh_/honcho-import/`)
 
 | Script | Purpose |
 | --- | --- |
 | `parse_transcripts.py <proj_dir> <out.json>` | transcripts→messages + memory→chunked conclusions (splits >24 K-char msgs) |
-| `load_to_honcho.py <payload.json> [--dry-run\|--conclusions-only]` | POST a parsed payload to Honcho |
+| **`ingest_batch.py --source <dir\|file\|corpus.json> [--batch-size N] [--batches K] [--drain-between-batches] [--dry-run\|--status\|--reset]`** | **current ingest tool** — resumable/pausable batched load, SQLite tally (`ingest_ledger.db`), `john-cc observe_me=true` |
+| `load_to_honcho.py <payload.json> [--dry-run\|--conclusions-only]` | *(superseded)* one-shot POST a parsed payload to Honcho |
 | `bench_memory_import.py [--dry-run]` | timed memory-only import → `bench_results.json` |
 | `scan_project.py <proj_dir>` | parse-only volume scan (no API) |
 | `bench_transcript_slice.py <proj_dir> [N] [--reset] [--load]` | timed stratified N-session slice → `bench_slice_results.json` |

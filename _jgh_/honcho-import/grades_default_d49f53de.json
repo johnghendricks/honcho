@@ -1,0 +1,17 @@
+{"workspace":"default","orig":"d49f53de-c1ee-4acd-b588-57c7a3c2f39a","items":[
+{"id":"ZZOsLxG-0maeD9vtYQjN0","grade":"GROUNDED","leakage":false,"why":"User: 'a model configuration that fits within the bossk 5080 limitations' — directly states the project + constraint."},
+{"id":"g2iLIS8PiB-4xRm8PzwKh","grade":"GROUNDED","leakage":false,"why":"User: 'I did some research on model candidates... review the doc here' citing that exact research path."},
+{"id":"8isu3g32DZnIPVK-kLBXJ","grade":"GROUNDED","leakage":false,"why":"User: 'I intended the research document to be a jumping off point for continued discussion.'"},
+{"id":"S-jWkwxobnlZ6xqv6Gesj","grade":"GROUNDED","leakage":false,"why":"User: 'we may need to land somewhere between Strategy A & B then.'"},
+{"id":"Ucca4IIpAIhaANKtiUiFt","grade":"GROUNDED","leakage":false,"why":"User: '2-3 models for text/image (one for json structuring, one for captioning, the other for reasoning).'"},
+{"id":"lRJZ95nQ36zTyX4DSfjna","grade":"GROUNDED","leakage":false,"why":"User: M4x could test monolithic models and 'a grouping of small models... qwen2.5:7b-instruct + deepseek-r1:1.5b + moondream.'"},
+{"id":"2ahEtUN3u5LSebJBYVwv4","grade":"GROUNDED","leakage":false,"why":"User: 'let's discuss the repurcussions of treating the capability catalog as the shared spine of both.'"},
+{"id":"kuec_sPJSc9EKefNCFQu1","grade":"PARTIAL","leakage":false,"why":"User does mention M4.x but 'M4.2-M4.4' phases come from assistant turns, not the user's own words."},
+{"id":"xu6_Nmag2AtaT7LkIQjzV","grade":"GROUNDED","leakage":false,"why":"User: 'point of the shared spine is to derive a baseline for unknown models... recommendations... presets... should be considered.'"},
+{"id":"AIqqoBrnEYCE_ytmq47cf","grade":"GROUNDED","leakage":false,"why":"User: 'I understand the distinction you're making between measurement vs recommendation, and not blending the two.'"},
+{"id":"V-q9GWYEcfo7p8bEJaJ1W","grade":"GROUNDED","leakage":false,"why":"User: 'pull forward updating ollama to 0.30.6 early... opens up supported models to GUFF and hugging face.'"},
+{"id":"Gr2xxmq8YdL_R5sJGss9t","grade":"OVER","leakage":false,"why":"'yes, that all makes sense' is mere assent; 'understands the preceding message' is an unsupported character/comprehension claim."},
+{"id":"TuI05gxc2qzxqbWmnqMZa","grade":"GROUNDED","leakage":false,"why":"User: 'Capture these conclusions back into the discussion doc.'"},
+{"id":"p9P2sGneAjjS-gxknb-J3","grade":"GROUNDED","leakage":false,"why":"User: 'don't go into planning mode yet... we'll move to planning when I say so, do not prompt this yourself.'"},
+{"id":"QCBrWUOGg3lsn--TcbyVB","grade":"GROUNDED","leakage":false,"why":"User chose the thread: 'the thinking models are the wrong tool for JSON thread' — interest in structured-output/JSON unsuitability."}
+]}

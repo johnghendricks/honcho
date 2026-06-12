@@ -1,7 +1,11 @@
 # Large / regenerable import artifacts — produced by honcho-import/parse_transcripts.py.
 # Keep them out of git; regenerate with the parser. Small bench-result JSONs ARE tracked.
 honcho-import/full_kb.json
+honcho-import/full_kb.stale.bak.json
 honcho-import/honcho_payload.json
+
+# Local-only ingest state (SQLite ledger + its backups) — not Honcho data, machine-specific.
+honcho-import/*.db
 
 # Python bytecode
 __pycache__/

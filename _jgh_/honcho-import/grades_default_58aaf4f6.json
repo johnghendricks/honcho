@@ -1,0 +1,8 @@
+{"workspace":"default","orig":"58aaf4f6-4c73-4286-841e-ec3de2b2ac36","items":[
+{"id":"KS_xFmxRigcU0L5e4G8WM","grade":"PARTIAL","leakage":false,"why":"User said 'resume <handoff path>'; the file path is grounded, but the timestamp '20:19:39' is not in the user's words."},
+{"id":"aShn_nqNCAMhs3xWVOnnM","grade":"GROUNDED","leakage":false,"why":"User: 'drop GREEDO from the consideration, especially when defining boundaries... brought up more than a week ago.'"},
+{"id":"5XmVFzMU6qB7wTqzK37an","grade":"GROUNDED","leakage":false,"why":"User: 'the focus of our work should be first and foremost a system that works well on BOSSK.'"},
+{"id":"pSZ9fHp1VXWh4gtR5WFUi","grade":"GROUNDED","leakage":false,"why":"User: 'don't want to see you mention GREEDO in any more planning sessions, nor restrict any planning based on... GREEDO.'"},
+{"id":"8IKvwFx5gFKqJpmJVjfsM","grade":"GROUNDED","leakage":false,"why":"User: 'The re-ranker LLM should be able to run on local hardware (i.e. BOSSK)... plan will be a failure if that isn't part of the core consideration.'"},
+{"id":"b1WfEbWAboWDcGTKcGXlJ","grade":"GROUNDED","leakage":false,"why":"User: 'move all of this information to a new discussion document... as a discussion, that will eventually drive a pre-plan.'"}
+]}

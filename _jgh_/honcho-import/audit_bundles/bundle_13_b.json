@@ -1,0 +1,70 @@
+{
+  "transcript": [
+    {
+      "speaker": "USER",
+      "text": "doing some runtime testing of kb on bossk. Still having some unexpected results from some prompts. Sharing here: PS D:\\Git\\Be-Sentient\\kb-proto-1> kb config show\n                          Install\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502 Mode         \u2502 bundled-ollama                           \u2502\n\u2502 Version      \u2502 0.2.4-dryrun                             \u2502\n\u2502 Installed at \u2502 2026-06-02T19:46:26Z                     \u2502\n\u2502 Install root \u2502 C:\\Users\\John Hendricks\\AppData\\Local\\kb \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n                     Embedding\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502 Provider (TOML) \u2502 ollama                         \u2502\n\u2502 Model (TOML)    \u2502 qwen3-embedding:0.6b           \u2502\n\u2502 Lock            \u2502 not yet locked (no ingest yet) \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n                     Retrieval\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502 cosine_abs_floor        \u2502 0.35 (global default) \u2502\n\u2502 cosine_confidence_floor \u2502 0.40 (global default) \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n                 Retrieval \u2014 Enumeration fan-out\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502 enumeration_fanout_k                 \u2502 40 (shipped default)   \u2502\n\u2502 enumeration_synthesis_top_n          \u2502 25 (shipped default)   \u2502\n\u2502 enumeration_floor_ratio              \u2502 0.40 (shipped default) \u2502\n\u2502 enumeration_catalog_max_files        \u2502 200 (shipped default)  \u2502\n\u2502 enumeration_catalog_enabled          \u2502 True (shipped default) \u2502\n\u2502 enumeration_floor_relaxation_enabled \u2502 True (shipped default) \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n                  Retrieval \u2014 Synthesis budget\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502 synthesis_prompt_reserve_tokens     \u2502 1500 (shipped default) \u2502\n\u2502 synthesis_generation_reserve_tokens \u2502 2700 (shipped default) \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n                    Retrieval \u2014 Re-Ranker\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502 enabled          \u2502 True (shipped default)                  \u2502\n\u2502 url              \u2502 http://rerank:8080 (shipped default)    \u2502\n\u2502 model            \u2502 bge-reranker-v2-m3 (shipped default)    \u2502\n\u2502 top_k_in         \u2502 candidate_k (tracked) (shipped default) \u2502\n\u2502 noise_gate_ratio \u2502 0.4 (shipped default)                   \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n                 Agents\n\u250f\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2513\n\u2503 Name           \u2503 Provider \u2503 Model    \u2503\n\u2521\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\u2026[truncated]\u2026\n\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256e\nHank discussed the following in the last 3 Team Checkins:\n\n 1 May 27, 2026 [5]: Planning a knowledge base presentation for 1:00 PM, integrating Claude with development tools, and addressing feedback loops in AI-assisted workflows.\n 2 May 22, 2026 [4]: Moving his office to avoid boredom, discussing AI note-taker reliability, and casual remarks about backgrounds.\n 3 May 15, 2026 [12]: Scheduling a wine meeting to discuss next steps, emphasizing collaboration on system development, and confirming the AI note-taker\u2019s role.\n\nCount: 3.\nQuality: grounding=strict \u00b7 top-1 cosine=0.621 \u00b7 10 chunks fused \u00b7 3 documents matched.\nSources: `kb timeline show 7f72cecb-19f8-490c-bc13-c8a690a4f5cf` for chunk-by-chunk detail.\nType a citation number to expand it; `?` for help, `q` or <enter> to exit.\n> 12\nTeam Checkin - 2026_05_15 10_30 EDT - Notes by Gemini.txt (title: Team Checkin, subject: Project Milestones and Technical Infrastructure)\nJohn Hendricks: Hello.\nHank McLendon: What's up,\nJohn Hendricks: Hello.\nHank McLendon: bro?\nJohn Hendricks: Lips rises crisis. What's going on? Brett tone.\nBrett Jones: Hey, how's it\nJohn Hendricks: S\n>\nPS D:\\Git\\Be-Sentient\\kb-proto-1>"
+    },
+    {
+      "speaker": "USER",
+      "text": "Let's keep talking about the problem, because I think it's bigger than this single instance. I have a gut feeling that we're going to be doing this same exercise, over and over, as I find more and more words and combinations of words in my prompts that create similar errors/problems. Are we not creating a big if/else or switch that now will have to run through various words in the english language, to test out these types of conditions, and that this will grow over time and require repeated adjustments as new documents that reach outside the tight language constraints blow up the model. Is my gut wrong here? Are we establishing a flexible (and scalable) solution to the true problem, or are we applying bandaids and giving aspirin to treat the 'symptoms' as they pop up?"
+    },
+    {
+      "speaker": "USER",
+      "text": "Write up the decision doc tying this to the CrewAI fork. I'm really interested in this approach, as I feel like we've been straying from the original vision of using CrewAI w/ robust agent services to maximize the quality of the kb's search and prompt tools."
+    },
+    {
+      "speaker": "USER",
+      "text": "push to both"
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "mXZhwffVi01ruXae68SrT",
+      "text": "abl-john-b is performing runtime testing of kb on a system or environment called bossk as of June 2, 2026 at 22:15:50 UTC+0. This indicates that abl-john-b has access to and uses software development tools like PowerShell and kb command-line interfaces (CLI)."
+    },
+    {
+      "id": "lJzkTYC_uFPpwqB3B28Ez",
+      "text": "On June 2, 2026, abl-john-b executed a KB configuration check via 'kb config show' which revealed the kb version is 'bundled-ollama', installed on June 2 at 19:46 UTC+0 (i.e., same day)."
+    },
+    {
+      "id": "v5bPleVGTKbI8uuhDwLB1",
+      "text": "abl-john-b ingested files ('D:\\\\Git\\Be-Sentient\\kb-proto-1\\documents\\rag-testing\\transcripts') into the kb system at around June 2, 2026. These transcripts indicate an active team environment that uses regular check-in meetings for updates and discussions."
+    },
+    {
+      "id": "E41pp6qQIT-21nIV76kOg",
+      "text": "The earliest valid event related to a team meeting documented in abl-john-b's KB is dated May 1, 2026 ('Team Checkin - 2026_05_01'), indicating recent organizational activity within the team."
+    },
+    {
+      "id": "QdkkhRiw1k60L-WCXk7Vo",
+      "text": "abl-john-b utilized kb prompt functionality on June 2 to retrieve details about specific events in their organization's timeline, such as identifying a meeting that took place on May 1, 2026 ('kb prompt \"when was the earliest team checkin?\"')."
+    },
+    {
+      "id": "f1RTN-_sm7XrCdJYbfZ28",
+      "text": "On June 2, abl-john-b conducted another kb query to determine if the oldest recorded team check-in date (May 1, 2026) coincided with what is referred to as 'the first team check in'. The outcome affirms this correlation."
+    },
+    {
+      "id": "S2E7-eiwG4rNKJNxASzXz",
+      "text": "From a specific command ('kb prompt \"what was discussed in the last team checkin?\\"
+    },
+    {
+      "id": "-bCVZJxNO_pzzRg3qW9PU",
+      "text": "The information that abl-john-b obtained includes the date of the meeting (June 1, 2026) and key points such as infrastructure and rendering migration, knowledge management strategy discussions, technical research priorities, Nvidia hardware speculation, and personal updates from Brett Jones about a Mayo Clinic visit and Dillon Burton's lunch plans."
+    },
+    {
+      "id": "0CsUYV3tlfJ9d4pjgus23",
+      "text": "In analyzing Hank McLendon\u2019s contributions across his last three check-ins documented in June (May 27th to May 15th), abl-john-b extracted topics such as planning for knowledge base presentations, office relocation, AI tool integration reliability, scheduling wine meetings to discuss system development progress."
+    },
+    {
+      "id": "z9VY5IKPW2IlPEGW9VYaS",
+      "text": "abl-john-b suggests writing up a decision document that ties the current issue to the CrewAI fork."
+    },
+    {
+      "id": "q8sdVpM-WMbBIZgWhbi3W",
+      "text": "abl-john-b is concerned about repeated errors in their work involving language models and prompts. They believe these issues may require frequent adjustments over time rather than a scalable solution."
+    },
+    {
+      "id": "Ash-AIYcygTHWJeM-gwWK",
+      "text": "abl-john-b expresses interest in revisiting the use of CrewAI with robust agent services to maximize the quality and functionality of knowledge base search and prompt tools, indicating they think this aligns better with the original project vision."
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "workspace": "bench-qwen32",
+  "orig": "58aaf4f6-4c73-4286-841e-ec3de2b2ac36",
+  "items": [
+    {
+      "id": "f3cdp6jJEn48tvd7lBhz1",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER turn [0] literally issues 'resume d:\\Git\\Be-Sentient\\kb-proto-1\\handoffs\\2026-05-30-reranker-second-stage-precision-kickoff.md', directly referencing that file."
+    },
+    {
+      "id": "pqPEvKWnqWxegfp3PrGee",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER turn [2] explicitly says to drop GREEDO from consideration 'especially when defining boundaries'."
+    },
+    {
+      "id": "Ky29c-nz4nrGAk_IxmRdS",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER turn [2] states 'This was brought up more than a week ago.'"
+    },
+    {
+      "id": "D1I3p3ovtTE7-hrKqogEF",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER turn [2]: 'In regards to design, development and testing, the focus of our work should be first and foremost a system that works well on BOSSK.'"
+    },
+    {
+      "id": "G4Fl2s55IpiSTOmZ4AihN",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER turn [2]: do not mention GREEDO in planning sessions nor restrict planning based on GREEDO's hardware limitations."
+    },
+    {
+      "id": "xn5ITzCde-7YkHuc8EhQz",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER turn [2]: 'I want this current re-ranker plan to take that into consideration' (BOSSK focus)."
+    },
+    {
+      "id": "b-n5tpRBb_-ZOoY7UC8Ad",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER turn [2]: 're-ranker LLM should be able to run on local hardware (i.e. BOSSK), and the plan will be a failure if that isn't part of the core consideration set.'"
+    },
+    {
+      "id": "Yt5hE8inzK_BicA1i-BYe",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER turn [4]: 'I want to move all of this information to a new discussion document.'"
+    },
+    {
+      "id": "gqIBbLvmC5R3Cft8lw81K",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER turn [4]: 'continue this conversation, and follow-up Q&As, as a discussion.'"
+    },
+    {
+      "id": "ZPIrNLSN0S81udklrwFcn",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER turn [4]: the discussion 'will eventually drive a pre-plan.'"
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "transcript": [
+    {
+      "speaker": "USER",
+      "text": "show me the Vault Talk notes"
+    },
+    {
+      "speaker": "USER",
+      "text": "kb prompt \"list all of the attendees in the Meeting Checkin\""
+    },
+    {
+      "speaker": "USER",
+      "text": "kb prompt \"what was the costco policy in 2020?\""
+    },
+    {
+      "speaker": "USER",
+      "text": "kb prompt \"what was the costco policy in 2026?\""
+    },
+    {
+      "speaker": "USER",
+      "text": "I want you to build a release .pkg of dryrun-0.2.0 and download it to the /artifacts folder"
+    },
+    {
+      "speaker": "USER",
+      "text": "I'd like for the current work, post dryrun-0.2.0 build, (i.e. all the work and tweaks to synthesis and RRF systems we've been working on to improve prompt results), to be moved to a new branch: dryrun-0.2.1 and a new tag: dryrun-0.2.1. I want to be able to deploy 0.2.0 for a friend to test on their system, while working on new breaking features in 0.2.1. Thoughts?"
+    },
+    {
+      "speaker": "USER",
+      "text": "proceed"
+    },
+    {
+      "speaker": "USER",
+      "text": "yes, go ahead an rebuild to keep things clean. Are you able to post a release in Github for this?"
+    },
+    {
+      "speaker": "USER",
+      "text": "I want you to now put together a work-in-progress release for dryrun-0.2.1. I want my friend to be able to compare the work-in-progress version against the older dryrun-0.2.0 release."
+    },
+    {
+      "speaker": "USER",
+      "text": "go ahead and finalize the wip release"
+    },
+    {
+      "speaker": "USER",
+      "text": "<task-notification>\n<task-id>bx6716ttf</task-id>\n<tool-use-id>toolu_01G8VtrKmkMaUak2N78TLroa</tool-use-id>\n<output-file>C:\\Users\\JOHNHE~1\\AppData\\Local\\Temp\\claude\\D--Git-Be-Sentient-kb-proto-1\\2ebb51b6-9c84-4ce5-8fc6-024d450472a1\\tasks\\bx6716ttf.output</output-file>\n<status>completed</status>\n<summary>Background command \"Build 0.2.1 MSI from branch tip\" completed (exit code 0)</summary>\n</task-notification>"
+    },
+    {
+      "speaker": "USER",
+      "text": "That zip was me prepping to send it manually \u2014 leave it"
+    },
+    {
+      "speaker": "USER",
+      "text": "I tested the .msi for 0.2.1 on bossk. It all seems to be working (as understood)"
+    },
+    {
+      "speaker": "USER",
+      "text": "Leave the release notes as-is, don't add the validation line. That said, I'm still not completely happy with the KB dropping items on the prompt response (like the total number of pets question with Otto). To me, this feels like an outage. Ideally, it would always include the full set of records in resposne to prompts. Is this related to how were using agents (perhaps in a less than ideal manner?) or building out the RRF?"
+    },
+    {
+      "speaker": "USER",
+      "text": "capture this to a new discussion. I want to pick this back back up, but need to do some other things first."
+    },
+    {
+      "speaker": "USER",
+      "text": "Can you make sure that the releases for dryrun-0.2.0 and dryrun-0.2.1-wip are staged on be-sentient, as well as on johnghendricks github repos?"
+    },
+    {
+      "speaker": "USER",
+      "text": "yes, bring be-sentient's branch topology in line with origin"
+    },
+    {
+      "speaker": "USER",
+      "text": "push dryrun-0.2.1 to both"
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "DYgAMYeOIaphiyDRyXBWd",
+      "text": "abl-john-b requested Vault Talk notes on May 27, 2026 at 14:28:39"
+    },
+    {
+      "id": "Woisn0BNJGA71XJGEwhiw",
+      "text": "abl-john-b prompted for a list of attendees in the Meeting Checkin on May 27, 2026 at 15:12:13"
+    },
+    {
+      "id": "MnW_WN_kpvTNA0B5XL1ES",
+      "text": "abl-john-b asked about Costco's policy in 2020 and 2026 on May 27, 2026 at 15:14:10 and 15:14:50 respectively"
+    },
+    {
+      "id": "LACRYePvXOtkRmVWuaQtY",
+      "text": "abl-john-b instructed to build a release .pkg of dryrun-0.2.0 and download it to the /artifacts folder on May 27, 2026 at 16:45:28"
+    },
+    {
+      "id": "WIuxHuc71oZtg4wf32eK1",
+      "text": "abl-john-b planned to move current work and tweaks to new branches 'dryrun-0.2.1' post dryrun-0.2.0 build on May 27, 2026 at 16:52:01"
+    },
+    {
+      "id": "HdhwicHLX3v1vYorDRiaW",
+      "text": "abl-john-b instructed a rebuild on May 27, 2026 at 17:04:58 and requested to post release in Github for dryrun-0.2.0"
+    },
+    {
+      "id": "-SWfxKpGaw9rq1XYZgUhY",
+      "text": "abl-john-b wanted a work-in-progress release of dryrun-0.2.1 built so his friend could compare against older version on May 27, 2026 at 17:14:25"
+    },
+    {
+      "id": "Uvc3te-AbpAkpCVEr4PkU",
+      "text": "A task to build 'dryrun-0.2.1 MSI from branch tip' was completed successfully as indicated by a status summary on May 27, 2026 at 17:18:30"
+    },
+    {
+      "id": "WKBO2SwcQCS_rZayyeh7G",
+      "text": "abl-john-b tested '.msi for 0.2.1' on 'bossk', and confirmed it to be working properly on or around May 27, 2026 at 17:58:18"
+    },
+    {
+      "id": "60edCRavZ7vZlNew50O40",
+      "text": "abl-john-b is working with release notes that may need validation but left comments out for the moment. Also raised concerns about KB responses completeness issues on or around May 27, 2026 at 18:01:08"
+    },
+    {
+      "id": "50S1TyzFRXiQU50yACaCb",
+      "text": "abl-john-b pushed dryrun-0.2.1 to repositories both on 'be-sentient' and johnghendricks Github repos and initiated discussions about possible inefficiencies in KB usage or RRF development issues on May 27, 2026 at 18:36:18"
+    },
+    {
+      "id": "sydmiwB9YFSsqI78cmd8c",
+      "text": "abl-john-b wants releases for dryrun-0.2.0 and dryrun-0.2.1-wip to be staged on both 'be-sentient' repositories as well as johnghendricks Github repos by May 27, 2026"
+    }
+  ]
+}

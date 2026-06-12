@@ -1,0 +1,72 @@
+{
+  "bundle_05_a": {
+    "items": [
+      {"id": "uob084s1VrantZTV_DkYj", "grade": "OVER", "why": "decisions/ folder discussion was ASSISTANT turn only"},
+      {"id": "ILRtdIwtnEz8_FSW1skCs", "grade": "PARTIAL", "why": "USER asked for CrewAI doc but debt-map framing is ASSISTANT detail"},
+      {"id": "NAlfC1aNNyBnP90auvdGg", "grade": "PARTIAL", "why": "USER said testing on bossk; exact UTC timestamp inferred from metadata"},
+      {"id": "0Sykzp3PoIr__XWpNON6q", "grade": "GROUNDED", "why": "USER pasted kb config output showing version and install details"},
+      {"id": "JdF1A4Lz2gK7nALkcTuqa", "grade": "OVER", "why": "File names inferred from command output, not user's own words"},
+      {"id": "t43eTzNDEDaKPbuBUX3VN", "grade": "OVER", "why": "Directory path inferred from tool output in user turn"},
+      {"id": "lfpSW3LOVGsdm6uzJPEw8", "grade": "OVER", "why": "May 6 date from ASSISTANT analysis of command output, not user"},
+      {"id": "u1sDH7od_SGMbJ-Ai0qKD", "grade": "OVER", "why": "Apr 20 / May 1 dates inferred from kb tool output, not user's words"},
+      {"id": "7WE7Wr8ghcNev7S8bJpwx", "grade": "OVER", "why": "June 1 meeting details from kb command output, not user"},
+      {"id": "wJdLolYMWyZjys9EdKsca", "grade": "OVER", "why": "Hank McLendon topics from kb output, not the user's own statements"},
+      {"id": "0v0SbrvZcH2sdyUhTMtVV", "grade": "GROUNDED", "why": "USER explicitly expressed concern about repeated errors and ongoing adjustments"},
+      {"id": "wN4KuwV7UQWHcRqanOUja", "grade": "GROUNDED", "why": "USER said write up decision doc tying to CrewAI fork"},
+      {"id": "sX8JayeUqxon4rnpD17sq", "grade": "GROUNDED", "why": "USER said we've been straying from original CrewAI vision"},
+      {"id": "_gyhpccSsWzja0JoI_DUK", "grade": "GROUNDED", "why": "USER said push to both"},
+      {"id": "Jw-DHux7B3ddPJ5GOpDaA", "grade": "OVER", "why": "Directory structure and filename came from ASSISTANT turn"}
+    ]
+  },
+  "bundle_12_b": {
+    "items": [
+      {"id": "CtNUVARIGG2xyhFj1YE2o", "grade": "OVER", "why": "Drawn from injected plan-skeleton skill boilerplate, not user's words"},
+      {"id": "7DUUHkODFbYj9YAaKPeQS", "grade": "OVER", "why": "Drawn from injected skill boilerplate, not user's genuine words"},
+      {"id": "hvD9q_-1UZwZ1rdTV28nk", "grade": "OVER", "why": "HANDOFF.md convention from injected skill boilerplate"},
+      {"id": "zF0ErVxzuDq054b7SFeTh", "grade": "OVER", "why": "Instructions drawn from injected skill boilerplate"},
+      {"id": "OnXJYxVMxhUBy4SXXdvmy", "grade": "OVER", "why": "Context-pressure pausing mechanics from skill boilerplate"},
+      {"id": "UFga9nSuPzl_xYTnsnlTz", "grade": "OVER", "why": "25+ tool turns threshold from injected skill boilerplate"},
+      {"id": "V-W51fkENSXek8ODJHoh9", "grade": "OVER", "why": "File paths from injected skill boilerplate argument"},
+      {"id": "A_vONITmqqfxHTQkOo2gJ", "grade": "OVER", "why": "Directory conventions from skill boilerplate"},
+      {"id": "FejESxeUvG6jnJ5nQdK8Y", "grade": "OVER", "why": "Skill invocation argument path; not a genuine statement about user"},
+      {"id": "4ZeNKy2q8G1O6eeexLzHX", "grade": "OVER", "why": "Plan path inferred from skill invocation argument metadata"},
+      {"id": "n-iv_10vE2h4Kg00jBTYU", "grade": "OVER", "why": "Memory store path from hardcoded skill boilerplate"},
+      {"id": "v-776vwmYlC64GvB6Qvz6", "grade": "OVER", "why": "CLAUDE.md detail from injected skill boilerplate"},
+      {"id": "67JWO2LaFO7NQvOESeuIH", "grade": "OVER", "why": "Audit goal drawn from injected skill boilerplate"},
+      {"id": "4BmQKOkjlo8YtHMft3laI", "grade": "PARTIAL", "why": "USER said yes proceed; specific timestamp not from user's words"},
+      {"id": "2a2gmWETz7bxlnDj7lXXH", "grade": "PARTIAL", "why": "USER said commit and push the pre-plan; timestamp inferred"}
+    ]
+  },
+  "bundle_10_b": {
+    "items": [
+      {"id": "DYgAMYeOIaphiyDRyXBWd", "grade": "PARTIAL", "why": "USER asked for Vault Talk notes; timestamp inferred"},
+      {"id": "Woisn0BNJGA71XJGEwhiw", "grade": "PARTIAL", "why": "USER ran kb prompt for attendees; timestamp inferred"},
+      {"id": "MnW_WN_kpvTNA0B5XL1ES", "grade": "PARTIAL", "why": "USER asked about Costco policy in 2020 and 2026; timestamps inferred"},
+      {"id": "LACRYePvXOtkRmVWuaQtY", "grade": "PARTIAL", "why": "USER requested .pkg build to /artifacts; timestamp inferred"},
+      {"id": "WIuxHuc71oZtg4wf32eK1", "grade": "PARTIAL", "why": "USER stated plan for dryrun-0.2.1 branch/tag; timestamp inferred"},
+      {"id": "HdhwicHLX3v1vYorDRiaW", "grade": "PARTIAL", "why": "USER said rebuild and asked about GitHub release; timestamp inferred"},
+      {"id": "-SWfxKpGaw9rq1XYZgUhY", "grade": "PARTIAL", "why": "USER wanted WIP release for friend comparison; timestamp inferred"},
+      {"id": "Uvc3te-AbpAkpCVEr4PkU", "grade": "OVER", "why": "Task notification was system-injected, not user's own words"},
+      {"id": "WKBO2SwcQCS_rZayyeh7G", "grade": "PARTIAL", "why": "USER said tested .msi on bossk and it's working; timestamp inferred"},
+      {"id": "60edCRavZ7vZlNew50O40", "grade": "PARTIAL", "why": "USER raised KB completeness concern; may-need-validation mischaracterizes"},
+      {"id": "50S1TyzFRXiQU50yACaCb", "grade": "PARTIAL", "why": "USER said push to both; conflates with separate KB discussion"},
+      {"id": "sydmiwB9YFSsqI78cmd8c", "grade": "PARTIAL", "why": "USER asked to stage releases on both repos; timestamp inferred"}
+    ]
+  },
+  "bundle_13_b": {
+    "items": [
+      {"id": "mXZhwffVi01ruXae68SrT", "grade": "PARTIAL", "why": "USER said testing on bossk; PowerShell/CLI expertise generalization added"},
+      {"id": "lJzkTYC_uFPpwqB3B28Ez", "grade": "PARTIAL", "why": "USER ran kb config show; install details from output, not user's words"},
+      {"id": "v5bPleVGTKbI8uuhDwLB1", "grade": "OVER", "why": "Ingest directory path inferred from command output, not user's words"},
+      {"id": "E41pp6qQIT-21nIV76kOg", "grade": "OVER", "why": "May 1 date inferred from kb tool output, not user's own words"},
+      {"id": "QdkkhRiw1k60L-WCXk7Vo", "grade": "OVER", "why": "Specific kb prompt commands from pasted tool output, not user's own prompts"},
+      {"id": "f1RTN-_sm7XrCdJYbfZ28", "grade": "OVER", "why": "May 1 correlation from command output analysis, not user's words"},
+      {"id": "S2E7-eiwG4rNKJNxASzXz", "grade": "OVER", "why": "Meeting details from kb command output, not user's own words"},
+      {"id": "-bCVZJxNO_pzzRg3qW9PU", "grade": "OVER", "why": "Specific meeting topics from kb output, not user's own words"},
+      {"id": "0CsUYV3tlfJ9d4pjgus23", "grade": "OVER", "why": "Hank McLendon topic analysis from kb output, not user's words"},
+      {"id": "z9VY5IKPW2IlPEGW9VYaS", "grade": "GROUNDED", "why": "USER said write decision doc tying to CrewAI fork"},
+      {"id": "q8sdVpM-WMbBIZgWhbi3W", "grade": "GROUNDED", "why": "USER explicitly expressed concern about repeated errors needing adjustments"},
+      {"id": "Ash-AIYcygTHWJeM-gwWK", "grade": "GROUNDED", "why": "USER said straying from original CrewAI vision for kb quality"}
+    ]
+  }
+}

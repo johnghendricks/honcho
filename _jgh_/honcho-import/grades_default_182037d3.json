@@ -1,0 +1,11 @@
+{"workspace":"default","orig":"182037d3-8300-440e-87fb-73cca3aa3541","items":[
+{"id":"HubWpNTqFvBbMLTSCQ8WM","grade":"PARTIAL","leakage":false,"why":"User wants to go through the named doc section by section discussing failures; 'with their team members' is unsupported addition."},
+{"id":"azL1PyWJuVM5DkzaiSoU7","grade":"GROUNDED","leakage":false,"why":"User: 'A skipped test is as bad as a failure, because it points to something being wrong.'"},
+{"id":"z4wgQL0SdKvR8RzsLtGxm","grade":"GROUNDED","leakage":false,"why":"User said 'Note your lean, then continue to Cluster B'; conclusion accurately restates and disclaims identity inference."},
+{"id":"4WOMQHnKiWsuRITt9BIDl","grade":"PARTIAL","leakage":false,"why":"User said 'Agreed. Continue to next cluster'; the specific timestamp 22:50:15 isn't from user's words, an added detail."},
+{"id":"TsL73xBJevQiaX9JfV_9i","grade":"GROUNDED","leakage":false,"why":"User: '(b) merits more research and testing to validate earlier claims that are now murky and without proof.'"},
+{"id":"7kFhK_nwzECeQeVWj_okM","grade":"GROUNDED","leakage":false,"why":"User: 'we'll move on to (a) or remove the test entirely' if research produces anything."},
+{"id":"6cxd6qwFdWjDBDbpDVejM","grade":"GROUNDED","leakage":false,"why":"User wrote 'Fix P2, Fix P1, C: test , D: fix it!' — uses 'Fix','C:','D:' terminology."},
+{"id":"8pRpbE0V41uPKf6Zb4DBk","grade":"GROUNDED","leakage":false,"why":"User: 'split commits, the D work belongs separate from A/B/C - apply doc corrections and update memory.'"},
+{"id":"KW3zUTA7LjmZt-4ccimjX","grade":"GROUNDED","leakage":false,"why":"User explicitly separates D from A/B/C for commits, demonstrating awareness of the lettered tasks."}
+]}

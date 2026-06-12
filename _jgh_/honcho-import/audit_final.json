@@ -1,0 +1,41 @@
+{
+  "per_arm": {
+    "a": {
+      "GROUNDED": 29,
+      "OVER": 87,
+      "PARTIAL": 16
+    },
+    "b": {
+      "PARTIAL": 19,
+      "OVER": 90,
+      "GROUNDED": 15
+    },
+    "c": {
+      "GROUNDED": 26,
+      "OVER": 77,
+      "PARTIAL": 16,
+      "HALLUCINATED": 1
+    }
+  },
+  "rates": {
+    "a": {
+      "n": 132,
+      "grounded_pct": 21.96969696969697,
+      "over_pct": 65.9090909090909,
+      "partial_pct": 12.121212121212121
+    },
+    "b": {
+      "n": 124,
+      "grounded_pct": 12.096774193548388,
+      "over_pct": 72.58064516129032,
+      "partial_pct": 15.32258064516129
+    },
+    "c": {
+      "n": 120,
+      "grounded_pct": 21.666666666666668,
+      "over_pct": 65.0,
+      "partial_pct": 13.333333333333334
+    }
+  },
+  "issues": []
+}

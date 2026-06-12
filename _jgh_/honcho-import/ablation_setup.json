@@ -1,0 +1,25 @@
+{
+  "ws": "ablation",
+  "n_sessions": 50,
+  "src_msgs": 788,
+  "arms": [
+    {
+      "arm": "A",
+      "john_peer": "abl-john-a",
+      "sessions": 50,
+      "john_msgs": 413
+    },
+    {
+      "arm": "B",
+      "john_peer": "abl-john-b",
+      "sessions": 50,
+      "john_msgs": 413
+    },
+    {
+      "arm": "C",
+      "john_peer": "abl-john-c",
+      "sessions": 50,
+      "john_msgs": 413
+    }
+  ]
+}

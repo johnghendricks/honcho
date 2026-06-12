@@ -1,0 +1,50 @@
+{
+  "bundle_14_b": {
+    "items": [
+      {"id": "EDkkIj3--ORS8L04RQ2jd", "grade": "OVER", "why": "Drawn from injected Claude API skill boilerplate, not user's own words"},
+      {"id": "QoRqOJ3HwJVJvZNi-Yt86", "grade": "OVER", "why": "Drawn from injected Claude API skill boilerplate, not user's own words"},
+      {"id": "NdEoSqGCdoSeyyl1bUqx4", "grade": "OVER", "why": "Migration details come from injected API docs, not user statement"},
+      {"id": "bp2Czrsl6cC2EznGOHBXC", "grade": "OVER", "why": "Extended thinking detail from injected API boilerplate, not user"},
+      {"id": "tBaYHOL58x0P6X73xLhKT", "grade": "OVER", "why": "Sampling parameter info from injected API docs, not user's own words"},
+      {"id": "7f3Mjdg1y_wNPEEdceJcU", "grade": "OVER", "why": "Effort parameter detail from injected API docs, not user statement"},
+      {"id": "8fCdufASbD6J0pkNdTzek", "grade": "OVER", "why": "Task budget info from injected API docs, not user's own words"},
+      {"id": "XF2g0Z-ilnUI7vrInmbpq", "grade": "OVER", "why": "Capabilities info from injected API docs, not user statement"},
+      {"id": "U2YxXnwMt-6DRBmQ4gyj8", "grade": "OVER", "why": "Behavioral shift details from injected API docs, not user"},
+      {"id": "wGstGYJlObADKvsTwx8n1", "grade": "OVER", "why": "Migration path from injected API docs, not user's own words"},
+      {"id": "HJKm4aS83k9tibsLv10B4", "grade": "OVER", "why": "Cybersecurity detail inferred from injected docs, not user statement"},
+      {"id": "AcJsbR2SNM16CESsQ93Jx", "grade": "OVER", "why": "Broad character generalization; no genuine user turn supports it"},
+      {"id": "fYIMu32FWEl4N2E19zZmo", "grade": "OVER", "why": "Migration procedure detail from injected docs, not user statement"},
+      {"id": "RbkUbhKQcAiSACRpr07sd", "grade": "OVER", "why": "API structure knowledge inferred from injected docs, not user"},
+      {"id": "wXN_YlurjVnMOkqnzuw1z", "grade": "OVER", "why": "Technical terminology familiarity inferred from injected boilerplate"},
+      {"id": "7EIeFx6dqyJLSna_4cHtm", "grade": "OVER", "why": "Tool description guidance from injected API docs, not user's words"},
+      {"id": "22EWCh-TgWCNx7WUJUsok", "grade": "OVER", "why": "Enum usage info from injected API docs, not user's own statement"}
+    ]
+  },
+  "bundle_08_b": {
+    "items": [
+      {"id": "SAOoA41oN69u8c2MhQcf2", "grade": "OVER", "why": "File path came from injected skill ARGUMENTS boilerplate, not user's own words"},
+      {"id": "2p26lcoS3_NZ8-sHxOL9w", "grade": "OVER", "why": "Drawn from injected plan-audit skill boilerplate, not genuine user turn"},
+      {"id": "hZlsm7c9lZ0EbM7WU8u5Q", "grade": "OVER", "why": "Base directory from injected skill boilerplate, not user's own words"},
+      {"id": "RK-BZoQpel03SDf0gKHmB", "grade": "GROUNDED", "why": "User genuinely said 'apply all audit fixes'"}
+    ]
+  },
+  "bundle_11_b": {
+    "items": [
+      {"id": "u31-4M1b4mt9OAGWJijUo", "grade": "GROUNDED", "why": "User genuinely asked about kb commands via MCPServer"},
+      {"id": "1G0uALSGxwvrkklHzF0LI", "grade": "GROUNDED", "why": "User genuinely repeated the MCPServer kb commands question"},
+      {"id": "yVtMPC-8cEqQc5skcfvJ7", "grade": "GROUNDED", "why": "User genuinely asked about kb commands via MCP server from codebase"}
+    ]
+  },
+  "bundle_15_b": {
+    "items": [
+      {"id": "CJa8nKJFZzd74C9WZtusI", "grade": "GROUNDED", "why": "User genuinely invoked build-plan for that M2.1 path"},
+      {"id": "F-A5Kro0uslW5qj8uhvHg", "grade": "OVER", "why": "User instructed assistant to read HANDOFF.md; user didn't read it"},
+      {"id": "remSKc7D78q6W8OzTVvFE", "grade": "OVER", "why": "build-plan skill instructions are injected boilerplate, not user's words"},
+      {"id": "eC6IPBFMLHe76Macy3Cgq", "grade": "OVER", "why": "Skill behavior detail from injected boilerplate, not user statement"},
+      {"id": "1FTDWHz_jma8W6pG7qre5", "grade": "OVER", "why": "Input plan anchor rule from injected skill boilerplate, not user"},
+      {"id": "-F9hjpW9kKxBebdxzKVLc", "grade": "OVER", "why": "Multiple-plan confirmation rule from injected boilerplate, not user"},
+      {"id": "qVQ2W28BgWroXmY_GX_Dh", "grade": "OVER", "why": "Compact flag detail from injected skill boilerplate, not user"},
+      {"id": "pECYBmCLl-UFAD4KOlm_q", "grade": "GROUNDED", "why": "User genuinely said 'update handoff before I /clear'"}
+    ]
+  }
+}

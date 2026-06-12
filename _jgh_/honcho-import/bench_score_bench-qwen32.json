@@ -1,0 +1,17 @@
+{
+  "workspace": "bench-qwen32",
+  "counts": {
+    "GROUNDED": 88,
+    "PARTIAL": 10,
+    "OVER": 20,
+    "HALLUCINATED": 1
+  },
+  "rates": {
+    "n": 119,
+    "grounded_pct": 73.9,
+    "partial_pct": 8.4,
+    "over_pct": 17.6,
+    "leakage": 21
+  },
+  "issues": []
+}

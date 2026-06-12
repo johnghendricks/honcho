@@ -1,0 +1,50 @@
+{
+  "transcript": [
+    {
+      "speaker": "USER",
+      "text": "Resume `/build-plan` for `documents/planning-building/planning/M2/M2.1-Text-Bearing-Document-Formats-Pre-Plan.md`. Read `documents/planning-building/planning/M2/HANDOFF.md` first, then the three M2.1 detail-plan Parts in order, then open Phase 8 (unit + integration + CLI test scaffolding)"
+    },
+    {
+      "speaker": "USER",
+      "text": "Base directory for this skill: D:\\Git\\Be-Sentient\\kb-proto-1\\.claude\\skills\\build-plan\n\n# Build Plan\n\nYou are turning one or more **detail plans** (implementation-shaped: phases, file-by-file changes, acceptance criteria) into actual code, phase by phase. Match the plan strictly \u2014 do not invent decisions the plan didn't make, do not refactor outside the phase's named files, do not silently expand scope. Surface drift as a finding and stop; the user resolves before you continue.\n\nThe **input plan reference is the anchor**: every default path (sibling-doc discovery, audit lookup, output of acceptance checks) is computed relative to it. The skill avoids hardcoding project-specific layouts; see \"Customization points\" at the end for the few paths a user may want to pin.\n\nThis skill **writes code**. It is materially different from `/plan-details` (which writes plans) and `/code-audit` (which proposes fixes for review). Treat each phase as an atomic unit of work: read what's needed, edit exactly what's named, verify acceptance criteria, then stop at the boundary so the user can review the diff before either approving the next phase or compacting context.\n\n## When this skill fires\n\n- \"build the plan\" / \"implement the plan\" / \"build-plan <file>\"\n- \"implement M1.X\" / \"execute the M1.X detail plan\"\n- The user names (or drags in) a `*-Detail-Plan*.md` file or a folder of detail plans and asks for implementation.\n- After a detail plan is approved (often after `/plan-audit` returns clean) and the user signals \"go\".\n\nIf the user invokes this skill without naming anything, default to the most recently modified `*-Detail-Plan*.md` reachable from the current working directory (`Glob` `**/*-Detail-Plan*.md` sorted by mtime, descending). Do **not** default to a `*-Pre-Plan*.md` \u2014 implementation off raw skeletons risks hallucinated decisions; ask which detail plan to use instead.\n\n## Argument parsing\n\nTwo arguments, the first effectively required.\n\n### 1. `pathToBuildPlan` (positional, required in practice)\n\nA path to **either** a skeleton pre-plan `.md`, a single detail plan `.md`, or a folder containing detail plans. Accept paths in any of these forms:\n\n- Absolute path\n- Forward-slash path\n- Path relative to the current working directory\n- Bare filename if unambiguous via `Glob **/<name>` from the current working directory\n- Filename with no extension (append `.md` if the bare form doesn't resolve)\n\n**Resolution rules, in order:**\n\n1. **Skeleton pre-plan input** (`*-Pre-Plan*.md` or filename body declares itself a pre-plan / skeleton): the skill **does not implement off th\n\u2026[truncated]\u2026\n-checkpoint protocol is independent of this and stays at phase boundaries.\n- **Commit policy** \u2014 defaults to \"never auto-commit.\" Flip to \"auto-commit per phase if all acceptance criteria pass\" for projects that want a tight per-phase history.\n- **Project memory store path** \u2014 defaults to Claude Code's standard per-project location at `~/.claude/projects/<encoded-cwd>/memory/`. If your project keeps planning context elsewhere, pin it here.\n- **Specs folder names** \u2014 defaults to looking for `Specifications/`, `specs/`, `spec/`. Add project-specific folder names if yours differ.\n- **Audits folder** \u2014 defaults to a search for `Audits/` near the project root. Pin a specific path if your audits live elsewhere.\n- **Compact-checkpoint trigger band** \u2014 currently 17\u201323% used context (i.e., 20% \u00b13%) when the indicator is readable, plus a fallback heuristic. Tighten or loosen here if your team prefers later pauses (e.g., 50\u201360% used for longer runs) or earlier ones (e.g., 10\u201315% for tighter runs). The heuristic thresholds (tool-turn count, files-touched count, diff-line count) are also tunable.\n\n\nARGUMENTS: documents/planning-building/planning/M2/M2.1-Text-Bearing-Document-Formats-Pre-Plan.md"
+    },
+    {
+      "speaker": "USER",
+      "text": "update handoff before I /clear"
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "CJa8nKJFZzd74C9WZtusI",
+      "text": "abl-john-b is working on a document related to building planning located at `/build-plan` for `documents/planning-building/planning/M2/M2.1-Text-Bearing-Document-Formats-Pre-Plan.md` as of May 12, 2026."
+    },
+    {
+      "id": "F-A5Kro0uslW5qj8uhvHg",
+      "text": "abl-john-b read the document `documents/planning-building/planning/M2/HANDOFF.md` before starting work on `/build-plan` and its related documents on May 12, 2026."
+    },
+    {
+      "id": "remSKc7D78q6W8OzTVvFE",
+      "text": "abl-john-b has provided instructions and guidelines for a skill called 'build-plan' intended to turn detail plans into actual code, phase by phase."
+    },
+    {
+      "id": "eC6IPBFMLHe76Macy3Cgq",
+      "text": "abl-john-b has specified the process of this skill to avoid hardcoding project-specific layouts and surface drift as a finding when it occurs."
+    },
+    {
+      "id": "1FTDWHz_jma8W6pG7qre5",
+      "text": "The input plan reference is required and serves as an anchor for all default paths."
+    },
+    {
+      "id": "-F9hjpW9kKxBebdxzKVLc",
+      "text": "If there are multiple detail plans, the user is prompted to confirm which ones are in scope before proceeding with implementation."
+    },
+    {
+      "id": "qVQ2W28BgWroXmY_GX_Dh",
+      "text": "A pause-to-compact flag is used (defaulting to true) to allow the user control over when context should be compacted during long-running tasks."
+    },
+    {
+      "id": "pECYBmCLl-UFAD4KOlm_q",
+      "text": "abl-john-b intends to execute a command named '/clear' after an update handoff."
+    }
+  ]
+}

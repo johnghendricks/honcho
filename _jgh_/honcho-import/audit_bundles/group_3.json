@@ -1,0 +1,348 @@
+{
+  "bundle_22_c": {
+    "items": [
+      {
+        "id": "mIjnO_6S7Id5nZlS52_90",
+        "grade": "OVER",
+        "why": "Drawn from injected SDK boilerplate, not user's own words"
+      },
+      {
+        "id": "ejMSLAR8Wp5P30z07FcNI",
+        "grade": "OVER",
+        "why": "Drawn from injected SDK boilerplate, not user's own words"
+      },
+      {
+        "id": "a85QP-rc43ksgJottwROA",
+        "grade": "GROUNDED",
+        "why": "User explicitly asked to resume build-plan at Phase 5"
+      },
+      {
+        "id": "0js8kRvBrL5M1B0922aMm",
+        "grade": "GROUNDED",
+        "why": "User named that exact file path in genuine turn"
+      },
+      {
+        "id": "NzQ34ZH0qVgZx6ML7Wq7A",
+        "grade": "OVER",
+        "why": "Drawn from injected build-plan skill boilerplate"
+      },
+      {
+        "id": "oKuKQmWb167J0E_Mpj7Sj",
+        "grade": "OVER",
+        "why": "Base directory from injected skill boilerplate, not user's words"
+      },
+      {
+        "id": "DIg4gSu9lxJIN5yzPLhLz",
+        "grade": "OVER",
+        "why": "Inferred from injected claude-api skill boilerplate"
+      },
+      {
+        "id": "p_-97esdU-BEJhjRgGWkc",
+        "grade": "OVER",
+        "why": "Drawn from injected managed-agents SDK boilerplate"
+      },
+      {
+        "id": "SyBUNka46NaDBBdQ5j23t",
+        "grade": "OVER",
+        "why": "Drawn from injected SDK documentation boilerplate"
+      },
+      {
+        "id": "jq0QWCQ7ftoIyzihOuI0Q",
+        "grade": "OVER",
+        "why": "Drawn from injected Anthropic SDK boilerplate docs"
+      },
+      {
+        "id": "k6s3T4ak2tFrGH7gl5hAB",
+        "grade": "OVER",
+        "why": "Drawn from injected SDK boilerplate, not user's own code"
+      },
+      {
+        "id": "OAQ8HRz-TxXcqSyPsXKlw",
+        "grade": "OVER",
+        "why": "Drawn from injected SDK code examples in boilerplate"
+      },
+      {
+        "id": "6Q8EwR6_YP1tfUboXEOWA",
+        "grade": "OVER",
+        "why": "Drawn from injected SDK boilerplate reference tables"
+      },
+      {
+        "id": "T72yRkhgvhABPyMDTrb7N",
+        "grade": "OVER",
+        "why": "Drawn from injected SDK boilerplate, not user's statement"
+      },
+      {
+        "id": "X7RQOubLJcjCeI4N8T7Pb",
+        "grade": "OVER",
+        "why": "Drawn from injected SDK documentation boilerplate"
+      },
+      {
+        "id": "QVzeAq3CXkdNg5NFYJKrr",
+        "grade": "OVER",
+        "why": "Drawn from injected SDK auth boilerplate docs"
+      },
+      {
+        "id": "E3242ZLrH2fPJjNFZywl9",
+        "grade": "OVER",
+        "why": "Drawn from injected SDK live-sources boilerplate"
+      },
+      {
+        "id": "sqALTqsN-PI5MnqWrmVjn",
+        "grade": "OVER",
+        "why": "Drawn from injected managed-agents SDK boilerplate"
+      },
+      {
+        "id": "APpSLAJOfVDoXN64njH1r",
+        "grade": "OVER",
+        "why": "Drawn from injected self-hosted sandbox boilerplate docs"
+      },
+      {
+        "id": "XlzeLxymhgTBGD1gj466x",
+        "grade": "OVER",
+        "why": "Drawn from injected OAuth/MCP SDK boilerplate"
+      },
+      {
+        "id": "vaEzo2PwKELSOVribnz0t",
+        "grade": "OVER",
+        "why": "Drawn from injected vault credential boilerplate docs"
+      },
+      {
+        "id": "5B-f_hVatzNNjTCsKh7tA",
+        "grade": "OVER",
+        "why": "Drawn from injected SDK OAuth boilerplate"
+      },
+      {
+        "id": "dxdf5dcvTmwdx_UEEOeXx",
+        "grade": "OVER",
+        "why": "Drawn from injected skills section of SDK boilerplate"
+      },
+      {
+        "id": "5vDvYa_uo_5gC2ckfA-Hx",
+        "grade": "OVER",
+        "why": "Drawn from injected skills section of SDK boilerplate"
+      },
+      {
+        "id": "j3KT0fT3q2520DFcCs5lq",
+        "grade": "OVER",
+        "why": "Drawn from injected SDK boilerplate, not user's words"
+      },
+      {
+        "id": "HGQ4cqqrKUwO5xw_54TnX",
+        "grade": "OVER",
+        "why": "Drawn from injected agent skills SDK boilerplate"
+      },
+      {
+        "id": "74lfzhZ0ZrI480P3IPKL3",
+        "grade": "OVER",
+        "why": "Drawn from injected migration boilerplate docs"
+      },
+      {
+        "id": "P76Qn1bF9H2wVtqIgEY5C",
+        "grade": "OVER",
+        "why": "Drawn from injected managed-agents boilerplate docs"
+      },
+      {
+        "id": "RmtZgx8gh7e59N-rHek7F",
+        "grade": "OVER",
+        "why": "Drawn from injected custom tool events boilerplate"
+      },
+      {
+        "id": "hT8uGgxt1fSJlfvwniTH2",
+        "grade": "OVER",
+        "why": "Drawn from injected MCP/vault SDK boilerplate"
+      },
+      {
+        "id": "jeTAeorALJl0buSTbZINV",
+        "grade": "OVER",
+        "why": "Drawn from injected SDK session boilerplate docs"
+      },
+      {
+        "id": "_393OgwzLEuqwOkIqmjEL",
+        "grade": "OVER",
+        "why": "Model IDs from injected SDK boilerplate, not user's words"
+      },
+      {
+        "id": "AR0nTPbnecbt3qB9AozhB",
+        "grade": "OVER",
+        "why": "Migration steps from injected SDK boilerplate docs"
+      },
+      {
+        "id": "E88eNDK6eSM3X0tNziKR2",
+        "grade": "OVER",
+        "why": "Date from injected model-migration boilerplate docs"
+      },
+      {
+        "id": "8goDoArpb-YEKk49yPGc3",
+        "grade": "OVER",
+        "why": "Breaking change info from injected migration boilerplate"
+      },
+      {
+        "id": "I_oexaiJMdf5vId7CHJc_",
+        "grade": "OVER",
+        "why": "Beta headers info from injected migration boilerplate"
+      },
+      {
+        "id": "gINtqtW6fQTc7a-v9I8-P",
+        "grade": "OVER",
+        "why": "Stop reason info from injected migration boilerplate"
+      },
+      {
+        "id": "UCQ0TljUWSaAiJ1nCtuK3",
+        "grade": "OVER",
+        "why": "Migration instructions from injected boilerplate docs"
+      },
+      {
+        "id": "qr2byrI-4Cbu0tkZJYj_k",
+        "grade": "OVER",
+        "why": "Migration checklist from injected boilerplate docs"
+      },
+      {
+        "id": "dBsbtVbf-PpjTiBysngeM",
+        "grade": "OVER",
+        "why": "Effort level table from injected migration boilerplate"
+      },
+      {
+        "id": "I_yyelB_7RJbKQLxM9vI1",
+        "grade": "OVER",
+        "why": "Migration guidance from injected boilerplate docs"
+      },
+      {
+        "id": "sNtaMdvy5WvyHNAa7bejR",
+        "grade": "OVER",
+        "why": "Migration details from injected boilerplate docs"
+      },
+      {
+        "id": "zjAadhgMdGcfQVMV2Y_xe",
+        "grade": "OVER",
+        "why": "Filtering advice from injected migration boilerplate"
+      },
+      {
+        "id": "UrpGAJQvUPbBG9mKilli5",
+        "grade": "OVER",
+        "why": "Image resolution info from injected boilerplate docs"
+      },
+      {
+        "id": "q-C-DyGmuo34tgfyVJV8R",
+        "grade": "OVER",
+        "why": "Max resolution info from injected boilerplate docs"
+      },
+      {
+        "id": "VNTUY4t2WLstqDdg74o2Q",
+        "grade": "OVER",
+        "why": "Model info from injected models boilerplate docs"
+      },
+      {
+        "id": "94kBWg1DLToBk14uXxmqB",
+        "grade": "OVER",
+        "why": "Tool description guidance from injected boilerplate"
+      },
+      {
+        "id": "Fp6hwdr23SxaHZL8au7Pk",
+        "grade": "OVER",
+        "why": "Server-side tools info from injected boilerplate docs"
+      }
+    ]
+  },
+  "bundle_16_c": {
+    "items": [
+      {
+        "id": "POeYk_RA90JrZkl03LBP3",
+        "grade": "OVER",
+        "why": "File path came from injected skill boilerplate ARGUMENTS section"
+      },
+      {
+        "id": "bjW387X4P_whywkGkqmb5",
+        "grade": "GROUNDED",
+        "why": "User explicitly said 'apply all audit fixes'"
+      },
+      {
+        "id": "0G0btNM_4Q-4_bJR1EF4L",
+        "grade": "GROUNDED",
+        "why": "User explicitly said 'commit and push'"
+      }
+    ]
+  },
+  "bundle_00_a": {
+    "items": [
+      {
+        "id": "oZ3UTmTzIFonoBkffAu2h",
+        "grade": "OVER",
+        "why": "File path came from injected skill boilerplate ARGUMENTS section"
+      },
+      {
+        "id": "BroWPGnoIdGlwuCZZwTiT",
+        "grade": "OVER",
+        "why": "Project directory from injected skill boilerplate header"
+      },
+      {
+        "id": "Mt21azgXJXrHeG8baGCIi",
+        "grade": "GROUNDED",
+        "why": "User explicitly said 'apply all audit fixes'"
+      },
+      {
+        "id": "fFwIMS1rMmaK2vM03Whkz",
+        "grade": "OVER",
+        "why": "Audit date inferred from assistant output, not user's words"
+      }
+    ]
+  },
+  "bundle_04_a": {
+    "items": [
+      {
+        "id": "w0r3h4-E9-ZOG_pe4NPFP",
+        "grade": "OVER",
+        "why": "Context pressure signals from injected plan-skeleton boilerplate"
+      },
+      {
+        "id": "_HLp6Lf0l0VIzWxdgwBrs",
+        "grade": "OVER",
+        "why": "HANDOFF.md procedure from injected plan-skeleton boilerplate"
+      },
+      {
+        "id": "gpvIslf9UjX9QFsl9ySsr",
+        "grade": "OVER",
+        "why": "Resume procedure from injected plan-skeleton boilerplate"
+      },
+      {
+        "id": "V4PvwVF3UgD95x5sfAuPq",
+        "grade": "OVER",
+        "why": "Base directory from injected skill boilerplate, not user's words"
+      },
+      {
+        "id": "4Xk0u3lzweJYZdOPlixLY",
+        "grade": "OVER",
+        "why": "Checkpoint timing rules from injected skill boilerplate"
+      },
+      {
+        "id": "WQtWGEsd_6xQ-t95sM57N",
+        "grade": "OVER",
+        "why": "Pause message steps from injected plan-skeleton boilerplate"
+      },
+      {
+        "id": "MifS1VFyF7GMkc0ehJkvc",
+        "grade": "OVER",
+        "why": "Skill description from injected plan-audit boilerplate"
+      },
+      {
+        "id": "6X5uLvCvHnnQ3b5M7bVza",
+        "grade": "OVER",
+        "why": "Project path from injected skill ARGUMENTS boilerplate"
+      },
+      {
+        "id": "45pRYOAKkODQhTCz74CIR",
+        "grade": "OVER",
+        "why": "Audit dimensions from injected plan-audit boilerplate"
+      },
+      {
+        "id": "Sbiwn3Ll54iWdCP2gC5SO",
+        "grade": "GROUNDED",
+        "why": "User said 'yes, proceed' agreeing to apply fixes"
+      },
+      {
+        "id": "NtOr-u0qvx0HgBmEd-xYx",
+        "grade": "PARTIAL",
+        "why": "User said 'commit and push the pre-plan'; implications about repo access overstated"
+      }
+    ]
+  }
+}

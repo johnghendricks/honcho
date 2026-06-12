@@ -1,0 +1,16 @@
+{
+  "workspace": "default",
+  "counts": {
+    "PARTIAL": 10,
+    "GROUNDED": 63,
+    "OVER": 11
+  },
+  "rates": {
+    "n": 84,
+    "grounded_pct": 75.0,
+    "partial_pct": 11.9,
+    "over_pct": 13.1,
+    "leakage": 4
+  },
+  "issues": []
+}

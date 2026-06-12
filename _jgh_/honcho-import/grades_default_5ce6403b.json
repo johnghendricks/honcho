@@ -1,0 +1,10 @@
+{"workspace":"default","orig":"5ce6403b-1071-4be4-ae4c-bb0536e97456","items":[
+{"id":"nvao7MZJljdA1xVz6ZYzN","grade":"GROUNDED","leakage":false,"why":"User: 'What does the term alembic mean, in context of this project and codebase?'"},
+{"id":"MIqWSYuLxWPOOeqoksOoI","grade":"OVER","leakage":false,"why":"The 'alembic/versions/ folder' detail is asserted in the ASSISTANT turn, not by the user."},
+{"id":"-Ihw_eBgzM5I6dsju9uCa","grade":"OVER","leakage":false,"why":"Describes what claude/assistant explained; not something the user personally stated."},
+{"id":"1PPDrVcmp9kFxZZjsEnNq","grade":"OVER","leakage":false,"why":"The multi-store migration detail comes from the ASSISTANT turn; user only 'received' it, did not assert it."},
+{"id":"4g2OVhE3jXGwA6V5tzuPA","grade":"GROUNDED","leakage":false,"why":"User: 'I'm late to the game' / 'I'm late to understand the project context.'"},
+{"id":"zbpvNLSMknSmMSGXIFaOu","grade":"GROUNDED","leakage":false,"why":"User restated mental model: database starts 'base', changes applied via alembic files, reconstructed at runtime to current state."},
+{"id":"f5hy9KAYCkxi_JkoidHkB","grade":"GROUNDED","leakage":false,"why":"User: 'what triggers a new migration file?'"},
+{"id":"w0FDm3iHd1VHgJlwpb6Gr","grade":"GROUNDED","leakage":false,"why":"User: 'that was super helpful and helps me to understand a bit more of how this project works.'"}
+]}

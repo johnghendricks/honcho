@@ -1,0 +1,14 @@
+{
+  "_doc": "Fixed 8-session model-config benchmark set. Size-stratified across the corpus (2->28 msgs, one per size band), drawn from sessions already derived under qwen2.5:14b so the baseline needs no re-derive. SAME 8 sessions are loaded + graded for every config so the comparison is controlled (identical input; only the deriver config varies). orig session ids (no 'full-' prefix); session_name in any workspace = 'full-' + id.",
+  "selected_2026-06-12": true,
+  "sessions": [
+    "02234bd2-b4b4-4ef0-b7c6-a3bc7cecf1c7",
+    "455167e4-131a-4595-9b19-9113366c6d35",
+    "58aaf4f6-4c73-4286-841e-ec3de2b2ac36",
+    "5ce6403b-1071-4be4-ae4c-bb0536e97456",
+    "182037d3-8300-440e-87fb-73cca3aa3541",
+    "40c12239-1311-46e8-b6d6-02b572925549",
+    "d49f53de-c1ee-4acd-b588-57c7a3c2f39a",
+    "f1a03124-551f-4ff4-ab26-6b9917b944b9"
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "bundle_20_c": {
+    "items": [
+      {
+        "id": "k0LttH5uVq0_x1OvaW-Ub",
+        "grade": "OVER",
+        "why": "Date and framing inferred from injected skill boilerplate, not user's own words."
+      },
+      {
+        "id": "4wfuQZwZL5elyX-vfZ1lb",
+        "grade": "OVER",
+        "why": "Base directory is from injected skill boilerplate, not a genuine user statement."
+      },
+      {
+        "id": "YsmcWf9Xh632Los-qv66e",
+        "grade": "OVER",
+        "why": "Context-pressure thresholds are injected skill documentation, not user's own process."
+      },
+      {
+        "id": "xUQ0cPYVds3wBNlKc0MrR",
+        "grade": "OVER",
+        "why": "HANDOFF.md procedure is from injected skill boilerplate, not user's own words."
+      },
+      {
+        "id": "O34iQcdaTTwzE4da3rTkj",
+        "grade": "OVER",
+        "why": "Resume-after-pause protocol is injected skill documentation, not user's statement."
+      },
+      {
+        "id": "6AYaIsQxLjKLrmCqEsn8j",
+        "grade": "OVER",
+        "why": "Phase A/B checkpoints are from injected skill boilerplate, not user's own words."
+      },
+      {
+        "id": "ocKrfqp4rVFDTspKIIX39",
+        "grade": "OVER",
+        "why": "Midpoint checkpoint rule is from injected skill docs, not the user's statement."
+      },
+      {
+        "id": "1fNmAY3P60MUKR95q18KI",
+        "grade": "OVER",
+        "why": "Resume steps are from injected skill boilerplate, not user's own process description."
+      },
+      {
+        "id": "rgVA9rRPPxspgd6BShgDJ",
+        "grade": "OVER",
+        "why": "HANDOFF.md cleanup rule is injected skill boilerplate, not user's own words."
+      },
+      {
+        "id": "dGxOiLPL_R4td81G_ldGE",
+        "grade": "OVER",
+        "why": "Save-output behavior is from injected skill documentation, not user's statement."
+      },
+      {
+        "id": "AI4HLfyilQ6BiN_o8tdet",
+        "grade": "OVER",
+        "why": "Non-editing constraint is from injected skill documentation, not user's words."
+      },
+      {
+        "id": "TVbZnQd4r0FxoMoWlEsWN",
+        "grade": "OVER",
+        "why": "Plan-audit base directory is from injected skill boilerplate, not a user statement."
+      },
+      {
+        "id": "tYSP6RH41xbemNq6FAlOx",
+        "grade": "OVER",
+        "why": "Argument path is from injected skill boilerplate suffix, not a standalone user statement."
+      },
+      {
+        "id": "iAGZOwJqirFmjJNjN0vh8",
+        "grade": "GROUNDED",
+        "why": "User said 'yes, proceed' after blocking issue was identified — directly grounded."
+      },
+      {
+        "id": "o4po1LtltW3vRIs2R1ZZh",
+        "grade": "PARTIAL",
+        "why": "User did say 'commit and push'; trust inference is not explicitly stated."
+      },
+      {
+        "id": "3De1b_3d_fouENof9sY5p",
+        "grade": "OVER",
+        "why": "Collaborative environment/technical role inferred from assistant actions, not user's words."
+      }
+    ]
+  },
+  "bundle_21_c": {
+    "items": [
+      {
+        "id": "ambnn_U2ah5VcqE4hrr4O",
+        "grade": "GROUNDED",
+        "why": "User explicitly shared kb config output showing version, mode, and config settings."
+      },
+      {
+        "id": "985aLxq8fED2tiE8Vw9eZ",
+        "grade": "HALLUCINATED",
+        "why": "No ingest command or output appears anywhere in this transcript."
+      },
+      {
+        "id": "4FlDPsWynNjCspnabQeZ-",
+        "grade": "OVER",
+        "why": "Query result (May 6) is from pasted command output, not user's own statement about themselves."
+      },
+      {
+        "id": "quTsmvS-9f0zrAni81wBO",
+        "grade": "OVER",
+        "why": "June 1 summary content is from pasted command output, not user's own words."
+      },
+      {
+        "id": "wJiv9d8dZTuMfOWwsnXC6",
+        "grade": "OVER",
+        "why": "Hank's topics are from pasted command output, not user's own statement about themselves."
+      },
+      {
+        "id": "ADC6NoBj199vWoKe1hp3E",
+        "grade": "GROUNDED",
+        "why": "User explicitly voiced concern about scalability and bandaid solutions in genuine turn."
+      },
+      {
+        "id": "kqRE5EMMuCN6hEXXlBivV",
+        "grade": "GROUNDED",
+        "why": "User explicitly said they are interested in the CrewAI fork approach."
+      },
+      {
+        "id": "xT_F84BVWDN7InNeep-8T",
+        "grade": "GROUNDED",
+        "why": "User explicitly stated they feel they've been straying from the original CrewAI vision."
+      },
+      {
+        "id": "9XPIP4m0mk4GZqLEzPEvr",
+        "grade": "GROUNDED",
+        "why": "User said 'push to both', directly instructing a push after review."
+      },
+      {
+        "id": "IhGuw7VCm8oeKoMg9Tx5a",
+        "grade": "OVER",
+        "why": "Commit hash detail is from assistant's action, not from user's own words."
+      }
+    ]
+  },
+  "bundle_17_c": {
+    "items": [
+      {
+        "id": "An_pKh-53fmh5iGWCTyUI",
+        "grade": "GROUNDED",
+        "why": "User's first turn explicitly references this file path."
+      },
+      {
+        "id": "5UKKvbtuFjQygznjsrzEc",
+        "grade": "GROUNDED",
+        "why": "User explicitly said 'let's discuss m5' with that document."
+      },
+      {
+        "id": "UJHn7pVN-7T-RDerR4zyR",
+        "grade": "GROUNDED",
+        "why": "User explicitly requested creating new M5 grounded in codebase and replacing current content."
+      },
+      {
+        "id": "HXGTnaTWfAIOVgZxGJ4aA",
+        "grade": "GROUNDED",
+        "why": "User explicitly said to consider existing discussions, research, follow-ups, planning docs."
+      },
+      {
+        "id": "MxYOlgTDaFCwy_QZbmYXl",
+        "grade": "OVER",
+        "why": "'We'll do separate passes' means separate editing passes on the doc, not two-person review."
+      },
+      {
+        "id": "2nA-hD9vraW7yyw6JLJrS",
+        "grade": "PARTIAL",
+        "why": "User said 'commit' but timestamp detail is inferred from assistant turn, not user's words."
+      },
+      {
+        "id": "WiOAULnYMW-WBHFIyRISR",
+        "grade": "PARTIAL",
+        "why": "User said 'Fix the stale references then commit' but timestamp is from assistant, not user."
+      },
+      {
+        "id": "dP0B9-_BRsl10GJ0tPASb",
+        "grade": "PARTIAL",
+        "why": "User said 'fix all the broader CR-as-future framing' but timestamp sourced from assistant."
+      },
+      {
+        "id": "VlVBDdydNh459nY6Q-YBw",
+        "grade": "PARTIAL",
+        "why": "User said 'commit your document changes' but timestamp is from assistant turn, not user."
+      }
+    ]
+  },
+  "bundle_23_c": {
+    "items": [
+      {
+        "id": "RRcfontVFxAfCg8ISTetp",
+        "grade": "GROUNDED",
+        "why": "User's first turn explicitly names these file paths and the M2 directory."
+      },
+      {
+        "id": "fccLVnVgJdVkBN84YR3Yn",
+        "grade": "OVER",
+        "why": "'/build-plan' is a skill invocation command, not a file the user owns."
+      },
+      {
+        "id": "IfFUmlZh4jM9WDe8iIfEb",
+        "grade": "OVER",
+        "why": "Build-plan skill behavior is injected boilerplate, not user's own description of their work."
+      },
+      {
+        "id": "rsOJpA9Evf1t7sInnR--X",
+        "grade": "OVER",
+        "why": "Skill constraints are from injected build-plan boilerplate, not user's own words."
+      },
+      {
+        "id": "0_TexBdUQnEUz0e16iku6",
+        "grade": "OVER",
+        "why": "Argument path is from injected skill boilerplate suffix, not a standalone user statement."
+      },
+      {
+        "id": "ZMMNdl--TqOUWkzTvuQF5",
+        "grade": "OVER",
+        "why": "Git usage inferred from assistant actions and file paths, not user's own statement."
+      },
+      {
+        "id": "bMFMcrUOn0LEgIEfDgsaK",
+        "grade": "OVER",
+        "why": "Date, team structure, and planning phases generalized from injected boilerplate/assistant context."
+      },
+      {
+        "id": "PFeIQu65mUxXFCejZ_7SM",
+        "grade": "OVER",
+        "why": "Software development expertise inferred from base-directory path, not user's own words."
+      },
+      {
+        "id": "j3uak_Lm9yz31Gq9aMn8n",
+        "grade": "GROUNDED",
+        "why": "User explicitly said 'update handoff before I /clear'."
+      }
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "workspace": "bench-qwen32",
+  "orig": "40c12239-1311-46e8-b6d6-02b572925549",
+  "items": [
+    {"id": "Fw-X-Huov0PbXg47-Tc5U", "grade": "OVER", "leakage": true, "why": "Restates a factual status line from the pasted task-brief block in turn [0] (branch/commit sync state), not the user's own assertion."},
+    {"id": "VC_BXUiJY4nvgUaP9t9xG", "grade": "OVER", "leakage": true, "why": "Reproduces the GHCR image/manifest 'Context' bullet from the pasted brief block; a pasted status block, not a personal user claim."},
+    {"id": "RkOL0K3YETCDTOHFq77pB", "grade": "OVER", "leakage": true, "why": "'confirms' the deterministic re-confirmation from the pasted brief's context; later proven wrong by ASSISTANT, sourced from the pasted block not the user's knowledge."},
+    {"id": "3qZcyyAV4xQErXrQHyEfy", "grade": "OVER", "leakage": true, "why": "The Mocap-PDF-renders-correctly evidence is a claim inside the pasted brief block, not a personal user observation."},
+    {"id": "DB_pMc7rLN6SYJ_Nr38RG", "grade": "OVER", "leakage": true, "why": "The owning-surface file path is quoted from the pasted brief; this hypothesis was later disproven by ASSISTANT and was not the user's own finding."},
+    {"id": "BoByD2sr5Mf2TOkA2gml1", "grade": "GROUNDED", "leakage": false, "why": "Turn [0] is the user's own directive to write the one-off extractor script and print (file_name, author, title) for review."},
+    {"id": "RSEhtDJpg8S4BR5pxge52", "grade": "GROUNDED", "leakage": false, "why": "Turn [0] step 2 is the user's stated plan to count misassigned pairs against the operator's eye."},
+    {"id": "gGkkVUMclfVWN4Hf7XV9O", "grade": "GROUNDED", "leakage": false, "why": "Turn [0] step 3 is the user's own branching-strategy instruction for >=2 vs isolated misassignments."},
+    {"id": "95uo5ThbU1akZG-rucGHi", "grade": "GROUNDED", "leakage": false, "why": "Turn [0] 'Image gate' directs an orchestrator-only overwrite of :dryrun-0.1.7 without bumping unless the operator says so."},
+    {"id": "OE85Jx4s6rcZtbNId3S3U", "grade": "GROUNDED", "leakage": false, "why": "Turn [0] 'Validation hook on BOSSK' is the user's own instruction to re-run kb timeline show to confirm author/title post-fix."},
+    {"id": "dNq1UspTcmM2VCNTxBnbI", "grade": "PARTIAL", "leakage": false, "why": "User's 'Don't' list does state no autonomous bumps and the dedupe-noop caveat, but it conflates two separate Don't bullets into one garbled causal claim."},
+    {"id": "4jTN8UTcUsgS-SIYk1nLS", "grade": "GROUNDED", "leakage": false, "why": "Turn [4] user says 'commit and push to both'."},
+    {"id": "MKEy5zQYDXBwmh-gyEjQy", "grade": "GROUNDED", "leakage": false, "why": "Turn [6] user asks to update handoff and memory and remove stale/redundant information."},
+    {"id": "glcrOnWrdOx4MTXRZ27A4", "grade": "GROUNDED", "leakage": false, "why": "Turn [8] user asks if anything is left in the pre-plan and gives the exact file path."},
+    {"id": "qj1EEJNWljn1iFJ6XS9vs", "grade": "GROUNDED", "leakage": false, "why": "Turn [10] user says if nothing's left, they're moving the docs to archives."},
+    {"id": "sL9dUvudDEDoQ8L63QAfe", "grade": "GROUNDED", "leakage": false, "why": "Turn [12] user states 'i've updated the documents'; date 2026-05-19 matches the session timeframe."},
+    {"id": "RC1hzaBZibcBnrpnkam3I", "grade": "GROUNDED", "leakage": false, "why": "Turn [12] user requests claude to commit and push after updating the documents."},
+    {"id": "oxPg348ZBF_VsRgFeNZg3", "grade": "OVER", "leakage": true, "why": "The 85 MB text-bearing sizing table and pre-commit limit come entirely from ASSISTANT turn [13], not from the user."},
+    {"id": "A9J_CVeIaBhmyCEF-M6QO", "grade": "OVER", "leakage": true, "why": "The .gitignore/ignore resolution is an ASSISTANT action and report in turn [13], not a user statement."},
+    {"id": "7o_jPojXH3ONsED6zNdPi", "grade": "OVER", "leakage": true, "why": "The doc-archive-sweep / v2-server-development.zip 250 KB detail is from ASSISTANT turn [13], not the user."},
+    {"id": "aZVC4H2VwUhzQ2TVsFnDf", "grade": "GROUNDED", "leakage": false, "why": "Turn [14] user says 'clean up the empty archive subdirs'."},
+    {"id": "4vSlU3aM1qlQJd9NOQJrK", "grade": "OVER", "leakage": true, "why": "The commit 79a9d6e contents summary is sourced wholly from ASSISTANT turn [13]'s push report, not the user."}
+  ]
+}

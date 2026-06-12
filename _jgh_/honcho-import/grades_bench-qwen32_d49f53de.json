@@ -1,0 +1,144 @@
+{
+  "workspace": "bench-qwen32",
+  "orig": "d49f53de-c1ee-4acd-b588-57c7a3c2f39a",
+  "items": [
+    {
+      "id": "UPUn-X4LR0xBSzBEqR2PO",
+      "grade": "PARTIAL",
+      "leakage": false,
+      "why": "USER did reference the doc path in [0], but 'part of the team' and characterizing Be-Sentient as a project is unsupported extrapolation from a file path."
+    },
+    {
+      "id": "o1OYGGC610UAyebS72dhR",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [2] explicitly said don't go into planning mode yet, continue the discussion, move to planning when I say so."
+    },
+    {
+      "id": "6sFykN20ZyQAXcmUODl89",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [4] selected 'the thinking models are the wrong tool for JSON' thread, in the discussion-not-planning mode set in [2]."
+    },
+    {
+      "id": "mdvlni0hP4u4nCryqayuJ",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [6] said 'I buy deleting the escalation; I didn't get a chance to run a prompt on bossk because we halted the ingest due to errors/problems.'"
+    },
+    {
+      "id": "Sx5b1Ic6JrO6WQSZtiocd",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [6] said 'I did some research on model candidates for this problem' that 'fits within the bossk 5080 limitations.'"
+    },
+    {
+      "id": "HxKc537HhCNyWkefIFDET",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [6] said 'review the doc here, paying particular attention to Strategy A' with that path."
+    },
+    {
+      "id": "USRAKs7ebaoJpVbQGb_jh",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "Fragment of the file path USER [6] pasted ('Git\\Be-Sentient\\kb-proto-1\\'); a verbatim portion of the user's own message."
+    },
+    {
+      "id": "EZnguaqT-kMZ9_u1zHrIt",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [8] said 'I intended the research document to be a jumping off point for continued discussion.'"
+    },
+    {
+      "id": "INFOkqwxB4YappUKfvkuF",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [8] said 'we may need to land somewhere between Strategy A & B.'"
+    },
+    {
+      "id": "8zIsmy81266WSLW1mA93c",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [8] proposed '2-3 models for text/image (one for json structuring, one for captioning, the other for reasoning).'"
+    },
+    {
+      "id": "9UzUS8s3OUIci7MYxdbyR",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [8] said 'testing configurations that we're building a runner for (M4x) could do some testing of single monolithic text/image models (qwen3.5 etc).'"
+    },
+    {
+      "id": "93Dhxp8y3eDYz7pw17SM9",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [8] proposed testing 'a grouping of small models working together (qwen2.5:7b-instruct + deepseek-r1:1.5b + moondream, etc.).'"
+    },
+    {
+      "id": "6kQ3krn9ALdTFVWmpNtrw",
+      "grade": "PARTIAL",
+      "leakage": false,
+      "why": "USER [10] said 'let's discuss the repercussions of treating the capability catalog as the shared spine of both'; the '(Lever 3)' and 'model-agnosticism fix and M4.x runner' specifics come from assistant framing, not the user's terse turn."
+    },
+    {
+      "id": "-UCUgSACTDATL0zTVYnzH",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [12] said the shared spine 'should be considered' with upsides and manageable downsides."
+    },
+    {
+      "id": "o910jqBmzy58awqj3q6Jh",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [12] said the spine helps 'derive a baseline for unknown models (so they can be used in the kb without being approved).'"
+    },
+    {
+      "id": "k10TfA395FNdvTyxxqDhO",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [12] said the spine gives 'the capabilities of a collection of known models.'"
+    },
+    {
+      "id": "tYL_FKqwqXIqRZZk5hFj5",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [12] said the spine gives 'recommendations for the configuration of known models based on available hardware/LAN/cloud resources.'"
+    },
+    {
+      "id": "nMcYiFblye4BBBE6VkC3I",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [12] said 'some presets the user can toggle between to try different tested configurations that best align with their specific hardware/LAN/cloud setup.'"
+    },
+    {
+      "id": "dVvbxKIFUU6pZTeFymfaa",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [14] said 'I understand the distinction you're making between measurement vs recommendation... not blending the two into a single messy monolith.'"
+    },
+    {
+      "id": "jwV5FOs1NVnvSdajSvyPS",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [14] said 'we need to pull forward updating ollama to 0.30.6 early in the process.'"
+    },
+    {
+      "id": "X82J4WK17VGqjoP3Ea-B-",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [14] said 'ollama 0.30.6 opens up the supported models to GUFF and hugging face'; attributed correctly to the user's claim (which assistant later disputed)."
+    },
+    {
+      "id": "MF1FHRmzOFgRpJygaVzoL",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER [18] said 'Capture these conclusions back into the discussion doc.'"
+    },
+    {
+      "id": "iU13s-28ks18JgK4-LFXg",
+      "grade": "HALLUCINATED",
+      "leakage": false,
+      "why": "No timestamp '19:18:05' appears anywhere in the transcript; the precise time is fabricated."
+    }
+  ]
+}

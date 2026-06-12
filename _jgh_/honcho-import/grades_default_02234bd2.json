@@ -1,0 +1,8 @@
+{"workspace":"default","orig":"02234bd2-b4b4-4ef0-b7c6-a3bc7cecf1c7","items":[
+{"id":"XDApe1FLOmpov-_-1r7g9","grade":"PARTIAL","leakage":false,"why":"User states Bug #3 surfaced on BOSSK during 2026-05-15 smoke; 'their team encountered' is an unsupported extrapolation from solo phrasing."},
+{"id":"fiZA_sSNq8-r3FSVlUyal","grade":"GROUNDED","leakage":false,"why":"User explicitly enumerates options A (fix+rebuild), B (defer, test rest), C (workaround into runbook) verbatim."},
+{"id":"GrxJyJB7eGblvsJ9lkyc5","grade":"GROUNDED","leakage":false,"why":"User says install is 'broken-on-ingest state' and 'kb-uninstall --purge + reinstall to recover' directly."},
+{"id":"E_orxvzJwcgC2eIDKhh4F","grade":"GROUNDED","leakage":false,"why":"User states broken state: 'column halfvec(2048), TOML :0.6b, no lock yet' verbatim."},
+{"id":"ZL8W8du1HETBevF_HKK1u","grade":"GROUNDED","leakage":false,"why":"User discusses Bug #3, M2.1.57.1, code-fix options — clearly involved in code development/maintenance."},
+{"id":"mpUKTmuXo10UTxuZQlQKb","grade":"GROUNDED","leakage":false,"why":"User says 'Bring up HANDOFF.md' and references its 'Open decision point' on Bug #3 directly."}
+]}

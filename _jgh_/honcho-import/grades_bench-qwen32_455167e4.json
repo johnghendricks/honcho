@@ -1,0 +1,42 @@
+{
+  "workspace": "bench-qwen32",
+  "orig": "455167e4-131a-4595-9b19-9113366c6d35",
+  "items": [
+    {
+      "id": "bg7oq2vuPMrM70iuNUASt",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER turn [0] names the Be-Sentient project, the M2.1.55 CLI Model Management Phase 9 plan, and the exact file path verbatim."
+    },
+    {
+      "id": "eGBV7sraYNNnDVkLrzymD",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER turn [0] explicitly lists 'PyInstaller rebuild + local Windows MSI on greedo' as the task scope."
+    },
+    {
+      "id": "_Nu_w5H1glI2sRlKceC_Z",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "USER turn [0] names 'macOS PKG CI re-run + release.yml' as part of the requested work."
+    },
+    {
+      "id": "7apYrzDjecDy1ULRIuDo6",
+      "grade": "GROUNDED",
+      "leakage": false,
+      "why": "Phrase 'install-smoke gates kb model available' is quoted directly from USER turn [0]."
+    },
+    {
+      "id": "UwG-PTRdGBhnq7ROFZoja",
+      "grade": "PARTIAL",
+      "leakage": false,
+      "why": "USER turn [2] says 'take a break for the evening' but the precise timestamp 05:02:44 May 14 2026 is injected metadata not present in the transcript text."
+    },
+    {
+      "id": "Hb8ilK_ZU_tAtk-Q3aszc",
+      "grade": "PARTIAL",
+      "leakage": false,
+      "why": "USER turn [2] states intent to break for the evening and pick back up in the morning; the specific 'May 14, 2026' date is an unsupported metadata addition."
+    }
+  ]
+}

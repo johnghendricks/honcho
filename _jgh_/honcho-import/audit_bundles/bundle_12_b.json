@@ -1,0 +1,86 @@
+{
+  "transcript": [
+    {
+      "speaker": "USER",
+      "text": "Base directory for this skill: D:\\Git\\Be-Sentient\\kb-proto-1\\.claude\\skills\\plan-skeleton\n\n> **Project override (kb-proto-1, 2026-05-12):** Wherever this skill says to write `HANDOFF.md` at `<plan-dir>/HANDOFF.md`, write it at the **repo root** instead (`HANDOFF.md` at the top of the working tree, overwriting whatever's there). This repo has a single-source-of-truth handoff convention \u2014 never create per-plan-dir handoff files. The resume-prompt wording elsewhere in this skill (\"Resume plan-skeleton from HANDOFF.md at `<plan-dir absolute path>`\") still works because the body of `HANDOFF.md` names its plan-dir explicitly; only the **file location** changes. See `CLAUDE.md` \u00a7 \"Working in This Repo\" and `feedback_single_handoff_md` memory.\n\n# Plan Skeleton\n\nYou are drafting a milestone **pre-plan** \u2014 the skeleton-shaped Markdown\ndocument that records *what* the milestone decides, *why*, and *what stays\nopen for the detail plan*. The pre-plan is an **index, not a manual**: it\nnames calls, alternatives, and scope; the \"how to build it\" lives in the\ndetail plan that follows (drafted by the sibling `plan-details` skill).\n\nMatch the house style of pre-plans already on disk in this project. Stay\nstrictly within the milestone's scope as the user describes it \u2014 surface\nscope drift as a Q&A question rather than silently expanding.\n\nThe **input is the milestone identity** (an ID like `M2.1`, a parent-track\npre-plan path, or a free-text description). Discovery, default output\nlocation, and house-style lookups are computed relative to whatever input\nresolves first. This skill is intentionally portable; see \"Customization\npoints\" at the end for the few paths a user may want to pin.\n\n## When this skill fires\n\n- \"draft a pre-plan\" / \"draft a skeleton plan\" / \"plan-skeleton <id-or-path>\"\n- The user names a milestone ID (e.g. `M2.1`) and asks for its pre-plan.\n- The user names a parent-track pre-plan (e.g. `M2-Pre-Plan.md`) and asks\n  for the next sub-milestone's pre-plan to be drafted from a numbered \u00a73\n  bullet inside it.\n- After a higher-level plan audit lands clean and the user signals \"go\n  draft M<id>.\"\n\nIf the user invokes this skill without naming anything, ask once for the\nmilestone ID or scope sentence; do **not** auto-pick a milestone \u2014 drafting\na pre-plan for the wrong scope is far more expensive than one clarifying\nquestion.\n\n## Argument parsing\n\nFour arguments, all optional:\n\n### 1. Milestone reference (positional, optional)\n\nAccept any of:\n\n- **A milestone ID** \u2014 e.g. `M2.1`, `M1.13.2`, `M3`. Used to derive the\n  filename stem and the decision-ID prefix (`D-M2\n\u2026[truncated]\u2026\n \u00a71 acceptance bar or the\n  parent-track sub-milestone subtitle \u2014 kebab-cased, Title-Cased word\n  boundaries. Ask the user to confirm the filename before writing if the\n  short name is non-obvious.\n\n**Do not overwrite an existing pre-plan.** If the target path exists:\n\n1. If it's a stub (under 200 words, no \u00a74 decisions section) \u2192 rename it\n   to `<name>-pre-skill-<YYYY-MM-DD>.bak.md` and proceed.\n2. Otherwise \u2192 refuse with a one-sentence message; the user resolves\n   (delete, rename, or pass `--out-dir=<path>` to redirect).\n\n**Multi-Part output** is not standard for pre-plans. If the run produces\n>4,500 words, surface the overage per Phase C step 2; do not silently\nspill into Part-2. The plan-details skill will spill \u2014 pre-plans should\nnot.\n\n## Compact-checkpoint protocol (when `--pause-to-compact=true`)\n\nPre-plan Q&A pulls in many large reference files (parent pre-plan,\nsibling pre-plans, specs, memory) and produces lots of message volume\nduring the \u00a74 / \u00a75 walk. The protocol mirrors `plan-details`'s \u2014 when the\ntrigger fires, pause, write `HANDOFF.md`, and emit a structured pause\nmessage so the user can `/compact` or `/clear`.\n\n### When to checkpoint\n\nAt natural boundaries only:\n"
+    },
+    {
+      "speaker": "USER",
+      "text": "\n- After Phase A is accepted (between accepting \u00a71\u2013\u00a73 and opening the\n  Q&A pass).\n- After the decision roster locks (between confirming the candidate D-N\n  list and walking individual rationales).\n- At the **midpoint of the Q&A walk** if the roster has > 8 items\n  (e.g. after item 5 in a 10-item walk).\n- After the Q&A pass closes (between drafting \u00a74 / \u00a75 and drafting \u00a76 /\n  \u00a77 / \u00a79\u2013\u00a711).\n\nDo **not** checkpoint mid-decision. A single `D-M<id>.N` Q&A exchange is\nthe atomic unit.\n\n### How to assess context pressure\n\nSame two signals as `plan-details`:\n\n1. **Context indicator** \u2014 when readable, trigger band is **17\u201323% used**.\n2. **Heuristic** \u2014 at a checkpoint candidate, treat as \"near threshold\" if\n   **all** of:\n   - The conversation has consumed roughly 25+ tool turns or 6+ large\n     file reads.\n   - Pre-plan draft has cleared ~1,500 words.\n   - The next phase requires reading additional reference files (sibling\n     pre-plans, specs, audits) that haven't been read yet this conversation.\n\nWhen uncertain, lean toward pausing.\n\n### What happens at the pause\n\nThree steps:\n\n**1. Write `HANDOFF.md`** at `<plan-dir>/HANDOFF.md` (overwriting any prior\n`HANDOFF.md` from this run). Template:\n\n```markdown\n# plan-skeleton handoff\n\n**Generated:** <YYYY-MM-DD HH:MM> (local) **Reason:** Compact checkpoint at <boundary>.\n**Resume instruction (paste verbatim after /clear or /compact):**\n\n> Resume `plan-skeleton` from `HANDOFF.md` at `<plan-dir absolute path>`.\n\n## Invocation\n\n- Skill: `plan-skeleton`\n- Milestone ID: `<M<id>>`\n- Output shape: `<sub|track>`\n- Parent-track pre-plan (if any): `<path or \"none\">`\n- Output path target: `<absolute path>`\n- `--save`: `<true|false>`\n- `--pause-to-compact`: `<true|false>`\n\n## Drafting state\n\n- Phase A status: `<not started | drafted, awaiting user | accepted>`\n- Phase B status: `<not started | roster proposed | roster locked, walking items | walk complete>`\n- Last accepted decision: `<D-M<id>.N or \"none yet\">`\n- Next item to draft/walk: `<D-M<id>.N+1 or \"\u00a76 risks\" or \"stitch + write\">`\n- Words written so far across \u00a71\u2013\u00a7<latest>: ~<count>\n\n## Accepted content so far\n\n### \u00a71 / \u00a72 / \u00a73 (verbatim \u2014 paste back in on resume)\n<full text of accepted \u00a71, \u00a72, \u00a73>\n\n### \u00a74 decisions accepted\n- **D-M<id>.1** \u2014 <one-line summary, plus \"accepted | edited\" tag>\n- **D-M<id>.2** \u2014 \u2026\n- \u2026\n\n### \u00a75 open questions accepted\n- **OQ-M<id>.A** \u2014 <one-line summary>\n- \u2026\n\n## Roster locked but not yet walked\n\n- **D-M<id>.<N>** \u2014 <one-line call only; rationale not yet drafted>\n- \u2026\n\n## Reference pre-plans used for house style\n\n- `<path>` (mtime <date>)\n- `<pat\n\u2026[truncated]\u2026\nion and filename** \u2014 defaults to\n  `<plan-dir>/HANDOFF.md`, one snapshot per run, overwritten at every\n  checkpoint, deleted on successful completion. Pin a different filename\n  here (e.g. `.plan-skeleton-handoff.md`) if your project keeps\n  ephemeral state out of the planning folder.\n- **Anti-drift category list** \u2014 currently refuses file-by-file change\n  lists, code blocks \u2265 3 lines showing implementation, command invocations\n  with concrete flags, per-phase acceptance criteria, ordered procedures\n  of 3+ sub-steps, test plans / fixture lists, full memory-body drafts,\n  grep-confirmation notes, and successor-milestone file inventories. Add\n  or relax categories per your team's preference for skeleton density.\n- **Section ordering** \u2014 currently sub-milestone form runs \u00a71\u2013\u00a711 with\n  \u00a78 optional; track-level form runs \u00a71\u2013\u00a76 plus \"Next step.\" Pin a\n  different ordering or rename sections if your project's house style\n  diverges.\n- **Auto-save default** \u2014 currently `--save=true`. Flip to `false` if\n  your team prefers to review pre-plans in chat before committing to disk.\n\n\nARGUMENTS: d:\\Git\\Be-Sentient\\kb-proto-1\\documents\\discussions\\2026-05-23-screenshot-detector-primitive-pivot.md"
+    },
+    {
+      "speaker": "USER",
+      "text": "Base directory for this skill: D:\\Git\\Be-Sentient\\kb-proto-1\\.claude\\skills\\plan-audit\n\n# Plan Audit\n\nYou are auditing a planning or pre-planning document for this project. Your job is to surface inconsistencies, gaps, and drift \u2014 **not** to fix them. Editing the audited plan is a separate explicit action the user authorizes after reviewing your findings.\n\n## When this skill fires\n\n- \"audit the plan\" / \"review the plan\" / \"check the plan\" / \"audit the pre-planning doc\"\n- The user names (or drags in) a specific document and asks for an audit, review, or sanity check.\n- The user names (or drags in) a **folder** containing planning docs and asks for an audit \u2014 the skill picks the right doc inside it (see \"Argument parsing\" below).\n- After material spec or memory changes, the user asks \"is the plan still consistent?\"\n\nIf the user invokes this skill without naming anything, default to the most recently modified file in `documents/planning-building/Planning/` (use `Glob` with `documents/planning-building/Planning/**/*.md` sorted by mtime).\n\n## Argument parsing\n\nThe skill takes two arguments, both optional:\n\n### 1. Target reference (positional, optional)\n\nA path to either a Markdown file or a folder. Accept the path in any of these forms (the user may type it, paste it, or drag-drop it):\n\n- Absolute path (`D:\\Git\\Be-Sentient\\kb-proto-1\\Documents\\Planning\\Pre-Planning-Skeleton-Plan.md`)\n- Path with forward slashes (`documents/planning-building/Planning/Pre-Planning-Skeleton-Plan.md`)\n- Path relative to the repo root (`documents/planning-building/Planning/Pre-Planning-Skeleton-Plan.md` or `Planning/Pre-Planning-Skeleton-Plan.md`)\n- Bare filename if it's unambiguous under `documents/planning-building/Planning/` (`Pre-Planning-Skeleton-Plan.md`)\n- Filename with no extension (`Pre-Planning-Skeleton-Plan`) \u2014 append `.md` if the bare form doesn't resolve\n\n**Resolution rules, in order:**\n\n1. If the resolved path points at a `.md` file \u2192 that's the target plan; audit it.\n2. If the resolved path points at a folder \u2192 glob `**/*.md` inside it sorted by mtime; the most recently modified `.md` is the target. (If the folder contains exactly one `.md`, use it without further checks.)\n3. If the resolved path doesn't exist \u2192 before giving up, try resolving against `documents/planning-building/Planning/` and `documents/planning-building/`. If still unresolved, surface the failure to the user with the candidate paths you tried; do **not** fall back to the default plan silently.\n4. If no positional argument was given \u2192 default to the most recently modified `.md` under `documents/pl\n\u2026[truncated]\u2026\n--Git-Be-Sentient-kb-proto-1/memory/`. Hard-coded to this project; update if reused elsewhere.\n- **Audit dimensions** \u2014 add or remove dimensions based on what matters most for your planning style. For example, if you don't track risk explicitly, drop dimension 10. If you have a dedicated \"Done\" criteria standard, add a dimension for it.\n- **Default plan path** \u2014 currently the most recently modified file under `documents/planning-building/Planning/`. Change if your project organizes plans elsewhere.\n- **Audit output folder** \u2014 currently `documents/planning-building/Audits/`. Change if audits should land elsewhere (e.g., a dedicated `Audits/` top-level dir).\n- **Default save behavior** \u2014 currently `save=true`. Flip to `false` if you want a chat-only-by-default workflow.\n- **Verdict thresholds** \u2014 define what counts as \"blocking\" vs. \"important\" vs. \"minor\" for your project. The default is conservative (any internal contradiction = blocking; any spec drift = blocking).\n- **Output format** \u2014 the report shape above is opinionated; trim sections you never use.\n\n\nARGUMENTS: d:\\Git\\Be-Sentient\\kb-proto-1\\documents\\planning-building\\plans\\M2\\F0.11-Always-OCR-Image-Ingest-Default-Pre-Plan.md"
+    },
+    {
+      "speaker": "USER",
+      "text": "yes, proceed"
+    },
+    {
+      "speaker": "USER",
+      "text": "commit and push the pre-plan"
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "CtNUVARIGG2xyhFj1YE2o",
+      "text": "abl-john-b is drafting documentation for how to draft pre-plans in a project management context using Markdown files following specific conventions and formats."
+    },
+    {
+      "id": "7DUUHkODFbYj9YAaKPeQS",
+      "text": "abl-john-b refers to project management methodologies involving pre-planning steps before draft (pre-plan) and detailed plan (post-pre-plan)."
+    },
+    {
+      "id": "hvD9q_-1UZwZ1rdTV28nk",
+      "text": "The repository where abl-john-b is working adheres to a rule of maintaining a single-source-of-truth handoff file convention named `HANDOFF.md` located at the top level, as opposed to creating per-directory versions."
+    },
+    {
+      "id": "zF0ErVxzuDq054b7SFeTh",
+      "text": "abl-john-b has specific instructions and guidelines for handling project-related tasks such as naming files, managing decision points, open questions within pre-plans in a structured manner."
+    },
+    {
+      "id": "OnXJYxVMxhUBy4SXXdvmy",
+      "text": "abl-john-b participated in a discussion related to context assessment and pausing mechanics for a specific skill or tool within a project (likely 'plan-skeleton'). The discussion includes detailed instructions on when and how to pause workflow based on contextual factors such as file counts, word count thresholds, and decision review processes."
+    },
+    {
+      "id": "UFga9nSuPzl_xYTnsnlTz",
+      "text": "abl-john-b mentioned that the conversation involves consuming approximately 25+ tool turns or reading 6+ large files to determine if a checkpoint candidate is near the threshold for context pressure within a project workflow."
+    },
+    {
+      "id": "V-W51fkENSXek8ODJHoh9",
+      "text": "abl-john-b is working on or involved with a project that has planning documents and specifications stored in a version-controlled directory structure under 'documents/planning-building/'. This indicates the use of structured methodologies for documenting plans and specifications within a repository named Be-Sentient, specifically at path D:\\"
+    },
+    {
+      "id": "A_vONITmqqfxHTQkOo2gJ",
+      "text": "abl-john-b uses specific directories such as 'Planning' for pre-planning documents meant to be audited or reviewed, and 'Specifications' for related specification documentation."
+    },
+    {
+      "id": "FejESxeUvG6jnJ5nQdK8Y",
+      "text": "abl-john-b invokes a skill intended to audit planning documents, with an argument pointing at a path: d:\\Git\\Be-Sentient\\kb-proto-1\\documents\\planning-building\\plans\\M2\\F0.11-Always-OCR-Image-Ingest-Default-Pre-Plan.md."
+    },
+    {
+      "id": "4ZeNKy2q8G1O6eeexLzHX",
+      "text": "The referenced plan, located at d:\\\\Git\\\\Be-Sentient\\\\kb-proto-1\\\\documents\\\\planning-building\\\\plans\\\\M2\\\\F0.11-Always-OCR-Image-Ingest-Default-Pre-Plan.md, is intended for an audit to ensure it does not contain inconsistencies or gaps."
+    },
+    {
+      "id": "n-iv_10vE2h4Kg00jBTYU",
+      "text": "abl-john-b's project memory store resides at C:\\Users\\John Hendricks\\.claude\\projects\\D--Git-Be-Sentient-kb-proto-1\\memory\\"
+    },
+    {
+      "id": "v-776vwmYlC64GvB6Qvz6",
+      "text": "The auditing skill reads CLAUDE.md, a canonical orientation document located at the repository root of D:\\"
+    },
+    {
+      "id": "67JWO2LaFO7NQvOESeuIH",
+      "text": "When abl-john-b invokes an audit, the goal is to produce structured reports that highlight issues and inconsistencies in planning documents without altering them."
+    },
+    {
+      "id": "4BmQKOkjlo8YtHMft3laI",
+      "text": "abl-john-b instructed to proceed with a task on May 24, 2026 at 20:00:04"
+    },
+    {
+      "id": "2a2gmWETz7bxlnDj7lXXH",
+      "text": "abl-john-b directed someone to commit and push the pre-plan to version control on May 24, 2026 at 20:06:05"
+    }
+  ]
+}

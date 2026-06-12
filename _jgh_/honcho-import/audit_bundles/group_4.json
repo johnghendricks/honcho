@@ -1,0 +1,80 @@
+{
+  "bundle_02_a": {
+    "items": [
+      {"id": "6gMLN22a_Y4qreb_K30sO", "grade": "OVER", "why": "Attributes Meeting Checkin query to April 13; that date is Vault Talk, not Meeting Checkin"},
+      {"id": "DlWOKBkQJ0F8zUCcOh0or", "grade": "OVER", "why": "Meeting content sourced from ASSISTANT turn, not USER"},
+      {"id": "1Z8de1EV4PSmFcke0fYMZ", "grade": "PARTIAL", "why": "USER asked question; precise timestamp drawn from ASSISTANT context"},
+      {"id": "LzEYC8yl1wvYEdv_bvf9X", "grade": "PARTIAL", "why": "USER asked question; precise timestamp drawn from ASSISTANT context"},
+      {"id": "aYboymmZf1gm8seya98SL", "grade": "PARTIAL", "why": "Vague restatement of specific .pkg request loses all useful specificity"},
+      {"id": "aEPCgoYbUHeM6b90f9_rD", "grade": "GROUNDED", "why": "USER explicitly said build .pkg of dryrun-0.2.0"},
+      {"id": "ierLUKGCvKyg3UujVvmuZ", "grade": "GROUNDED", "why": "USER explicitly requested macOS .pkg for dryrun-0.2.0"},
+      {"id": "7kj5nSwSbyrZ1ciEuDR_2", "grade": "GROUNDED", "why": "USER explicitly said download to /artifacts folder"},
+      {"id": "hYoov9XOKTsmSBmmog37x", "grade": "PARTIAL", "why": "Core request grounded; adds inference about USER's development strategy thinking"},
+      {"id": "UguEp68ZQGOjkqYkGWKxc", "grade": "PARTIAL", "why": "USER requested new tag; adds inference about progression intent"},
+      {"id": "uTTM4Ynx1zPjflj_niKVM", "grade": "PARTIAL", "why": "Deploy-for-friend grounded; adds unsupported inference about feedback motivation"},
+      {"id": "9HAQcWiORPiXOB6jibz77", "grade": "PARTIAL", "why": "USER said proceed; timestamp precision from ASSISTANT not USER"},
+      {"id": "S9QRT2XWshKp2R9P3TeHh", "grade": "GROUNDED", "why": "USER said rebuild to keep things clean"},
+      {"id": "iXX5hoe-A23BLjf0pWpZZ", "grade": "GROUNDED", "why": "USER asked if able to post release on GitHub"},
+      {"id": "ReUy0YMEYruojkNQRlamD", "grade": "GROUNDED", "why": "USER explicitly requested WIP release for dryrun-0.2.1 comparison"},
+      {"id": "wCFFRV0v0nCi-ig4-acJr", "grade": "PARTIAL", "why": "Proceed instruction grounded; inference about authority and oversight unsupported"},
+      {"id": "K6SN7NxLfHnqFYR_6VM42", "grade": "GROUNDED", "why": "USER confirmed they created the zip for manual send"},
+      {"id": "EJP35ZclRuoJxukura_BR", "grade": "GROUNDED", "why": "USER explicitly said tested .msi for 0.2.1 on bossk"},
+      {"id": "2vXepuC-KEMphfDLG4awE", "grade": "GROUNDED", "why": "USER explicitly said not completely happy with KB dropping items"},
+      {"id": "YSMQCy8tMwevum-X5Fwuu", "grade": "GROUNDED", "why": "USER said need to do other things first, wants to return"},
+      {"id": "XSwzBVt2Pksod0EU_Fn75", "grade": "GROUNDED", "why": "USER explicitly asked to stage releases on be-sentient"},
+      {"id": "Xtas3aRrXYwvv7wOck7TE", "grade": "GROUNDED", "why": "USER explicitly included johnghendricks repos in same request"},
+      {"id": "aDlK3Xp7rnTrSXfNdSX_X", "grade": "GROUNDED", "why": "USER explicitly said bring be-sentient branch topology in line with origin"},
+      {"id": "MDoskrqPGaKhKVDikUMmG", "grade": "OVER", "why": "Fact about two remotes comes from ASSISTANT output, not USER statement"},
+      {"id": "cg5Lne5JZVn-jekgSkKGN", "grade": "PARTIAL", "why": "Push request grounded; commit hash and timestamp from ASSISTANT not USER"}
+    ]
+  },
+  "bundle_18_c": {
+    "items": [
+      {"id": "5JB2tjz0IIsTrlujgMO5G", "grade": "PARTIAL", "why": "Request grounded; precise UTC-5 timestamp drawn from ASSISTANT context"},
+      {"id": "yFo5JlA__s3UTTV-Em1To", "grade": "OVER", "why": "Meeting date sourced from ASSISTANT turn, USER never stated it"},
+      {"id": "sAcbr2MTA1E53kbD4p7c8", "grade": "PARTIAL", "why": "Query grounded; precise timestamp drawn from ASSISTANT context"},
+      {"id": "9xgX0HFWsPi0NzHSmA7xY", "grade": "OVER", "why": "Attendee list sourced entirely from ASSISTANT turn, not USER"},
+      {"id": "5rJDIfyBMxYQMyWXMi_qr", "grade": "PARTIAL", "why": "Query grounded; precise timestamp drawn from ASSISTANT context"},
+      {"id": "D6b-AZG2ei7jht2jBh9pN", "grade": "PARTIAL", "why": "Request grounded; precise timestamp drawn from ASSISTANT context"},
+      {"id": "Je-SRoQ67gBVR8-RdOIbM", "grade": "PARTIAL", "why": "Branch request grounded; adds inference about versioning workflow intent"},
+      {"id": "bUeuz_u8b7DQhqP1pmQF4", "grade": "PARTIAL", "why": "Tag request grounded; adds inference about version control need"},
+      {"id": "TztrV1Ph0JgTDHUBRHgpp", "grade": "PARTIAL", "why": "Deploy-for-friend grounded; adds inference about collaboration/feedback loop"},
+      {"id": "sFA2BNt1xMkMuBqiHfRvE", "grade": "PARTIAL", "why": "Proceed instruction grounded; precise timestamp from ASSISTANT context"},
+      {"id": "_oQT58kAzznggeKhqduyc", "grade": "GROUNDED", "why": "USER explicitly said rebuild to keep things clean"},
+      {"id": "m6-O7_wQb5TRDcLfAfhx1", "grade": "GROUNDED", "why": "USER asked if able to post release on GitHub"},
+      {"id": "NPf5be40Rn6-zhQFtz1Aa", "grade": "GROUNDED", "why": "USER explicitly requested WIP release for dryrun-0.2.1 comparison"},
+      {"id": "8DnU3JZIqFdHdx4rki_lX", "grade": "GROUNDED", "why": "USER explicitly stated friend will compare versions"},
+      {"id": "wuMVY7Q8L8PaWJmBJ2ShO", "grade": "PARTIAL", "why": "Finalize instruction grounded; precise timestamp from ASSISTANT context"},
+      {"id": "JJGdVefxhE5q5aTVZm3MI", "grade": "OVER", "why": "Task-notification is system metadata in USER turn, not USER's own words"},
+      {"id": "Rl1JR606-ZRtTScmrTCoB", "grade": "GROUNDED", "why": "USER confirmed creating zip for manual handoff"},
+      {"id": "OHTM5VM1u81hao9wJsquE", "grade": "GROUNDED", "why": "USER explicitly said tested .msi for 0.2.1 on BOSSK"},
+      {"id": "iGVVDdAAbWVll0AxtkbVE", "grade": "GROUNDED", "why": "USER explicitly said not completely satisfied with KB dropping items"},
+      {"id": "OsZTgK5etfttJjrt33D4f", "grade": "GROUNDED", "why": "USER said need to do other things first, return later"},
+      {"id": "iloEOhocCdfuOGEEtTCSQ", "grade": "GROUNDED", "why": "USER explicitly requested releases staged on both repos"},
+      {"id": "NzudlzWLPjIsyJiM27NOQ", "grade": "PARTIAL", "why": "Request grounded; precise UTC timestamp from ASSISTANT context"},
+      {"id": "GwU0FNo1xEuFwUIlzPJ6h", "grade": "PARTIAL", "why": "Push request grounded; commit hash and timestamp from ASSISTANT context"}
+    ]
+  },
+  "bundle_01_a": {
+    "items": [
+      {"id": "eNGC8DCe_yPdC-0ffRKkC", "grade": "PARTIAL", "why": "File path reference grounded; June 5 date drawn from ASSISTANT context"},
+      {"id": "Lz0Fx_Ej4T8DxnQFk1rrD", "grade": "GROUNDED", "why": "USER explicitly proposed creating new M5 grounded in codebase"},
+      {"id": "ykuFcwRcgbPkRYnp1_ooC", "grade": "GROUNDED", "why": "USER explicitly said take existing docs into consideration"},
+      {"id": "7nJyXBiIwlgy4RCXrHDKR", "grade": "PARTIAL", "why": "Separate passes grounded; working together inference not stated by USER"},
+      {"id": "jcsR6R0m6Na-tdppTSuK8", "grade": "PARTIAL", "why": "Fix and commit instruction grounded; specific commit hash from ASSISTANT"},
+      {"id": "bA-hBIJBn8O_xGUWcKRWF", "grade": "GROUNDED", "why": "USER explicitly requested fix broader CR-as-future framing and similar issues"},
+      {"id": "Pu5BVZ5oK2yLmeGWAynzj", "grade": "GROUNDED", "why": "USER explicitly said commit your document changes"}
+    ]
+  },
+  "bundle_09_b": {
+    "items": [
+      {"id": "pzhmAYwx4s0wbqefBbvno", "grade": "GROUNDED", "why": "USER explicitly said discuss M5 with file path"},
+      {"id": "EquSsH_udZP4vKzH8Lmuj", "grade": "GROUNDED", "why": "USER explicitly provided this file path"},
+      {"id": "XKT1UfgBj3sTp5XWjJkEd", "grade": "GROUNDED", "why": "USER explicitly proposed creating new M5 from scratch"},
+      {"id": "r9VEZkn72HtNZlsxGEUNa", "grade": "GROUNDED", "why": "USER explicitly instructed replacing M5 content in document"},
+      {"id": "F_QhaaomKiiXy0dqUiLmT", "grade": "GROUNDED", "why": "USER said fix stale references then commit"},
+      {"id": "U-2ZfPgNlqjHlNYbAGxYO", "grade": "PARTIAL", "why": "Fix request grounded; before-commits ordering is inference not explicitly stated"},
+      {"id": "aqUo7VzP4PdBOCLEw-qRl", "grade": "PARTIAL", "why": "Commit instruction grounded; agreed-upon process framing is unsupported inference"}
+    ]
+  }
+}
