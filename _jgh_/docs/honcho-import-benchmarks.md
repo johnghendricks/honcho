@@ -448,10 +448,11 @@ GROUNDED / PARTIAL / OVER / HALLUCINATED against its source transcript
 **deriver model** varies; everything else is held constant. **Pass bar: ≥80%
 grounded, 0 leakage.**
 
-| deriver model | conclusions | **grounded** | partial | over+hall | leakage |
+| config (deriver model + parser) | conclusions | **grounded** | partial | over+hall | leakage |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| **qwen2.5:14b** (ws `default`) | 84 | **75.0 %** | 11.9 % | 13.1 % | 4 |
-| **qwen2.5:32b** (ws `bench-qwen32`) | 119 | **73.9 %** | 8.4 % | 17.6 % | **21** |
+| **qwen2.5:14b**, skill-strip only (ws `default`) | 84 | 75.0 % | 11.9 % | 13.1 % | 4 |
+| **qwen2.5:32b**, skill-strip only (ws `bench-qwen32`) | 119 | 73.9 % | 8.4 % | 17.6 % | 21 |
+| **qwen2.5:14b + continuation-strip** (ws `bench-strip`) | 93 | **82.8 %** ✅ | 11.8 % | 5.4 % | 4 |
 
 **Findings**
 
@@ -459,26 +460,46 @@ grounded, 0 leakage.**
    extracted **40 % more conclusions** (119 vs 84) and **leaked 5× more** in
    absolute terms (21 vs 4). More output, same signal, more noise. (Consistent with
    the Dialectic A/B above, where 32b also lost to 14b.)
-2. **The failure is concentrated, not diffuse.** In *both* runs ~19 of 21 OVER and
-   ~20 of 21 leakage came from the **same two sessions** (`40c12239`, `f1a03124`) —
-   the ones where John pasted CC **continuation-summary / handoff / plan blocks**
-   into a user turn. The deriver reads the *assistant-narrative prose inside those
-   pasted blocks* ("verified both routing legs", commits, bug fixes) as John's own
-   actions. The other six sessions grade ~95 %+ grounded under both models.
+2. **The failure was concentrated, not diffuse.** In *both* model runs ~19 of 21
+   OVER and ~20 of 21 leakage came from the **same two sessions** (`40c12239`,
+   `f1a03124`) — the ones where John pasted CC **continuation/auto-compact summary
+   blocks** into a user turn. The deriver reads the *assistant-narrative prose
+   inside those pasted blocks* ("verified both routing legs", commits, bug fixes)
+   as John's own actions. The other six sessions grade ~95 %+ grounded throughout.
 3. **`custom_instructions` already forbids this and neither model honors it.** The
    instruction explicitly excludes "tool output… task notifications… pasted command
-   output" — but the bleed survives at both sizes. Model selection is not the lever.
+   output" — but the bleed survived at both sizes. Model selection is not the lever.
 
-> **Decision:** model size is a dead end for this workload — **revert the deriver to
-> `qwen2.5:14b`** (done 2026-06-12; `.env` line 7, `up -d --force-recreate deriver
-> api`, verified via `printenv`; `.env.bak.qwen32-revert` kept). The real remaining
-> lever is a **parser-side strip of pasted handoff/continuation-summary blocks** in
-> user turns — the same class of fix as the committed skill-injection strip, and it
-> targets exactly the two sessions driving the miss. That's the next change.
+> **Decision (settled):** model size is a dead end — **reverted the deriver to
+> `qwen2.5:14b`** (`.env` line 7, `up -d --force-recreate deriver api`, verified via
+> `printenv`; `.env.bak.qwen32-revert` kept). The lever was the **parser**.
+
+**Parser fix cleared the bar (ws `bench-strip`, 2026-06-12).** `parse_transcripts.py`
+now strips CC continuation/auto-compact summaries from user turns — drop the
+auto-generated recap + the injected continuation boilerplate, keep only John's
+appended resume message (boundary anchor `"Pick up the last task as if the break
+never happened."`, present in 34/34 corpus blocks; standard CC `"Please continue…"`
+endings handled as fallbacks). Corpus-wide these blocks were **1.2 % of user turns
+but 11.5 % of user char volume**; after the strip: **0 leakage, John's words
+preserved** (e.g. f1a03124's two 13.5 K-char poison turns → 642 / 175 chars of
+genuine prose). Re-derived the same 8 sessions under the **unchanged 14b** config:
+
+- **75.0 % → 82.8 % grounded** (+7.8 pts, clears the ≥80 % bar) with **no model change**.
+- **Over-attribution halved:** 13.1 % → 5.4 %.
+- **`f1a03124`: 6 OVER / 4 leakage → 0 / 0.** The worst session is now clean.
+- Residual (4 leakage, 5 OVER+HALL) is small and **diffuse**, not one poisoned
+  session: assistant-bleed on an Alembic explanation (`5ce6403b`), the pasted
+  `Context:` block in `40c12239`, and a couple of injected timestamps. These are
+  the softer mode-2 (John-pasted, ambiguous-authorship) cases — left to
+  `custom_instructions`, not worth mid-turn surgery on John's real intent.
+
+> **The deriver config is settled: qwen2.5:14b + the patched parser.** Quality bar
+> (≥80 % grounded) met. Proceed to the full batched ingest (`ingest_batch.py`).
 
 Artifacts: `bench_set.json`, `bench_load.py`, `bench_audit_payload.py`,
-`aggregate_bench.py`, `audit_payload_{default,bench-qwen32}.json`,
-`grades_{default,bench-qwen32}_*.json`, `bench_score_{default,bench-qwen32}.json`.
+`aggregate_bench.py`, `audit_payload_{default,bench-qwen32,bench-strip}.json`,
+`grades_{default,bench-qwen32,bench-strip}_*.json`,
+`bench_score_{default,bench-qwen32,bench-strip}.json`.
 
 ---
 

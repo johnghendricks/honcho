@@ -1,0 +1,8 @@
+{"workspace": "bench-strip", "orig": "5ce6403b-1071-4be4-ae4c-bb0536e97456", "items": [
+{"id": "bYfFI_iyXJGBTVFbfN14j", "grade": "PARTIAL", "leakage": true, "why": "USER asked about 'alembic', but the 'database migrations with SQLAlchemy' framing is from the assistant's answer, not the USER's knowledge."},
+{"id": "2vzDFH7e5Z1XnpMO89cnM", "grade": "OVER", "leakage": true, "why": "Describes claude-cc's (assistant's) explanation, not anything the USER said or did."},
+{"id": "opSIVOR31Z5dP3wGT1o6K", "grade": "GROUNDED", "leakage": false, "why": "USER said 'Thanks' and offered their own mental model for confirmation."},
+{"id": "qxj6hU2NsEXwC7rxcq0NK", "grade": "GROUNDED", "leakage": false, "why": "Faithfully restates the USER's own paraphrased base-config/per-change Alembic-file mental model."},
+{"id": "3kMaje94ZLjHfTTgdHJy2", "grade": "GROUNDED", "leakage": false, "why": "USER literally asked 'what triggers a new migration file?'"},
+{"id": "sSizGRtkIlTGx2l-pgm1q", "grade": "GROUNDED", "leakage": false, "why": "USER said 'that was super helpful and helps me to understand... how this project works.'"}
+]}

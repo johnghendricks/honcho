@@ -1,0 +1,20 @@
+{
+  "workspace": "bench-strip",
+  "orig": "40c12239-1311-46e8-b6d6-02b572925549",
+  "items": [
+    {"id": "RUkxdTmVMAS9t5O_4BDk4", "grade": "GROUNDED", "leakage": false, "why": "USER's opening directive verbatim: pick up D2 PDF chunker extract_metadata author/title misassignment."},
+    {"id": "oGYt8_TFzl_fdSJrNT-Ao", "grade": "GROUNDED", "leakage": false, "why": "USER named the owning surface orchestrator/src/kb/orchestrator/ingest/pdf.py PdfChunker.extract_metadata."},
+    {"id": "gx3YLGQZp14-yPnFF887d", "grade": "GROUNDED", "leakage": false, "why": "USER instructed writing a one-off script calling extract_metadata printing (file_name, author, title)."},
+    {"id": "8u_O59xVzUWZVKHevqvxi", "grade": "GROUNDED", "leakage": false, "why": "USER laid out the count-misassignments and promote-to-F0.X-vs-fix-inline branch logic."},
+    {"id": "ReYgvvItpVf9gTpJT1N40", "grade": "GROUNDED", "leakage": false, "why": "USER's validation-hook instruction: re-run kb timeline show against event 4bcee249."},
+    {"id": "SIgH6nBzpND6O6A3xfwn0", "grade": "PARTIAL", "leakage": false, "why": "USER issued the Don't rules but 'understands and adheres to' adds an internalized-disposition extrapolation."},
+    {"id": "9RY--J262RQoaRGz8LD02", "grade": "GROUNDED", "leakage": false, "why": "USER said 'That recommendation is fine.'"},
+    {"id": "gA2L7MZ65gSB94M6GSaFA", "grade": "GROUNDED", "leakage": false, "why": "USER said 'commit and push to both'; the two remotes were the established context."},
+    {"id": "77-BoVJPMcFikqt6e5YXm", "grade": "GROUNDED", "leakage": false, "why": "USER: 'update handoff and memory, remove stale information, or redundant information.'"},
+    {"id": "jIpY3TULuc7_x5Ti6_q1o", "grade": "GROUNDED", "leakage": false, "why": "USER pasted that exact Deferred-Fixes-Pre-Plan.md path in their question."},
+    {"id": "hOinnu_xhBd_TS0tkAxA5", "grade": "GROUNDED", "leakage": false, "why": "USER: 'I'm moving these docs to the archives.'"},
+    {"id": "6HRo2qPuaXpiXSBJvysRv", "grade": "GROUNDED", "leakage": false, "why": "USER: 'i've updated the documents, please commit and push.'"},
+    {"id": "RdeYx7GT9WmIkI1JfCIEJ", "grade": "PARTIAL", "leakage": true, "why": "USER said 'clean up empty archive subdirs' but the commit-detail (zip + .gitignore + doc removal) is from the assistant's summary turn."},
+    {"id": "WAi40lLGsSPF4uZJrJ23x", "grade": "OVER", "leakage": true, "why": "Large-binary-file handling and pre-commit-hook code-quality framing come entirely from assistant turns, not the USER."}
+  ]
+}

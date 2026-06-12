@@ -18,7 +18,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 # Harness / injection noise.
 #
-# Claude Code transcripts splice three kinds of content into "user" turns that
+# Claude Code transcripts splice four kinds of content into "user" turns that
 # John did NOT author. Keeping them was the cause of the john-cc over-attribution
 # (audit: ~half of conclusions not grounded in John; skill-injection ~60% of it):
 #   1. Slash-command SKILL EXPANSIONS — a "user" turn whose body is the skill's
@@ -28,6 +28,14 @@ from pathlib import Path
 #   2. <system-reminder> / <task-notification> blocks — harness + background-job
 #      injections. Stripped (spans removed, any surrounding prose kept).
 #   3. local-command caveats/stdout, bash wrappers, tool results — dropped.
+#   4. AUTO-COMPACT / CONTINUATION SUMMARIES — when a session is resumed, CC
+#      injects a generated recap of the PRIOR (mostly assistant) work as a "user"
+#      turn (begins "This session is being continued..."). The deriver read its
+#      accomplishment prose as John's own actions (grounding bench: the single
+#      biggest residual after the skill-injection fix — 2 such blocks drove ~10
+#      OVER + 11 leakage in one session). The summary + the injected continuation-
+#      prompt boilerplate are stripped; only John's appended resume message — the
+#      text after the boilerplate's final sentence — is kept.
 
 NOISE_PREFIXES = (
     "<local-command-stdout>",
@@ -39,6 +47,41 @@ NOISE_PREFIXES = (
 
 # A "user" turn whose body is an injected skill definition, not John's words.
 SKILL_BODY_PREFIX = "Base directory for this skill:"
+
+# A "user" turn that opens with CC's auto-compact / continuation recap.
+CONTINUATION_PREFIX = (
+    "This session is being continued from a previous conversation that ran out of "
+    "context"
+)
+# The injected continuation prompt closes with one of these sentences; everything
+# up to and including it is harness/auto-generated. John's typed resume message
+# (if any) is whatever follows the LAST occurrence. (Corpus 2026-06-12: the first
+# anchor covers 34/34 continuation turns; the others generalize to stock CC.)
+CONTINUATION_END_ANCHORS = (
+    "Pick up the last task as if the break never happened.",
+    "Continue with the last task that you were asked to work on.",
+    "Please continue the conversation from where we left it off "
+    "without asking the user any further questions.",
+)
+
+
+def strip_continuation_summary(s: str) -> str | None:
+    """Reduce a CC continuation-summary turn to just John's appended message.
+
+    Returns `s` unchanged if it is not a continuation summary. If it is, returns
+    only the text following the injected continuation-prompt boilerplate, or None
+    when there is no recoverable John message (the whole turn was auto-generated).
+    """
+    if not s.lstrip().startswith(CONTINUATION_PREFIX):
+        return s
+    cut = -1
+    for anchor in CONTINUATION_END_ANCHORS:
+        i = s.rfind(anchor)
+        if i != -1:
+            cut = max(cut, i + len(anchor))
+    if cut == -1:
+        return None  # pure auto-summary, nothing John authored to keep
+    return s[cut:].strip() or None
 
 # Recover a slash-command invocation as a compact "/cmd args" line.
 _CMD_NAME_RE = re.compile(r"<command-name>\s*(.*?)\s*</command-name>", re.S | re.I)
@@ -97,10 +140,17 @@ def extract_user(content) -> str | None:
     # 1) Injected skill-definition body posing as a user turn -> drop entirely.
     if st.startswith(SKILL_BODY_PREFIX):
         return None
-    # 2) Slash-command invocation -> recover John's intent as "/cmd args".
+    # 2) Auto-compact/continuation recap -> keep only John's appended resume
+    #    message; drop the generated summary + continuation boilerplate.
+    if st.startswith(CONTINUATION_PREFIX):
+        recovered = strip_continuation_summary(st)
+        if not recovered:
+            return None
+        st = recovered
+    # 3) Slash-command invocation -> recover John's intent as "/cmd args".
     if "<command-name>" in st:
         return parse_command(st)
-    # 3) Strip injected <system-reminder>/<task-notification> spans, keep prose.
+    # 4) Strip injected <system-reminder>/<task-notification> spans, keep prose.
     st = _INJECTED_SPAN_RE.sub("", st).strip()
     if not st or is_noise(st):
         return None

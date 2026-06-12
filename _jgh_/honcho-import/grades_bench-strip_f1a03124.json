@@ -1,0 +1,31 @@
+{
+ "workspace": "bench-strip",
+ "orig": "f1a03124-551f-4ff4-ab26-6b9917b944b9",
+ "items": [
+  {"id": "3UP4HGMYtUjRpfaAu_H0a", "grade": "GROUNDED", "leakage": false, "why": "USER turn 1 asks to resume build-plan at Phase 7 from the M4 Per-Role-Provider-Endpoints pre-plan."},
+  {"id": "mj_6Jkp7LkLy3LV8MOYNE", "grade": "GROUNDED", "leakage": false, "why": "USER turn 2 directly requests a runbook for comprehensive M4 testing."},
+  {"id": "KSCE6UStxhT3wi9qWoQzk", "grade": "GROUNDED", "leakage": false, "why": "USER turn 2 asks for guidelines on running the full set of integration tests."},
+  {"id": "Iyn2mHda82kIY6I6mKUBG", "grade": "GROUNDED", "leakage": false, "why": "USER turn 3 says 'create commits for each phase'."},
+  {"id": "Jak4f13eHFGZ0dhHOTnih", "grade": "GROUNDED", "leakage": false, "why": "USER turn 4 states wanting to test on bossk using mando and greedo on LAN via API calls to models in the kb pipeline."},
+  {"id": "dWq3vQ-jRS80S6Ur3duVu", "grade": "GROUNDED", "leakage": false, "why": "USER turn 5 supplies greedo's IP 192.168.0.168."},
+  {"id": "RPb47zy1xtpyNC1M9eTRZ", "grade": "GROUNDED", "leakage": false, "why": "USER turn 5 supplies mando's IP 192.168.0.125."},
+  {"id": "FakTCLoD_13hmtma9O36f", "grade": "GROUNDED", "leakage": false, "why": "USER turn 5 states both run version 0.3x of the ollama control panel."},
+  {"id": "pyz8ijewRS5ZATsAJ86WT", "grade": "GROUNDED", "leakage": false, "why": "USER turn 6 wants the bossk portion done with a clean install and kb up/down."},
+  {"id": "Y2QaLS9xgkMon4ZCunyYz", "grade": "GROUNDED", "leakage": false, "why": "USER turn 6 explicitly says the current kb install can be uninstalled, they don't care."},
+  {"id": "_hvZL9PWNVSKUfv4xl3_T", "grade": "GROUNDED", "leakage": false, "why": "USER turn 6 says the M4 effort might break things until working, which doesn't concern them."},
+  {"id": "V79SV8gSgb2_236E6mfmI", "grade": "PARTIAL", "leakage": false, "why": "USER turn 7 says 'kb uninstalled, proceed', supporting the uninstall but the precise timestamp is unverifiable from the transcript text."},
+  {"id": "fyAK6gnNUx2TKleuKA1AJ", "grade": "GROUNDED", "leakage": false, "why": "USER turn 8 references the M4 BOSSK clean-install test and kb up background task b52v36mqx."},
+  {"id": "cX_8pe5Xzwrs9A7dMsUE5", "grade": "GROUNDED", "leakage": false, "why": "USER turn 8 asks to check whether kb up task b52v36mqx finished."},
+  {"id": "3DSCnMRgnwwKVap-eyrWJ", "grade": "GROUNDED", "leakage": false, "why": "USER turn 8 asks to confirm the stack is healthy as part of the clean-install test."},
+  {"id": "NBADun34Q5-KZ-zle5_VQ", "grade": "GROUNDED", "leakage": false, "why": "USER turn 8 lists kb status, /readyz, ingest, and prompt routing Vector->llama3.2-vision:11b@greedo to verify."},
+  {"id": "PrXCs_uCycvif-aK4qrNZ", "grade": "GROUNDED", "leakage": false, "why": "USER turn 9 instructs to scan greedo's ollama for newly pulled models."},
+  {"id": "BJX8_X2jGkEk8x38HCs-c", "grade": "PARTIAL", "leakage": false, "why": "USER turn 10 ('yes, probe away') authorizes probing, but the specific gemma4:12b/vision target comes from the assistant's prior turn, not the USER."},
+  {"id": "lcrC8Pjkh9qMdSdY1ROU0", "grade": "GROUNDED", "leakage": false, "why": "USER turn 11 asks to scan Mando's ollama model list."},
+  {"id": "WS9alTKJuv1rsp3XA2XxA", "grade": "GROUNDED", "leakage": false, "why": "USER turn 11 says 'let's chat changing the models being used on mando for our testing'."},
+  {"id": "JW9gSD-kNxh-Y3glZay_w", "grade": "GROUNDED", "leakage": false, "why": "USER turn 11 wants to ensure the new models work for the kb."},
+  {"id": "xFyO-zb4j_3BxEnyk_P0F", "grade": "GROUNDED", "leakage": false, "why": "USER turn 12 says 'let's start with qwen3.6:35b'."},
+  {"id": "eHy33XkT0_uynHXrvDrJY", "grade": "PARTIAL", "leakage": false, "why": "USER turn 13 ('run tougher query battery') is supported, but 'to stress the thinking path harder' is the assistant's framing, not the USER's words."},
+  {"id": "Z98LDoMshOkhAL3AYnqc6", "grade": "GROUNDED", "leakage": false, "why": "USER turn 14 says 'I'm taking a break'."},
+  {"id": "wMKvpDhjS7weclFK34QeN", "grade": "PARTIAL", "leakage": false, "why": "USER turn 14 requests the handoff, but the 'claude-cc mentioned ingesting new documents' clause is sourced from assistant turns, not the USER."}
+ ]
+}

@@ -1,0 +1,29 @@
+{
+  "workspace": "bench-strip",
+  "orig": "d49f53de-c1ee-4acd-b588-57c7a3c2f39a",
+  "items": [
+    {"id": "iTh6w-28hw44bQPM5oN2m", "grade": "GROUNDED", "leakage": false, "why": "USER[2] directly said don't enter planning mode until permission and don't prompt it himself."},
+    {"id": "KkIIeET9DpGkYAaMckF56", "grade": "GROUNDED", "leakage": false, "why": "USER[0] named the discussion markdown file and asked to pick it up."},
+    {"id": "8CXYqSXnqyvz03sUQmi2n", "grade": "GROUNDED", "leakage": false, "why": "USER[4] chose the 'thinking models are the wrong tool for JSON' thread to discuss."},
+    {"id": "GswYjTjdVVMoEqgBmWEK2", "grade": "GROUNDED", "leakage": false, "why": "USER[4] directed focus to that JSON/thinking-model thread; restates same act."},
+    {"id": "lAJsikt-9fAYqWbRx7LRL", "grade": "GROUNDED", "leakage": false, "why": "USER[6] references bossk 5080 limitations as the configuration constraint."},
+    {"id": "6ig8YTxjOM_bbsBStHZaM", "grade": "GROUNDED", "leakage": false, "why": "USER[6] said they halted the ingest due to errors/problems."},
+    {"id": "HDEhY4fgvd4qjHQS1WLaR", "grade": "GROUNDED", "leakage": false, "why": "USER[6] said he did research on model candidates and points to Strategy A doc."},
+    {"id": "D3HtADUx9sLczV9d4pZOR", "grade": "GROUNDED", "leakage": false, "why": "USER[6] gave a D:\\ document path; truncated but accurately a USER-supplied path."},
+    {"id": "_BFjjFhZHEk622B1xXwlT", "grade": "GROUNDED", "leakage": false, "why": "USER[8] explicitly said he intended the research doc as a jumping-off point for discussion."},
+    {"id": "Zz9D_yK008BbZNTGUEK6Q", "grade": "GROUNDED", "leakage": false, "why": "USER[8] proposed 2-3 models: json structuring, captioning, reasoning, between A & B."},
+    {"id": "UreqCeEOPBczN1hcnRAR5", "grade": "GROUNDED", "leakage": false, "why": "USER[8] proposed M4x testing of monolithic models and the small-model trio he named."},
+    {"id": "M_IuGenq1TFIlTpXQTVPo", "grade": "GROUNDED", "leakage": false, "why": "USER[10] asked to discuss repercussions of the capability catalog as shared spine of both."},
+    {"id": "t4xbLWFJsYpla0cBimFIU", "grade": "OVER", "leakage": false, "why": "Over-generalizes USER intent into a generic 'interested in architecture affecting integration/performance' character claim beyond his words."},
+    {"id": "Kgh5QUT96_cphgyH78PV9", "grade": "GROUNDED", "leakage": false, "why": "USER[12] engages the shared-spine approach for unknown/known models in the kb."},
+    {"id": "dxUBIkmtgm93QaaUim3q_", "grade": "GROUNDED", "leakage": false, "why": "USER[12] said spine derives baselines for unknown models usable without being approved."},
+    {"id": "YcCUusmh-w9Y9iRbkMqPX", "grade": "GROUNDED", "leakage": false, "why": "USER[12] listed capabilities of a collection of known models re hardware/LAN/cloud resources."},
+    {"id": "Z2hPrNc7XQTcfjnPyai2K", "grade": "GROUNDED", "leakage": false, "why": "USER[12] listed recommendations for configuring known models per hardware/LAN/cloud."},
+    {"id": "X0sTSgjrauQgUMT9hMvTZ", "grade": "GROUNDED", "leakage": false, "why": "USER[12] listed presets the user can toggle between for their specific setup."},
+    {"id": "9kZKv4mnHn-R_hdhWc5RG", "grade": "GROUNDED", "leakage": false, "why": "USER[14] said he understands the measurement-vs-recommendation distinction claude made."},
+    {"id": "MUeAnszUtUVvz3Kc90KOy", "grade": "GROUNDED", "leakage": false, "why": "USER[14] explicitly stated he is aligned on the articulation of how the shared spine operates."},
+    {"id": "0jKKHNOvDAzTSCKU-thJ3", "grade": "GROUNDED", "leakage": false, "why": "USER[14] said pull ollama 0.30.6 forward to lay a foundation; opens GGUF/HuggingFace model support."},
+    {"id": "b4k4T6nqfrU1_hAtRrIqW", "grade": "HALLUCINATED", "leakage": false, "why": "A timestamp '19:15 June 8 2026' appears nowhere; 'understands the information provided at <time>' is fabricated."},
+    {"id": "lerBRHFSGJuuj9Y_d9xN9", "grade": "GROUNDED", "leakage": false, "why": "USER[18] said 'Capture these conclusions back into the discussion doc'."}
+  ]
+}

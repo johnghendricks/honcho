@@ -1,0 +1,17 @@
+{
+  "workspace": "bench-strip",
+  "counts": {
+    "PARTIAL": 11,
+    "GROUNDED": 77,
+    "OVER": 4,
+    "HALLUCINATED": 1
+  },
+  "rates": {
+    "n": 93,
+    "grounded_pct": 82.8,
+    "partial_pct": 11.8,
+    "over_pct": 5.4,
+    "leakage": 4
+  },
+  "issues": []
+}

@@ -1,0 +1,10 @@
+{"workspace": "bench-strip", "orig": "182037d3-8300-440e-87fb-73cca3aa3541", "items": [
+  {"id": "T2bwiv63xHHDCirHgNzSh", "grade": "GROUNDED", "leakage": false, "why": "USER turn [6] directly states (b) needs more research/testing, then (a) or remove the test, note it, and move to cluster D."},
+  {"id": "k8Oozp7SrBGCcgElFil6I", "grade": "GROUNDED", "leakage": false, "why": "USER turn [8] literally uses 'Fix P2', 'Fix P1', and 'C:' in their message."},
+  {"id": "-KYYp4n9uOpRFq4Wgz1U2", "grade": "GROUNDED", "leakage": false, "why": "USER turn [8] says 'D: fix it!' verbatim."},
+  {"id": "jr8UwXF1s9HFFohkCjQD2", "grade": "PARTIAL", "leakage": false, "why": "USER turn [10] does say split commits with D separate from A/B/C, but the generalization about working with task-separation/documentation processes is an unsupported extrapolation."},
+  {"id": "WdZzKTx4WBphoKbSTjaJP", "grade": "GROUNDED", "leakage": false, "why": "USER turn [0] states the doc path, the intent to discuss failures/skipped tests, and that a skipped test is as bad as a failure with no glossing allowed."},
+  {"id": "9yqPwRIY8J3VlSNnRqEH2", "grade": "GROUNDED", "leakage": false, "why": "USER turn [0] explicitly says detective work must follow each failed or skipped test to determine what went wrong."},
+  {"id": "H5lHSsWE6xCacgxe55Kci", "grade": "PARTIAL", "leakage": false, "why": "USER turn [0] does direct attention to Cluster B, but the added inference that they are 'familiar with the terminology and context' is an over-generalization beyond their words."},
+  {"id": "yPpjXzmXl8dXXNk9WKMOl", "grade": "OVER", "leakage": false, "why": "USER turn [4] says 'Agreed. Continue to next cluster' with no date; the 'June 4, 2026' is pulled from the doc filename/content, not stated by the USER as the action date."}
+]}

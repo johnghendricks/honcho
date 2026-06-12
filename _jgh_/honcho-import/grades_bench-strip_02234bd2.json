@@ -1,0 +1,14 @@
+{
+  "workspace": "bench-strip",
+  "orig": "02234bd2-b4b4-4ef0-b7c6-a3bc7cecf1c7",
+  "items": [
+    {"id": "udGWeJmSUUK5KOIhejToK", "grade": "PARTIAL", "leakage": false, "why": "User did open with 'Bring up HANDOFF.md', but the precise timestamp is not stated by the user."},
+    {"id": "tCOC-qu3jhsr6EMISJ6Sc", "grade": "GROUNDED", "leakage": false, "why": "User explicitly describes Bug #3 (M2.1.57.1) surfacing on BOSSK during the 2026-05-15 fresh-install smoke."},
+    {"id": "8_XwJzUzDyyDgGuGCcsBL", "grade": "GROUNDED", "leakage": false, "why": "User states three options A/B/C are on the table in HANDOFF.md 'Open decision point'."},
+    {"id": "ipWRSQmMTdPJD1LJACFcd", "grade": "GROUNDED", "leakage": false, "why": "User describes option A as fix-now with refuse-with-purge design then rebuild image + MSI."},
+    {"id": "T7v_ghFgEH2l6DplLiQSh", "grade": "GROUNDED", "leakage": false, "why": "User describes option B as defer Bug #3, recover to :8b shipped-default, test rest tonight."},
+    {"id": "m1VR0FKgSJKQc3H8l4DG9", "grade": "GROUNDED", "leakage": false, "why": "User describes option C as defer code but fold the manual workaround into the runbook until M2.1.57.1 lands."},
+    {"id": "HPVl4pqZu0IfAncY1XU4_", "grade": "GROUNDED", "leakage": false, "why": "User states BOSSK install is broken-on-ingest with column halfvec(2048), TOML :0.6b, no lock yet."},
+    {"id": "6qT_XNQrH4Q8TfVeiKT4I", "grade": "GROUNDED", "leakage": false, "why": "User states any path forward needs kb-uninstall --purge + reinstall to recover."}
+  ]
+}

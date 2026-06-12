@@ -18,13 +18,21 @@
   ctx 32768), all migrations + `configure_embeddings.py`, `default` workspace with
   `reasoning.enabled=true` + the 703-char anti-over-attribution `custom_instructions`.
   Queue empty, 0 `full-*` sessions. (old `.env` backed up to `.env.bak.preinstall-2026-06-12`.)
-- **Corpus — regenerated.** `full_kb.json` rebuilt with the patched parser:
-  **618 sessions, 0 skill-injection leakage** (was 640/491). Stale copy kept at
-  `full_kb.stale.bak.json`.
+- **Corpus — regenerated (twice).** `full_kb.json` rebuilt with the patched parser:
+  first pass **0 skill-injection leakage**; second pass (2026-06-12) adds the
+  **continuation/auto-compact-summary strip** → **0 continuation leakage** too. Now
+  **590 sessions** (604 raw transcripts on Bossk; the `~/.claude/projects` dir has
+  fewer than the earlier 640/618 snapshot). Pre-strip copy kept at `full_kb.preStrip.bak.json`.
+- **Deriver config — SETTLED.** Grounding bench (see `honcho-import-benchmarks.md`
+  §"Grounding sweep") proved **model size is not the lever** (32b ≈ 14b, worse
+  leakage) and the **parser continuation-strip cleared the ≥80 % bar**: same 8
+  sessions, unchanged 14b, **75.0 % → 82.8 % grounded**, over-attribution 13.1 % →
+  5.4 %, worst session `f1a03124` 6 OVER/4 leak → 0/0. Mando reverted to qwen2.5:14b.
 - **Ingest tool — built (`ingest_batch.py`).** Single resumable/pausable/batched
   tool serving both Phase 2 and Phase 3 (see those sections). Supersedes the old
   `run_eval.py` + `ingest_batch.py` split and `load_to_honcho.py`/`import_groups.py`.
-- **Next:** Phase 2 / batch 0 (200-file indicative test) → grounding audit.
+- **Next:** quality gate met — run the full batched ingest of `full_kb.json` via
+  `ingest_batch.py` (Phase 2 = batch 0, then Phase 3).
 
 ## Why we're resetting
 
