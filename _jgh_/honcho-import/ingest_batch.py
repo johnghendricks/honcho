@@ -10,7 +10,7 @@ Design (see _jgh_/docs/clean-reinstall-and-batched-ingest.md):
   * Source (--source): a single .jsonl, a folder of transcripts (parsed
     recursively), or a pre-parsed .json corpus ({project,sessions,conclusions}).
     Default = the user's Claude Code projects folder (~/.claude/projects).
-  * Batch size (--batch-size, default 200) divides a STABLE stratified global
+  * Batch size (--batch-size, default 25) divides a STABLE stratified global
     order into fixed batches; batch numbers are stable across runs (for a given
     source + batch-size), so "batch N still pending" is meaningful. Batch 0 is a
     size-stratified sample of the whole source -> the Phase-2 indicative set.
@@ -442,7 +442,7 @@ def main():
     ap.add_argument("--source", default=str(DEFAULT_SOURCE),
                     help=".jsonl file, folder of transcripts, or pre-parsed "
                          ".json corpus (default: ~/.claude/projects)")
-    ap.add_argument("--batch-size", type=int, default=200)
+    ap.add_argument("--batch-size", type=int, default=25)
     ap.add_argument("--batches", type=int, default=0,
                     help="max batches this run (0 = all remaining)")
     ap.add_argument("--deriver", choices=("true", "false"), default="true",
