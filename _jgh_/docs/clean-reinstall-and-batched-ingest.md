@@ -2,7 +2,7 @@
 
 > Personal runbook for John (jgh). Wipe the self-hosted Honcho on **Mando**,
 > reinstall it configured correctly **up front**, validate the whole pipeline on a
-> controlled 200-file test, then ingest the kb-proto-1 corpus in **John-controlled
+> controlled 25-file test, then ingest the kb-proto-1 corpus in **John-controlled
 > batches** so Mando isn't tied up for ~9 h straight. Decided 2026-06-11 after the
 > import-quality audit (see `[[import-over-attribution]]` memory + below).
 >
@@ -53,7 +53,7 @@ contaminated store, we start clean with all fixes in place.
 | Reset scope | **Full wipe** — `docker compose down -v` + re-bootstrap |
 | Live `john`/`claude` `/clear`-hook memory | **Let it go** — not preserved; the hook rebuilds over time |
 | Stack model (all agents) | **`qwen2.5:14b` everywhere** (deriver, dialectic ×5, summary, dream). Supersedes the stale `[[lan-topology]]` note that still says `gemma4:26b`. Basis: `honcho-import-benchmarks.md` Run 6 (0% garbage, 2.6× faster) + the Dialectic A/B. |
-| Phase-2 test set | **200 files, stratified by size** (even strides across sessions sorted by msg count) |
+| Phase-2 test set | **25 files (batch 0), stratified by size** (even strides across sessions sorted by msg count) |
 | Phase-2 batching | **`FLUSH_ENABLED=true`** (per-message) to match the Run-6 quality baseline; bulk-batching deferred to Phase 3 |
 
 ## Ablation result — assistant context is NOT the contamination driver (2026-06-12)
@@ -235,14 +235,14 @@ generalizations about the peer's character, expertise, or intentions.
 
 ---
 
-## Phase 2 — Robust 200-file test ("water through the pipe")
+## Phase 2 — Robust 25-file test ("water through the pipe")
 
 Phase 2 is **batch 0 of the final ingest** — same tool, same shape (per John's
 "the test mirrors the final ingestion queue"). Tool:
 **`_jgh_/honcho-import/ingest_batch.py`** (see §"The ingest tool" below).
 
 1. `python ingest_batch.py --source full_kb.json --dry-run` — preview the plan.
-   Batch 0 = 200 sessions, **size-stratified** across the corpus (the indicative
+   Batch 0 = 25 sessions, **size-stratified** across the corpus (the indicative
    set); the patched parser already stripped skill-injection.
 2. `python ingest_batch.py --source full_kb.json --batches 1` — load batch 0.
    Peers ensured `john-cc` `observe_me=true` / `claude-cc` `observe_me=false`;
