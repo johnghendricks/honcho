@@ -450,7 +450,14 @@ def main():
                          "reasoning.enabled=false per-session on the full-* sessions "
                          "so messages load WITHOUT derivation (not retroactive); the "
                          "workspace-level reasoning flag / live data is untouched.")
-    ap.add_argument("--drain-between-batches", action="store_true")
+    ap.add_argument("--drain-between-batches", action=argparse.BooleanOptionalAction,
+                    default=None,
+                    help="wait for the deriver queue to fully drain after each batch "
+                         "before loading the next (each batch fully processes before a "
+                         "new one is ingested, so a PAUSE leaves at most one batch "
+                         "deriving). Default: AUTO — on when --deriver is on, off when "
+                         "it's off. Override with --drain-between-batches / "
+                         "--no-drain-between-batches.")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--status", action="store_true")
     ap.add_argument("--reset", action="store_true",
@@ -458,6 +465,10 @@ def main():
     args = ap.parse_args()
 
     derive = args.deriver == "true"
+    # AUTO: drain follows the deriver unless explicitly overridden. Draining is only
+    # meaningful when the deriver is on (otherwise the queue is always empty).
+    drain = args.drain_between_batches if args.drain_between_batches is not None else derive
+    drain_explicit = args.drain_between_batches is not None
     source = Path(args.source).expanduser()
     items, conclusions = discover(source)
     order = stratified_order(items, args.batch_size)
@@ -518,6 +529,15 @@ def main():
     else:
         print("deriver = OFF (per-session reasoning.enabled=false): messages will "
               "load WITHOUT derivation; not retroactive. Live data untouched.")
+    _src = "explicit override" if drain_explicit else ("auto: deriver on" if derive
+                                                        else "auto: deriver off")
+    if drain:
+        print(f"drain = ON ({_src}): each batch fully derives before the next loads; "
+              "a PAUSE leaves at most one batch's work deriving.")
+    else:
+        print(f"drain = OFF ({_src}): all batches load back-to-back; the deriver "
+              "queue backs up and drains on its own. PAUSE only stops the loader — "
+              "already-queued derivation keeps running on the server.")
 
     api_ok("POST", f"/workspaces/{WS}/peers",
            {"id": USER_PEER, "configuration": {"observe_me": True}})
@@ -570,7 +590,7 @@ def main():
             loaded_msgs += msgs
         run_transfer += b_transfer
         drain_secs = None
-        if args.drain_between_batches and not paused():
+        if drain and not paused():
             drain_secs = drain_queue()
         con.execute("INSERT OR REPLACE INTO batches(run_id,batch_idx,n_files,n_msgs,"
                     "transfer_secs,drain_secs,started_at,finished_at) "
@@ -592,9 +612,18 @@ def main():
     print(f"\n== run {final_status}: +{loaded_files} files, +{loaded_msgs} msgs, "
           f"transfer={run_transfer:.0f}s "
           f"(ledger now {len(done_ids(con))} done) ==")
-    if args.drain_between_batches and final_status == "completed":
-        print("Tip: last batch may still be draining on the deriver "
-              "(run --status to watch).")
+    if drain and final_status == "completed":
+        print("All batches (including the last) drained to an empty queue — "
+              "derivation is fully caught up.")
+    elif drain and final_status == "paused":
+        print("Paused: the loader stopped and no new batches were ingested. The "
+              "batch in flight when you paused may still be deriving on the server "
+              "(bounded to one batch) — run --status / get_queue_status to watch it "
+              "settle.")
+    elif derive and not drain:
+        print("Note: drain is OFF — the deriver queue is still backed up and will "
+              "keep processing on the server long after this run exits. PAUSE will "
+              "NOT stop it; that requires stopping the deriver process on the server.")
     con.close()
 
 
