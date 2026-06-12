@@ -304,6 +304,7 @@ One resumable/pausable/batched tool for both phases. Supersedes `run_eval.py`,
 | `--source` | `~/.claude/projects` | A single `.jsonl`, a folder of transcripts, or a pre-parsed `.json` corpus (e.g. `full_kb.json`). |
 | `--batch-size` | `200` | Files per batch. Drives **stable** global batch numbers (same source + size ⇒ same batches across runs). |
 | `--batches` | `0` (all) | Max batches to process this run. `--batches 1` = batch 0 only (Phase 2). |
+| `--deriver` | `true` | Run the deriver on this batch. `false` sets `reasoning.enabled=false` **per-session** on the `full-*` sessions → messages load without derivation (scoped to this ingest; workspace flag + live data untouched; **not retroactive** — re-ingest to derive later). |
 | `--drain-between-batches` | off | Block until the queue empties at each batch boundary. |
 | `--dry-run` | off | Print the plan; no writes. |
 | `--status` | off | Print the tally + timing stats; no writes. |

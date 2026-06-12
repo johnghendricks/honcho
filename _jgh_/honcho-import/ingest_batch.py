@@ -43,6 +43,7 @@ Usage:
     python ingest_batch.py --source full_kb.json --batches 1   # Phase-2 batch
     python ingest_batch.py --source full_kb.json               # all batches
     python ingest_batch.py --batch-size 50 --source <dir>      # smaller chunks
+    python ingest_batch.py --batch-size 25 --deriver false     # load, no derivation
     python ingest_batch.py --reset --source <...>         # DANGER: wipe full-* + ledger
 """
 
@@ -275,12 +276,20 @@ def delete_session_and_wait(sid: str, tries: int = 40):
     raise SystemExit(f"session {sid} still present after delete; aborting to avoid dupes")
 
 
-def ensure_session(sid: str, project: str, orig: str):
+def ensure_session(sid: str, project: str, orig: str, derive: bool = True):
+    # reasoning.enabled is set per-SESSION here (resolution order is
+    # workspace -> session -> message, src/utils/config_helpers.get_configuration),
+    # so --deriver false skips derivation for THIS ingest's full-* sessions only and
+    # leaves the workspace-level reasoning flag (live john/claude data) untouched.
+    # Disabling is not retroactive: with reasoning off, no representation queue items
+    # are ever created for these messages (src/deriver/enqueue.py returns early), so
+    # flipping it back on later will NOT backfill -- re-ingest to derive them.
     api_ok("POST", f"/workspaces/{WS}/sessions", {
         "id": sid,
         "metadata": {"source": "claude-code", "project": project,
                      "import": "batched-ingest", "orig_session": orig},
         "peers": {USER_PEER: {}, ASST_PEER: {}},
+        "configuration": {"reasoning": {"enabled": derive}},
     })
 
 
@@ -302,7 +311,8 @@ def post_messages(sid: str, msgs: list[dict], project: str, orig: str) -> tuple[
     return len(batch), n_chars
 
 
-def load_file(con, item: dict, existing: set[str], batch_idx: int) -> int:
+def load_file(con, item: dict, existing: set[str], batch_idx: int,
+              derive: bool = True) -> int:
     """Load one session idempotently, recording timings. Returns message count."""
     orig = item["session_id"]
     project = item["project"]
@@ -325,7 +335,7 @@ def load_file(con, item: dict, existing: set[str], batch_idx: int) -> int:
     t = time.perf_counter()
     if sid in existing:                       # orphan/partial from a crashed run
         delete_session_and_wait(sid)
-    ensure_session(sid, project, orig)
+    ensure_session(sid, project, orig, derive)
     n_msgs, n_chars = post_messages(sid, msgs, project, orig)
     transfer_secs = round(time.perf_counter() - t, 3)
 
@@ -435,6 +445,11 @@ def main():
     ap.add_argument("--batch-size", type=int, default=200)
     ap.add_argument("--batches", type=int, default=0,
                     help="max batches this run (0 = all remaining)")
+    ap.add_argument("--deriver", choices=("true", "false"), default="true",
+                    help="run the deriver on this batch (default: true). false sets "
+                         "reasoning.enabled=false per-session on the full-* sessions "
+                         "so messages load WITHOUT derivation (not retroactive); the "
+                         "workspace-level reasoning flag / live data is untouched.")
     ap.add_argument("--drain-between-batches", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--status", action="store_true")
@@ -442,6 +457,7 @@ def main():
                     help="DANGER: delete all full-* sessions and drop the ledger")
     args = ap.parse_args()
 
+    derive = args.deriver == "true"
     source = Path(args.source).expanduser()
     items, conclusions = discover(source)
     order = stratified_order(items, args.batch_size)
@@ -480,6 +496,7 @@ def main():
     limit = args.batches if args.batches > 0 else len(pending_batches)
     run_batches = pending_batches[:limit]
     print(f"this run: batches {run_batches if run_batches else '(none — all done)'}"
+          f"  deriver={'on' if derive else 'off'}"
           + (" [DRY-RUN]" if args.dry_run else ""))
 
     if args.dry_run:
@@ -493,8 +510,14 @@ def main():
         return
 
     r = workspace_reasoning_on()
-    print(f"workspace reasoning.enabled = {r}" +
-          ("  [!] expected True for derivation" if r is False else ""))
+    if derive:
+        print(f"deriver = ON (per-session reasoning.enabled=true). "
+              f"workspace reasoning.enabled = {r}" +
+              ("  [!] workspace reasoning is OFF — derivation still won't run; "
+               "enable it on the workspace first" if r is False else ""))
+    else:
+        print("deriver = OFF (per-session reasoning.enabled=false): messages will "
+              "load WITHOUT derivation; not retroactive. Live data untouched.")
 
     api_ok("POST", f"/workspaces/{WS}/peers",
            {"id": USER_PEER, "configuration": {"observe_me": True}})
@@ -526,7 +549,7 @@ def main():
                 final_status = "paused"
                 break
             try:
-                msgs = load_file(con, s, existing, bi)
+                msgs = load_file(con, s, existing, bi, derive)
             except SystemExit:
                 raise
             except Exception as e:                       # record + fail fast
