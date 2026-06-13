@@ -89,9 +89,28 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
+TS_FORMAT = "%I:%M:%S %p | %m-%d-%Y"   # e.g. "09:54:28 PM | 06-12-2026"
+
+
 def stamp() -> str:
-    """Local wall-clock (date + time + seconds) for human-scannable scrollback."""
-    return datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
+    """Local wall-clock for human-scannable scrollback."""
+    return datetime.now().astimezone().strftime(TS_FORMAT)
+
+
+def fmt_local(iso: str) -> str:
+    """Render a stored UTC iso timestamp as local wall-clock."""
+    return datetime.fromisoformat(iso).astimezone().strftime(TS_FORMAT)
+
+
+def fmt_dur(secs: float) -> str:
+    secs = int(secs)
+    h, rem = divmod(secs, 3600)
+    m, s = divmod(rem, 60)
+    if h:
+        return f"{h}h {m:02d}m {s:02d}s"
+    if m:
+        return f"{m}m {s:02d}s"
+    return f"{s}s"
 
 
 # --------------------------------------------------------------------------- #
@@ -413,6 +432,12 @@ def print_status(con, order: list[dict], batch_size: int):
 
     print(f"\n== TALLY (as of {stamp()}) ==  total={total}  done={n_done}  "
           f"pending={total - n_done - n_skipped}  skipped={n_skipped}  error={n_err}")
+    rr = con.execute("SELECT MIN(started_at) s, COUNT(*) n FROM runs").fetchone()
+    if rr and rr["s"]:
+        elapsed = (datetime.now(timezone.utc)
+                   - datetime.fromisoformat(rr["s"])).total_seconds()
+        print(f"started {fmt_local(rr['s'])}  |  elapsed {fmt_dur(elapsed)}"
+              + (f"  (across {rr['n']} runs incl. resumes)" if rr["n"] > 1 else ""))
     print("per batch (done/total):")
     for bi in sorted(by_batch):
         tot, dn = by_batch[bi][0], by_batch[bi][1]
