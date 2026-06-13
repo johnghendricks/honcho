@@ -89,6 +89,11 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
+def stamp() -> str:
+    """Local wall-clock (date + time + seconds) for human-scannable scrollback."""
+    return datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
+
+
 # --------------------------------------------------------------------------- #
 # HTTP
 # --------------------------------------------------------------------------- #
@@ -184,6 +189,13 @@ def db() -> sqlite3.Connection:
 def done_ids(con: sqlite3.Connection) -> set[str]:
     return {r["session_id"] for r in
             con.execute("SELECT session_id FROM files WHERE status='done'")}
+
+
+def skipped_ids(con: sqlite3.Connection) -> set[str]:
+    # Terminal-but-not-loaded: source file vanished from the live ~/.claude/projects
+    # dir between scan and load. Can never be loaded, so don't retry it on resume.
+    return {r["session_id"] for r in
+            con.execute("SELECT session_id FROM files WHERE status='skipped'")}
 
 
 def record_file(con, *, session_id, honcho_session, project, source_path, n_msgs,
@@ -385,19 +397,22 @@ def drain_queue(max_wait: int = 4 * 3600, poll: int = 10, frozen_after: int = 60
 # --------------------------------------------------------------------------- #
 def print_status(con, order: list[dict], batch_size: int):
     done = done_ids(con)
+    skipped = skipped_ids(con)
+    resolved = done | skipped   # terminal: loaded or vanished — won't be retried
     total = len(order)
     n_done = sum(1 for s in order if s["session_id"] in done)
+    n_skipped = sum(1 for s in order if s["session_id"] in skipped)
     by_batch: dict[int, list[int]] = {}
     for i, s in enumerate(order):
         bi = i // batch_size
-        d = 1 if s["session_id"] in done else 0
+        d = 1 if s["session_id"] in resolved else 0
         agg = by_batch.setdefault(bi, [0, 0])
         agg[0] += 1
         agg[1] += d
     n_err = con.execute("SELECT COUNT(*) c FROM files WHERE status='error'").fetchone()["c"]
 
-    print(f"\n== TALLY ==  total={total}  done={n_done}  "
-          f"pending={total - n_done}  error={n_err}")
+    print(f"\n== TALLY (as of {stamp()}) ==  total={total}  done={n_done}  "
+          f"pending={total - n_done - n_skipped}  skipped={n_skipped}  error={n_err}")
     print("per batch (done/total):")
     for bi in sorted(by_batch):
         tot, dn = by_batch[bi][0], by_batch[bi][1]
@@ -464,6 +479,7 @@ def main():
                     help="DANGER: delete all full-* sessions and drop the ledger")
     args = ap.parse_args()
 
+    print(f"=== honcho-ingest @ {stamp()} ===")
     derive = args.deriver == "true"
     # AUTO: drain follows the deriver unless explicitly overridden. Draining is only
     # meaningful when the deriver is on (otherwise the queue is always empty).
@@ -492,7 +508,10 @@ def main():
         return
 
     done = done_ids(con)
-    print(f"ledger: {len(done)} done, {total - len(done)} remaining")
+    skipped = skipped_ids(con)
+    terminal = done | skipped   # never retry done-or-vanished files
+    print(f"ledger: {len(done)} done, {total - len(terminal)} remaining"
+          + (f" ({len(skipped)} skipped/missing)" if skipped else ""))
 
     if args.status:
         print_status(con, order, args.batch_size)
@@ -501,7 +520,7 @@ def main():
     # Pending files grouped by their STABLE global batch index.
     pending_by_batch: dict[int, list[dict]] = {}
     for i, s in enumerate(order):
-        if s["session_id"] not in done:
+        if s["session_id"] not in terminal:
             pending_by_batch.setdefault(i // args.batch_size, []).append(s)
     pending_batches = sorted(pending_by_batch)
     limit = args.batches if args.batches > 0 else len(pending_batches)
@@ -555,13 +574,15 @@ def main():
     loaded_files = loaded_msgs = 0
     run_transfer = 0.0
     final_status = "completed"
+    consec_errors = 0           # circuit breaker: abort only on a run of failures
+    MAX_CONSEC_ERRORS = 5       # (a systemic outage), not on isolated bad files
     for n, bi in enumerate(run_batches):
         if paused():
             print(f"[pause] before batch {bi}; stopping. Re-run to continue.")
             final_status = "paused"
             break
         grp = pending_by_batch[bi]
-        print(f"\n== batch {bi} ({len(grp)} files) ==", flush=True)
+        print(f"\n== batch {bi} ({len(grp)} files) @ {stamp()} ==", flush=True)
         b_started, b_transfer, b_msgs, b_files = now_iso(), 0.0, 0, 0
         for s in grp:
             if paused():
@@ -570,17 +591,36 @@ def main():
                 break
             try:
                 msgs = load_file(con, s, existing, bi, derive)
+                consec_errors = 0
             except SystemExit:
                 raise
-            except Exception as e:                       # record + fail fast
+            except FileNotFoundError as e:
+                # Source file vanished from the live ~/.claude/projects dir between
+                # scan and load. Benign — mark terminal-skipped and keep going.
+                record_file(con, session_id=s["session_id"], honcho_session=None,
+                            project=s["project"], source_path=s["source_path"],
+                            n_msgs=0, n_chars=0, batch_idx=bi, status="skipped",
+                            parse_secs=0.0, transfer_secs=0.0,
+                            started_at=now_iso(), error="source file missing at load")
+                print(f"  [skip] {s['session_id']}: source file gone since scan — "
+                      "skipping (won't retry).")
+                consec_errors = 0
+                continue
+            except Exception as e:                       # record + continue (breaker)
                 record_file(con, session_id=s["session_id"], honcho_session=None,
                             project=s["project"], source_path=s["source_path"],
                             n_msgs=0, n_chars=0, batch_idx=bi, status="error",
                             parse_secs=0.0, transfer_secs=0.0,
                             started_at=now_iso(), error=repr(e))
-                print(f"  [!] error on {s['session_id']}: {e!r} (recorded; aborting)")
-                final_status = "error"
-                raise
+                consec_errors += 1
+                print(f"  [!] error on {s['session_id']}: {e!r} "
+                      f"(recorded; {consec_errors}/{MAX_CONSEC_ERRORS} consecutive)")
+                if consec_errors >= MAX_CONSEC_ERRORS:
+                    print(f"  [!] {consec_errors} consecutive errors — aborting "
+                          "(looks systemic, e.g. server down). Re-run to resume.")
+                    final_status = "error"
+                    raise
+                continue   # isolated bad file — left pending, retried on next run
             row = con.execute("SELECT transfer_secs FROM files WHERE session_id=?",
                               (s["session_id"],)).fetchone()
             b_transfer += row["transfer_secs"] or 0.0
