@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from parse_transcripts import parse_transcript  # noqa: E402
 
 KB = Path(r"C:\Users\John Hendricks\.claude\projects\D--Git-Be-Sentient-kb-proto-1")
-BASE = "http://192.168.0.225:8000"
+BASE = "http://192.168.0.140:8000"
 WS = "default"
 PEER = "dbench-qwen"  # Run 6: deriver model swapped to qwen2.5:14b (frequency_penalty=0.3 still live)
 OUT = Path(__file__).parent / "bench_deriver_results.json"

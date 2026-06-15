@@ -63,7 +63,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from parse_transcripts import parse_transcript  # noqa: E402
 
 HERE = Path(__file__).parent
-BASE = "http://192.168.0.225:8000"
+BASE = "http://192.168.0.140:8000"
 WS = "default"
 USER_PEER = "john-cc"      # the profiled person -> self-observe ON
 ASST_PEER = "claude-cc"    # context only -> self-observe OFF

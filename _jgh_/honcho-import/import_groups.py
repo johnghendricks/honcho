@@ -20,7 +20,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-BASE = "http://192.168.0.225:8000"
+BASE = "http://192.168.0.140:8000"
 WS = "default"
 USER_PEER = "john-cc"
 ASST_PEER = "claude-cc"

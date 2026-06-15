@@ -21,7 +21,7 @@ import urllib.request
 from pathlib import Path
 
 HERE = Path(__file__).parent
-BASE = "http://192.168.0.225:8000"
+BASE = "http://192.168.0.140:8000"
 USER_PEER, ASST_PEER = "john-cc", "claude-cc"
 SOURCE_TAG = "cc-transcript-import"
 BENCH = json.loads((HERE / "bench_set.json").read_text(encoding="utf-8"))["sessions"]

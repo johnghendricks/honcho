@@ -18,7 +18,7 @@ import sys
 import urllib.error
 import urllib.request
 
-BASE = "http://192.168.0.225:8000"
+BASE = "http://192.168.0.140:8000"
 WS = "default"
 TEST_PEERS = {"dbench", "dbench-fp", "dbench-fp2", "dbench-qwen"}
 APPLY = "--apply" in sys.argv

@@ -23,7 +23,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from parse_transcripts import chunk_body  # noqa: E402
 
 PROJECTS_ROOT = Path(r"C:\Users\John Hendricks\.claude\projects")
-BASE = "http://192.168.0.225:8000"
+BASE = "http://192.168.0.140:8000"
 WS = "default"
 OBSERVER = "john-cc"
 OBSERVED = "john-cc"

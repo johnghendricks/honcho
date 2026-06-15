@@ -18,7 +18,7 @@ import time
 import urllib.request
 from pathlib import Path
 
-BASE = os.environ.get("HONCHO_BASE", "http://192.168.0.225:8000")
+BASE = os.environ.get("HONCHO_BASE", "http://192.168.0.140:8000")
 WS = os.environ.get("ABLATION_WS", "ablation")
 OUT = Path(__file__).parent / "ablation_poll_results.json"
 POLL = 5

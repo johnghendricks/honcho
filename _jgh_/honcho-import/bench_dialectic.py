@@ -26,7 +26,7 @@ try:
 except Exception:
     pass
 
-BASE = "http://192.168.0.225:8000"
+BASE = "http://192.168.0.140:8000"
 WS = "default"
 
 MODEL_TAG = sys.argv[1] if len(sys.argv) > 1 else "unknown"

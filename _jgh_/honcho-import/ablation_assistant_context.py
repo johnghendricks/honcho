@@ -38,7 +38,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-BASE = os.environ.get("HONCHO_BASE", "http://192.168.0.225:8000")
+BASE = os.environ.get("HONCHO_BASE", "http://192.168.0.140:8000")
 WS = os.environ.get("ABLATION_WS", "ablation")
 KB = Path(__file__).parent / "full_kb.json"
 SOURCE = "ablation-assistant-context"

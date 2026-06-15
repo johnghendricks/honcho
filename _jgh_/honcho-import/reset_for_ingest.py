@@ -24,7 +24,7 @@ import time
 import urllib.error
 import urllib.request
 
-BASE = "http://192.168.0.225:8000"
+BASE = "http://192.168.0.140:8000"
 KEEP_WS = "default"
 DROP_WS = ["bench-qwen32", "bench-strip"]
 USER_PEER, ASST_PEER = "john-cc", "claude-cc"

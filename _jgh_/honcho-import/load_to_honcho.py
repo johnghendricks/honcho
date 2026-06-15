@@ -7,7 +7,7 @@ Usage:
     python load_to_honcho.py <payload.json> [--dry-run]
 
 Config via env or the constants below:
-    HONCHO_BASE  default http://192.168.0.225:8000
+    HONCHO_BASE  default http://192.168.0.140:8000
     HONCHO_WS    default default
 """
 
@@ -17,7 +17,7 @@ import sys
 import urllib.error
 import urllib.request
 
-BASE = os.environ.get("HONCHO_BASE", "http://192.168.0.225:8000")
+BASE = os.environ.get("HONCHO_BASE", "http://192.168.0.140:8000")
 WS = os.environ.get("HONCHO_WS", "default")
 USER_PEER = "john-cc"
 ASST_PEER = "claude-cc"

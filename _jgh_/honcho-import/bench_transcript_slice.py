@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from parse_transcripts import parse_transcript  # noqa: E402
 
 ROOT = Path(r"C:\Users\John Hendricks\.claude\projects")
-BASE = "http://192.168.0.225:8000"
+BASE = "http://192.168.0.140:8000"
 WS = "default"
 USER_PEER, ASST_PEER = "john-cc", "claude-cc"
 SESSION_PREFIX = "full-"
