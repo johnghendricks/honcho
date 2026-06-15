@@ -44,12 +44,12 @@ times out at 60s, but the server keeps grinding to completion regardless.)
 Honcho exposes no config endpoint — only `/health` and `/metrics` (no model
 labels in this build). The settings live server-side. **Ollama is the
 introspection surface**: query it directly over the LAN (Mando =
-`192.168.0.225`):
+`192.168.0.140`):
 
 ```bash
-curl -s http://192.168.0.225:11434/api/tags   # installed models
-curl -s http://192.168.0.225:11434/api/ps     # loaded right now + ctx + VRAM
-curl -s http://192.168.0.225:11434/api/show -d '{"name":"gemma4:26b"}'  # params/num_ctx
+curl -s http://192.168.0.140:11434/api/tags   # installed models
+curl -s http://192.168.0.140:11434/api/ps     # loaded right now + ctx + VRAM
+curl -s http://192.168.0.140:11434/api/show -d '{"name":"gemma4:26b"}'  # params/num_ctx
 ```
 
 Firing a `minimal` dialectic call, then checking `/api/ps`, gave ground truth:

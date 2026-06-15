@@ -7,7 +7,7 @@
 >
 > Tooling lives in the repo at `_jgh_/honcho-import/` (`parse_transcripts.py`,
 > `bench_memory_import.py`, `scan_project.py`, and the current ingestion tool
-> **`ingest_batch.py`**). Target: `http://192.168.0.225:8000` (Mando), ws
+> **`ingest_batch.py`**). Target: `http://192.168.0.140:8000` (Mando), ws
 > `default`, import peers `john-cc` / `claude-cc`.
 >
 > **Note (2026-06-12):** ingestion is now done by `ingest_batch.py` (resumable,
@@ -332,7 +332,7 @@ resident at `ctx=32768`. Fresh peer `dbench-fp2` to isolate from baseline data.
 
 Swapped the deriver model `gemma4:26b → qwen2.5:14b` on Mando (older but more
 proven for clean structured output), `frequency_penalty=0.3` retained. Verified
-resident over the LAN (`GET 192.168.0.225:11434/api/ps`): `qwen2.5:14b`,
+resident over the LAN (`GET 192.168.0.140:11434/api/ps`): `qwen2.5:14b`,
 `ctx=32768`, 15.3 GB VRAM, `keep_alive=-1`. Fresh peer `dbench-qwen`, same
 12-message source session as every prior run (directly comparable).
 

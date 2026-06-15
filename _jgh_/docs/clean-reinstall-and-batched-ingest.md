@@ -204,11 +204,11 @@ docker compose up -d                   # all services incl. deriver
 ### 1c. Verify (don't declare clean until all pass)
 
 ```bash
-curl -s http://192.168.0.225:8000/health                      # {"status":"ok"}
+curl -s http://192.168.0.140:8000/health                      # {"status":"ok"}
 docker compose ps                                             # api/database/redis/deriver healthy
 docker exec honcho-deriver-1 printenv | grep DERIVER_MODEL_CONFIG   # MODEL=qwen2.5:14b, FREQUENCY_PENALTY=0.3
 # force-load qwen2.5:14b, then confirm ctx:
-curl -s http://192.168.0.225:11434/api/ps                    # qwen2.5:14b context_length == 32768
+curl -s http://192.168.0.140:11434/api/ps                    # qwen2.5:14b context_length == 32768
 # confirm 1024-dim vector columns (psql) — see honcho-mando-ollama-setup.md Part 4
 ```
 

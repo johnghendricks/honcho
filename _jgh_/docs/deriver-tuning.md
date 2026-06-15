@@ -73,7 +73,7 @@ unload on its own):
 
 ```bash
 # fully quit & reopen Ollama.app, or restart `ollama serve`, then:
-curl -s http://192.168.0.225:11434/api/ps    # confirm ctx is now 32768, not 262144
+curl -s http://192.168.0.140:11434/api/ps    # confirm ctx is now 32768, not 262144
 ```
 
 32768 sits comfortably above the deriver's real input (≤25000
@@ -249,7 +249,7 @@ promptly instead of waiting for a batch to fill.
 OLLAMA_CONTEXT_LENGTH=32768
 OLLAMA_KEEP_ALIVE=-1
 #    restart Ollama, then confirm:
-curl -s http://192.168.0.225:11434/api/ps         # ctx == 32768 ?
+curl -s http://192.168.0.140:11434/api/ps         # ctx == 32768 ?
 
 # 2. (optional) smaller deriver model + (bulk) bigger batches — in deriver .env:
 #    DERIVER_MODEL_CONFIG__MODEL=gemma4:12b

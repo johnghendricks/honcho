@@ -22,7 +22,7 @@ and quotes: `mando docker ps`.
 | Field | Value |
 | --- | --- |
 | Host alias | `mando` (defined in Bossk `~/.ssh/config`) |
-| Address | `192.168.0.225` (Mando, LAN) |
+| Address | `192.168.0.140` (Mando, LAN) |
 | Mac account | `johnhendricks` |
 | Login shell | `/bin/zsh` |
 | Auth | ed25519 public key, **no passphrase** |
@@ -33,7 +33,7 @@ and quotes: `mando docker ps`.
 
 ```
 Host mando
-    HostName 192.168.0.225
+    HostName 192.168.0.140
     User johnhendricks
     IdentityFile ~/.ssh/id_ed25519
     ServerAliveInterval 60
@@ -56,12 +56,12 @@ Host mando
    - GUI: System Settings → General → Sharing → **Remote Login** on (ensure
      `johnhendricks` is allowed).
    - or CLI on Mando: `sudo systemsetup -setremotelogin on`
-   - Verify reachable from Bossk: `Test-NetConnection 192.168.0.225 -Port 22`
+   - Verify reachable from Bossk: `Test-NetConnection 192.168.0.140 -Port 22`
 
 3. **Install the public key on Mando** (prompts for Mac password once; run it
    yourself so the prompt lands in your interactive session):
    ```powershell
-   type "$env:USERPROFILE\.ssh\id_ed25519.pub" | ssh johnhendricks@192.168.0.225 `
+   type "$env:USERPROFILE\.ssh\id_ed25519.pub" | ssh johnhendricks@192.168.0.140 `
      "umask 077; mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
    ```
 

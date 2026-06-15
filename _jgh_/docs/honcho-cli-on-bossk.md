@@ -17,7 +17,7 @@ honcho workspace queue-status -w default
 
 The CLI is a **client**, not a server tool — a Typer app that talks to a Honcho
 server over HTTP via the Python SDK. It runs on Bossk and points at Mando's API
-(`http://192.168.0.225:8000`). Nothing needs to be installed on Mando for this.
+(`http://192.168.0.140:8000`). Nothing needs to be installed on Mando for this.
 
 ## Connection facts
 
@@ -25,7 +25,7 @@ server over HTTP via the Python SDK. It runs on Bossk and points at Mando's API
 | --- | --- |
 | Executable | `C:\Users\John Hendricks\.local\bin\honcho.exe` (on PATH) |
 | Config file | `C:\Users\John Hendricks\.honcho\config.json` |
-| `environmentUrl` | `http://192.168.0.225:8000` (Mando Honcho API) |
+| `environmentUrl` | `http://192.168.0.140:8000` (Mando Honcho API) |
 | `apiKey` | none — Mando runs `AUTH_USE_AUTH=false` (trusted LAN) |
 | Source | `honcho-cli/` in this repo (installed editable) |
 
@@ -33,7 +33,7 @@ server over HTTP via the Python SDK. It runs on Bossk and points at Mando's API
 
 ```json
 {
-  "environmentUrl": "http://192.168.0.225:8000"
+  "environmentUrl": "http://192.168.0.140:8000"
 }
 ```
 
@@ -62,7 +62,7 @@ Then write the config (auth off → no `init` prompt needed):
 
 ```powershell
 New-Item -ItemType Directory -Force "$HOME\.honcho" | Out-Null
-'{ "environmentUrl": "http://192.168.0.225:8000" }' | Set-Content "$HOME\.honcho\config.json"
+'{ "environmentUrl": "http://192.168.0.140:8000" }' | Set-Content "$HOME\.honcho\config.json"
 ```
 
 Verify with a real command (not `doctor` — see gotcha below):
@@ -154,4 +154,4 @@ uv tool install --force --editable --from ./honcho-cli --with click honcho-cli
 
 - `_jgh_/docs/ssh-mando-from-bossk.md` — SSH into Mando (driving the server side).
 - `_jgh_/docs/honcho-mando-ollama-setup.md` — the Mando Honcho + Ollama deployment.
-- Mando facts: `192.168.0.225`, Honcho API `:8000`, MCP `:8787`, Ollama `:11434`.
+- Mando facts: `192.168.0.140`, Honcho API `:8000`, MCP `:8787`, Ollama `:11434`.

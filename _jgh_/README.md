@@ -5,7 +5,7 @@ self-hosted Honcho on the home LAN (Mando). It is **compartmentalized on purpose
 
 > **Boundary rule:** nothing in `_jgh_/` is ever imported by `src/`, and nothing in
 > `src/` depends on anything here. This folder talks to Honcho **only over the HTTP
-> API** (`http://192.168.0.225:8000/v3`). Deleting `_jgh_/` has zero effect on Honcho.
+> API** (`http://192.168.0.140:8000/v3`). Deleting `_jgh_/` has zero effect on Honcho.
 
 Lives on the `_jgh_` branch. Companion personal docs/runbooks are in `_jgh_/docs/`.
 

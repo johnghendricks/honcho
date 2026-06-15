@@ -247,7 +247,7 @@ brew install bun                                          # worker enforces bun 
 cd ~/honcho/honcho/mcp
 bun install
 echo 'HONCHO_API_URL=http://localhost:8000' > .dev.vars   # worker talks to local Honcho
-bun run dev --ip 0.0.0.0 --port 8787                       # localhost + LAN (192.168.0.225:8787)
+bun run dev --ip 0.0.0.0 --port 8787                       # localhost + LAN (192.168.0.140:8787)
 ```
 
 `wrangler dev` runs in **local mode** — no Cloudflare login needed. Look for
@@ -264,7 +264,7 @@ claude mcp list            # honcho: ... ✔ Connected
 **From Bossk** (Windows), point at Mando's LAN IP instead:
 
 ```powershell
-claude mcp add honcho -- npx -y mcp-remote http://192.168.0.225:8787 --header "Authorization:Bearer local" --header "X-Honcho-User-Name:john"
+claude mcp add honcho -- npx -y mcp-remote http://192.168.0.140:8787 --header "Authorization:Bearer local" --header "X-Honcho-User-Name:john"
 ```
 
 - `Authorization: Bearer local` — the worker requires *some* bearer token, but with
@@ -381,7 +381,7 @@ deployed URL instead of `localhost:8787`.)
 ## Verified-working state (2026-06-10)
 
 Confirmed end-to-end on Mando: all 4 containers healthy, `/health` ok, API on
-`192.168.0.225:8000`, `bge-large` storing 1024-dim vectors, `gemma4:26b` deriver
+`192.168.0.140:8000`, `bge-large` storing 1024-dim vectors, `gemma4:26b` deriver
 producing conclusions, and the dialectic `/chat` endpoint answering from memory.
 (`qwen3.6:27b` was also tested and rejected — see the reasoning-model warning above.)
 Install lives at `~/honcho/honcho`.
