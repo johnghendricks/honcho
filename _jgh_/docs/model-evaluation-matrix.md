@@ -5,8 +5,10 @@
 > pick the right model for each job rather than standardizing on one by default.
 > Companion to `honcho-mando-ollama-setup.md` and `honcho-import-benchmarks.md`.
 > Target: `http://192.168.0.140:8000`, ws `default`, self-hosted on Mando
-> (M1 Max, 64 GB). **Status: Dreamer Phase 1 COMPLETE (26/26 models, 78 trials,
-> 2026-06-16). Phase 2 finalists selected — awaiting go-ahead.**
+> (M1 Max, 64 GB). **Status: Dreamer Phase 2 COMPLETE (5 finalists, 50 trials +
+> 404 blind-graded conclusions, 2026-06-16). Recommendation: split the dreamer —
+> deduction → qwen3:30b, induction → gemma4:26b. Awaiting checkpoint before
+> Deriver/Summarizer/Dialectic rounds.**
 
 ## Why this exists
 
@@ -126,7 +128,7 @@ finalist.
 | **qwen3:8b** ⭐ | **3/3** · 3.3 | **3/3** · 3.0 | 1/3 (268 ch) | 2m41s | 10 GB | **best all-rounder** — both layers 3/3, fastest lean model |
 | **gemma4:26b** ⭐ | **3/3** · 4.0 | **3/3** · 2.7 | 0/3 | 2m31s | 17 GB | fastest reliable; clean runs; never writes the card |
 | **qwen3:30b** ⭐ | **3/3** · 3.0 | **3/3** · 2.0 | 2/3 (109–140 ch) | 4m26s | 21 GB | both layers 3/3 **and** 2/3 card — best card/speed combo |
-| **qwen3.5:35b** ⭐ | **3/3** · 7.0 | **3/3** · 6.3 | 0/3 | 4m39s | 23 GB | **richest fast output** (avg 7 ind / 6.3 ded) at <5 min; but error-prone (7–14 tool errs/run) |
+| **qwen3.5:35b** ⭐ | **3/3** · 7.0 | **3/3** · 6.3 | 0/3 | 4m39s | 23 GB | **richest fast output** (avg 7 ind / 6.3 ded) at <5 min. ~~error-prone~~ → **retracted**: the "7–14 errs" were content pollution (see Phase-2 error note); 0 real errors. But Phase-2 showed its deduction collapses at n=10 (see below) |
 | **qwen3:14b** ⭐ | **3/3** · 3.3 | **3/3** · 7.3 | **3/3** (37–291 ch) | 11m44s | 14 GB | 🏆 only **3/3 peer card** + most #ded; ~4× slower |
 | qwen3.5:27b | **3/3** · 6.3 | **3/3** · 6.0 | 1/3 (201 ch) | 13m49s | 18 GB | rich output (3/3 both) but **slowest** of all |
 
@@ -191,28 +193,92 @@ finalist.
 > the production choice was both the wrong model *and* the wrong size. Vindicates the
 > whole investigation.
 
-## Dreamer — Phase 2 finalists (deep-dive)
+## Dreamer — Phase 2 deep-dive (10 trials × 5 finalists) — COMPLETE
 
-**Selected from Phase 1 — the 5 ⭐ models (all 3/3 on both layers), chosen to span
-the speed/footprint/card trade-offs:**
+**Harness:** `_jgh_/honcho-import/dream_sweep_phase2.sh` (Mando). Same loop as
+Phase 1 but `TRIALS=10` and it *also* captures the conclusion + card **text**
+(`dream_phase2_content.jsonl`) for blind grading. 50 trials total.
 
-| Finalist | Why it's in | Watch-for in Phase 2 |
-| --- | --- | --- |
-| **qwen3:8b** | best all-rounder; 3/3 both, 2m41s, only 10 GB | does it hold 3/3 over 8–10 trials? lift card rate? |
-| **gemma4:26b** | fastest reliable (2m31s); cleanest runs | confirm it truly never writes the card; quality of its conclusions |
-| **qwen3:30b** | 3/3 both **+ 2/3 card** at 4m26s — best card among fast | card consistency; is 21 GB worth it over qwen3:8b? |
-| **qwen3.5:35b** | richest sub-5-min output (7 ind / 6.3 ded) | are the extra conclusions *quality* or noise? error rate (7–14 errs/run) |
-| **qwen3:14b** | only model with **3/3 card**; most #ded | is the card quality good? is 11m44s tolerable for scheduled dreams? |
+**Quality grading:** `build_dream_audit.py` → blind judge bundles (each item gets
+an opaque id; model/trial mapping kept in a private key; items shuffled; each
+paired with its 12 most-relevant **explicit** conclusions as grounding evidence
+via stdlib IDF retrieval) → **6 Claude judge agents** grade 404 items blind
+(GROUNDED/PARTIAL/UNSUPPORTED + over-attribution leakage + inductive specificity)
+→ `aggregate_dream_grades.py` un-blinds to per-model. Source of truth = the
+explicit-conclusion corpus (the dreamer derives ded/ind *from* it). Judge =
+Claude (independent of all five Ollama candidates).
 
-> _gpt-oss:20b_ held as a **6th alternate** — fastest of all (2m20s) with 3/3 rich
-> induction, only its 2/3 deduction kept it out of Tier 1. Worth a look if a faster
-> qwen3:8b alternative is wanted.
+### Reliability at n=10
 
-**Phase 2 plan (pending go-ahead):** 8–10 trials each → reliability at higher n +
-blind quality grading of deductive/inductive output (the `grades_*.json` method,
-model identity hidden) + per-model peer-card write-rate and card-content quality.
-Also test a **peer-card prompt nudge** on the fast picks (qwen3:8b / gemma4:26b) to
-see if the card rate can be lifted without changing the model.
+| Model | Ded | Ind | Card (avg len) | avg #ded·#ind | wall | VRAM |
+| --- | :-: | :-: | :-: | :-: | ---: | ---: |
+| **gemma4:26b** | **10/10** | **10/10** | 0/10 (—) | 2.7 · 3.4 | 181s | 17 GB |
+| **qwen3:30b** | **10/10** | **10/10** | 3/10 (8 ch) | 2.2 · 3.2 | 352s | 21 GB |
+| **qwen3:14b** | **10/10** | **10/10** | 6/10 (148 ch) | **5.5** · 6.3 | 522s | 14 GB |
+| qwen3:8b | 8/10 | **10/10** | **10/10** (279 ch) | 1.9 · 5.6 | 223s | 10 GB |
+| qwen3.5:35b | **4/10** ⚠️ | 9/10 | 1/10 (23 ch) | 2.4 · **7.9** | 271s | 23 GB |
+
+> **Error note (correction to Phase 1):** the per-trial `errors` field is a
+> `grep -ciE 'error|exception|traceback'` over the whole dream log window, which
+> **includes the model's own conclusion text**. john-cc's data is saturated with
+> log/error troubleshooting, so conclusions like *"debug API error patterns",
+> "400 errors in Docker logs"* inflate the count. Recounting the entire 4.5 h
+> Phase-2 sweep with strict failure markers (`Traceback`/`ERROR:`/`CRITICAL`/
+> `Retrying`/HTTP 5xx) → **0 real errors**. The Phase-1 `errors`/`avgErr` column
+> and every "error-prone" annotation are **void** — they measured the subject's
+> vocabulary, not model stability.
+
+### Blind quality (grounding % / leakage % / inductive specificity H·M·L)
+
+| Model | Deductive grnd% | Inductive grnd% (spec) | Card grnd% | Leakage |
+| --- | :-: | :-: | :-: | :-: |
+| **qwen3:30b** | **95%** (21/22) | 57% (3H·26M·1L) | 100% (n=2) | 0% |
+| **qwen3:14b** | 69% | 68% (8H·47M·7L) | 25% (n=4) | ded 2% / ind 5% / card 25% |
+| qwen3.5:35b | 67% | 67% (33H·44M·2L) | 0% (n=1) | 0% |
+| **gemma4:26b** | 52% | **85%** (15H·19M·**0L**) | — | ind 3% |
+| qwen3:8b | 42% | **85%** (2H·21M·**16L**) | 0% (n=6) | card 17% |
+
+> **The grounding ranking inverts between layers** — no single model is best at
+> both. **qwen3:30b owns deduction** (95% grounded, 10/10 reliable). **gemma4:26b
+> owns induction** (85% grounded, 10/10, **zero low-specificity filler**, fastest).
+> qwen3:8b matches gemma's 85% inductive grounding but with **16 LOW-specificity**
+> items (vague boilerplate) vs gemma's 0 — same grounding, much worse usefulness.
+> **Leakage (over-attribution) is ~0% on conclusions across the board** — the
+> import over-attribution concern does **not** reproduce at the dream layer; only
+> peer-cards leak (and only at tiny n).
+
+### Verdict — split the dreamer (its two phases take separate model configs)
+
+`DREAM_DEDUCTION_MODEL_CONFIG__MODEL` and `DREAM_INDUCTION_MODEL_CONFIG__MODEL`
+are independent, so the right answer is **not one model** — it's the best engine
+per phase:
+
+- **Deduction → `qwen3:30b`** — 10/10 reliable, **95% grounded**, 0% leakage. No
+  other finalist is close on deductive quality.
+- **Induction → `gemma4:26b`** — 10/10 reliable, **85% grounded**, the only model
+  with **zero low-specificity** inductive output, and the fastest (181s).
+
+Both are 0% leakage. Combined this beats every single-model option on both axes.
+
+- **Single-model fallback (if ops wants one model): `qwen3:14b`** — the only
+  all-rounder that's 10/10 on both layers with balanced ~68% grounding on each and
+  the best (still imperfect) peer-card rate (6/10). Cost: slowest at 522s/dream —
+  acceptable only because dreams are scheduled, not interactive.
+- **qwen3.5:35b is OUT** — its Phase-1 3/3 deduction was small-sample luck; at
+  n=10 it's **4/10** reliable on deduction. Prolific high-specificity induction,
+  but you can't depend on it for the deductive phase.
+- **qwen3:8b** — great reliability story (and the only consistent card writer) but
+  the **lowest deductive grounding (42%)** and vaguest induction; not a quality pick.
+
+### Peer card — still unsolved (no model writes a *good* one)
+
+Reliability and quality are anti-correlated on the card: qwen3:8b writes it 10/10
+but **0% grounded + 17% leakage** (verbose, invented); qwen3:30b's are 100%
+grounded but 8-char stubs (3/10); qwen3:14b is the least-bad balance (6/10, 25%
+grounded). **No finalist produces a card worth shipping.** Next lever is the
+**prompt-nudge experiment** — confirmed feasible via the per-peer reasoning /
+custom-instructions config path (no Honcho `src/` edit), to be run on the chosen
+induction model (gemma4:26b) as a follow-up, not a blocker for the split decision.
 
 ---
 
@@ -281,12 +347,40 @@ see if the card rate can be lifted without changing the model.
 - **2026-06-16** — **Phase 2 finalists locked:** qwen3:8b, gemma4:26b, qwen3:30b,
   qwen3.5:35b, qwen3:14b (gpt-oss:20b alternate). Span fast/lean → rich/slow and 0/3 →
   3/3 card. Awaiting go-ahead before the 8–10-trial deep-dive + blind quality grading.
+- **2026-06-16** — **Phase 2 COMPLETE (50 trials + 404 blind-graded conclusions).**
+  Two headline results: (1) **the `errors` metric was an artifact** — strict-marker
+  recount of the whole sweep = 0 real errors; the Phase-1 "error-prone" tags (esp.
+  qwen3.5:35b) are retracted. (2) **Grounding quality inverts between layers, so the
+  dreamer should be split:** deduction → qwen3:30b (95% grounded, 10/10), induction →
+  gemma4:26b (85% grounded, 0 low-spec, 10/10, fastest). No single model wins both.
+- **2026-06-16** — **qwen3.5:35b dropped from contention:** its Phase-1 3/3 deduction
+  was small-sample luck — at n=10 deduction is **4/10**. It remains the most prolific
+  high-specificity inductive producer (33 HIGH-spec items) but can't be trusted for the
+  deductive phase. Vindicates running Phase 2 at higher n.
+- **2026-06-16** — **qwen3:8b reliability ≠ quality:** held card 10/10 at n=10 (Phase-1's
+  1/3 badly undersold it) and matched gemma's 85% inductive grounding — but with **16
+  LOW-specificity** inductive items vs gemma's 0, the **lowest deductive grounding (42%)**,
+  and 17% card leakage. A reliable tool-caller that produces vague/under-grounded content.
+- **2026-06-16** — **Over-attribution does NOT reproduce at the dream layer:** blind
+  leakage grading is ~0% on deductive/inductive conclusions for every finalist. The
+  import over-attribution issue (`import-over-attribution`) is a *parse/explicit-derivation*
+  problem, not a dreaming one — the dreamer reasoning over already-clean explicit
+  conclusions doesn't re-introduce it. Only peer-cards leak, and only at tiny n.
+- **2026-06-16** — **Peer card remains unsolved by model choice:** reliability and
+  grounding are anti-correlated (qwen3:8b 10/10 written but 0% grounded; qwen3:30b 100%
+  grounded but 8-char stubs). No finalist ships a usable card. Deferred to a prompt-nudge
+  experiment on gemma4:26b via the per-peer custom-instructions config path (no src edit).
 
 ## Artifacts
 
 | File (`_jgh_/honcho-import/`) | Purpose |
 | --- | --- |
-| `dream_sweep.sh` | dreamer screen harness (this round) |
-| `dream_sweep_results.jsonl` | raw per-trial dreamer results (on Mando) |
+| `dream_sweep.sh` | dreamer Phase-1 screen harness |
+| `dream_sweep_results.jsonl` | raw Phase-1 per-trial results (on Mando) |
+| `dream_sweep_phase2.sh` | dreamer Phase-2 deep-dive harness (10 trials + content capture) |
+| `dream_phase2_results.jsonl` / `dream_phase2_content.jsonl` | Phase-2 metrics + conclusion/card text (on Mando) |
+| `build_dream_audit.py` | assembles blind judge bundles (IDF-retrieved evidence, private key) |
+| `aggregate_dream_grades.py` | un-blinds judge grades → per-model grounding/leakage/specificity |
+| `DREAM_GRADING_RUBRIC.md` | blind judge rubric (GROUNDED/PARTIAL/UNSUPPORTED + leakage + specificity) |
 | `bench_load.py`, `bench_audit_payload.py`, `aggregate_bench.py` | deriver grounding-audit harness (reused for the deriver round) |
 | `bench_dialectic.py` | dialectic timing/quality harness (reused for the dialectic round) |
