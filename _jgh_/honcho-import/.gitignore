@@ -1,0 +1,10 @@
+# Generated / pulled data artifacts — regenerable, never committed.
+ingest_ledger.db
+PAUSE
+john_cc_explicit.json
+dream_phase2_content.jsonl
+dream_phase2_results.jsonl
+dream_audit_bundles/
+dream_audit_key.json
+dream_audit_final.json
+dream_grades_*.json
